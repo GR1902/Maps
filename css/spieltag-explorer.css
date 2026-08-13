@@ -78,6 +78,8 @@ header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-sys
 .route-stop .num{ width:15px; height:15px; border-radius:50%; background:var(--green); color:#fff; font-size:0.58rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .route-stop .name{ flex:1; }
 .route-stop .rm{ cursor:pointer; color:#a3341f; font-weight:700; font-size:0.72rem; padding:0 2px; }
+.route-stop.route-start{ font-weight:700; }
+.route-stop .start-flag{ width:auto; height:auto; border-radius:0; background:none; font-size:0.78rem; }
 #route-summary{ padding:5px 10px 0 10px; font-size:0.65rem; color:var(--green-dark); font-weight:600; display:none; }
 #route-actions{ display:flex; gap:6px; padding:7px 10px 9px 10px; }
 .route-btn{
@@ -119,6 +121,11 @@ header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-sys
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   font-size:0.66rem; font-weight:600; padding:4px 8px; border-radius:5px;
   border:1px solid var(--green); background:var(--gold); color:#14210a; cursor:pointer; margin-top:5px; font-weight:700;
+}
+.start-stop-btn{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:0.66rem; font-weight:700; padding:4px 8px; border-radius:5px;
+  border:1px solid var(--green-dark); background:var(--green-dark); color:var(--gold); cursor:pointer; margin-top:5px;
 }
 
 #body{ flex:1; display:flex; min-height:0; }

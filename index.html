@@ -30,7 +30,7 @@
         🚗 Plan Route <span aria-hidden="true">▾</span>
       </button>
       <div id="route-panel" class="header-dropdown-panel">
-        <div id="route-hint">Open a popup → "+ Add to route".</div>
+        <div id="route-hint">Open a popup → "+ Add to route". Optionally set a 🏁 start point from an airport or the radius search.</div>
         <div id="route-stops"></div>
         <div id="route-summary"></div>
         <div id="route-actions">
@@ -51,6 +51,7 @@
           </div>
           <button class="route-btn" id="radius-search-btn" onclick="runRadiusSearch()" style="width:100%; margin-top:6px;">Search</button>
           <button class="route-btn" id="radius-pick-btn" onclick="toggleMapPick()" style="width:100%; margin-top:6px;">📍 Pick point on map</button>
+          <button class="route-btn" id="radius-use-start-btn" onclick="useRadiusPointAsStart()" style="width:100%; margin-top:6px;">🏁 Use as route start</button>
           <div id="radius-status"></div>
           <div id="radius-results"></div>
         </div>

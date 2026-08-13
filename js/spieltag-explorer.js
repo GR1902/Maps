@@ -335,10 +335,13 @@ function renderAirports(){
   if(!showAirports) return;
   AIRPORTS.forEach(ap => {
     const marker = L.marker([ap.lat, ap.lng], { icon: makeAirportIcon(), zIndexOffset: -1000 });
+    const startPoint = { name: `${ap.name} (${ap.iata})`, lat: ap.lat, lng: ap.lng };
     marker.bindPopup(`
       <div class="popup-club">✈️ ${ap.name} (${ap.iata})</div>
       <div class="popup-meta">${ap.city}</div>
+      <div><button class="start-stop-btn" data-start="airport::${ap.iata}">🏁 Set as start point</button></div>
     `);
+    bindStartButton(marker, `airport::${ap.iata}`, startPoint);
     marker.addTo(map);
     airportMarkers.push(marker);
   });
@@ -813,6 +816,9 @@ window.addEventListener('resize', () => map.invalidateSize());
 // ===== Point-to-point route planning =====
 // stopKey format: "league::teamCode" so any club, from any league, can be a stop.
 let routeStops = []; // array of {key, team}
+// Optional origin for the route — an airport or a radius-search center
+// point — always driven from first, ahead of every numbered stop.
+let routeStart = null; // { name, lat, lng } | null
 let routingControl = null;
 
 function bindStopButton(marker, stopKey, teamData){
@@ -820,6 +826,27 @@ function bindStopButton(marker, stopKey, teamData){
     const btn = document.querySelector(`.add-stop-btn[data-stop="${CSS.escape(stopKey)}"]`);
     if(btn) btn.onclick = () => { addStop(stopKey, teamData); marker.closePopup(); };
   });
+}
+
+// Reusable "🏁 Set as start point" button binding for any marker with a
+// fixed lat/lng — airports today, potentially other reference points later.
+function bindStartButton(marker, startKey, point){
+  marker.on('popupopen', () => {
+    const btn = document.querySelector(`.start-stop-btn[data-start="${CSS.escape(startKey)}"]`);
+    if(btn) btn.onclick = () => { setRouteStart(point); marker.closePopup(); };
+  });
+}
+
+function setRouteStart(point){
+  routeStart = point;
+  renderStops();
+  computeRoute();
+}
+
+function clearRouteStart(){
+  routeStart = null;
+  renderStops();
+  computeRoute();
 }
 
 function bindWatchButton(marker, watchItem){
@@ -847,6 +874,7 @@ function removeStop(key){
 
 function clearRoute(){
   routeStops = [];
+  routeStart = null;
   renderStops();
   computeRoute();
 }
@@ -855,7 +883,7 @@ function renderStops(){
   const container = document.getElementById('route-stops');
   const clearBtn = document.getElementById('clear-route-btn');
   const hint = document.getElementById('route-hint');
-  if(routeStops.length === 0){
+  if(!routeStart && routeStops.length === 0){
     container.innerHTML = '';
     clearBtn.disabled = true;
     hint.style.display = 'block';
@@ -863,20 +891,29 @@ function renderStops(){
   }
   hint.style.display = 'none';
   clearBtn.disabled = false;
-  container.innerHTML = routeStops.map((s,i) => `
+  const startHtml = routeStart ? `
+    <div class="route-stop route-start">
+      <span class="num start-flag">🏁</span>
+      <span class="name">${routeStart.name}</span>
+      <span class="rm" onclick="clearRouteStart()">×</span>
+    </div>
+  ` : '';
+  const stopsHtml = routeStops.map((s,i) => `
     <div class="route-stop">
       <span class="num">${i+1}</span>
       <span class="name">${s.team.name}</span>
       <span class="rm" onclick="removeStop('${s.key.replace(/'/g,"\\'")}')">×</span>
     </div>
   `).join('');
+  container.innerHTML = startHtml + stopsHtml;
 }
 
 function computeRoute(){
   const summary = document.getElementById('route-summary');
   if(routingControl){ map.removeControl(routingControl); routingControl = null; }
-  if(routeStops.length < 2){ summary.style.display='none'; summary.textContent=''; return; }
-  const waypoints = routeStops.map(s => L.latLng(s.team.lat, s.team.lng));
+  const points = [...(routeStart ? [routeStart] : []), ...routeStops.map(s => s.team)];
+  if(points.length < 2){ summary.style.display='none'; summary.textContent=''; return; }
+  const waypoints = points.map(p => L.latLng(p.lat, p.lng));
   routingControl = L.Routing.control({
     waypoints: waypoints,
     lineOptions: { styles: [{ color:'#FFF200', weight:5, opacity:0.9 }] },
@@ -1046,6 +1083,20 @@ async function runRadiusSearch(){
 
   lastRadiusPoint = point;
   renderRadiusResults(point, radiusKm, true);
+}
+
+// Lets the radius search's center point (from an address search or a
+// map-pick) double as the route's start point, so a scouting trip can be
+// planned outward from "wherever I searched" as well as from an airport.
+function useRadiusPointAsStart(){
+  if(!lastRadiusPoint){
+    document.getElementById('radius-status').textContent = 'Search an address or pick a point first.';
+    return;
+  }
+  setRouteStart({
+    name: lastRadiusPoint.label.split(',').slice(0,3).join(','),
+    lat: lastRadiusPoint.lat, lng: lastRadiusPoint.lng
+  });
 }
 
 // Radius is a continuous slider (5-500 km, step 5) rather than a fixed list

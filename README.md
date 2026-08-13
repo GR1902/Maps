@@ -75,7 +75,8 @@ to refresh it; `dist/` isn't tracked in git.
   airports (`data/airports.json`) as a reference layer, independent of the
   league/matchday filters — handy for judging how reachable a fixture
   cluster is by air, not just by road. Off by default; click the button to
-  show/hide, click a plane marker for the airport name, IATA code, and city
+  show/hide, click a plane marker for the airport name, IATA code, city, and
+  a "🏁 Set as start point" button (see route planning below)
 - Radius search ("📍 Radius Search" in the top control bar, opens as a
   dropdown like the league picker): enter an address, or click "📍 Pick point
   on map" and click anywhere on the map instead — either way, see every home
@@ -89,9 +90,11 @@ to refresh it; `dist/` isn't tracked in git.
   club-crest marker per match (same crest badge as the main fixture
   markers, with the same colored-swatch fallback), and both the map markers
   and each result row in the list show the crest; each result also supports
-  "+ Add to route" like any other marker. Geocoding (forward and reverse)
-  via OpenStreetMap's free Nominatim API (same data source as the map tiles
-  and OSRM routing already used elsewhere)
+  "+ Add to route" like any other marker. A "🏁 Use as route start" button
+  turns the searched/picked center point itself into the route's origin
+  (see route planning below). Geocoding (forward and reverse) via
+  OpenStreetMap's free Nominatim API (same data source as the map tiles and
+  OSRM routing already used elsewhere)
 - "Combinable trips" panel: for the selected league + matchday's home
   fixtures ("anchors"), finds realistic multi-stop trips — where every leg
   is checked against actual driving time (see below), not just distance. By
@@ -102,7 +105,12 @@ to refresh it; `dist/` isn't tracked in git.
 - Point-to-point route planning (click marker → "+ Add to route" → real
   driving route via OSRM, with distance/time); stops and the running
   distance/time summary live under "🚗 Plan Route" in the top control bar,
-  same dropdown pattern as the league picker and radius search
+  same dropdown pattern as the league picker and radius search. Optionally
+  set a 🏁 start point — from an airport's popup or the radius search's
+  "Use as route start" — so the route is driven from that origin (e.g. the
+  airport you're flying into) instead of starting at the first added
+  fixture; only one start point at a time, shown ahead of the numbered
+  stops and removable on its own without clearing the whole route
 - "⭐ My Plan" watchlist (top of the side panel) — separate from the route
   planner: this is for marking games you want to see, not for building a
   drivable itinerary. Add a fixture by clicking its ☆ (fixture list, radius
