@@ -15,9 +15,10 @@ norwich-scouting-map/
 ├── js/
 │   └── spieltag-explorer.js   App logic (fetches data/teams.json + data/fixtures.json)
 ├── data/
-│   ├── teams.json             308 club/venue records, keyed by league → team code
-│   └── fixtures.json          180 fixtures, keyed by league, with matchday numbers
-└── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
+│   ├── teams.json             499 club/venue records, keyed by league → team code
+│   └── fixtures.json          275 fixtures, keyed by league, with matchday numbers
+├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
+└── fetch_logos.py             Fills in data/teams.json's "logo" field via Wikipedia (see below)
 ```
 
 Leaflet + Leaflet Routing Machine are loaded via CDN. Everything else is
@@ -53,9 +54,16 @@ required. It's a snapshot — re-run the build script after changing
 to refresh it; `dist/` isn't tracked in git.
 
 ## Features
-- League dropdown + matchday dropdown (populated dynamically per league)
-- Shows selected league's home fixtures highlighted; other clubs of the same
-  league in a pale shade; all other leagues' clubs in muted grey
+- League picker (multi-select checkbox panel, 29 leagues across 16
+  countries) — each selected league gets its own matchday dropdown, since
+  leagues don't share a common calendar or matchday numbering
+- Shows every selected league's home fixtures highlighted (own color per
+  league); other clubs of the same league in a pale shade; unselected
+  leagues' clubs in muted grey
+- Club crests on this-matchday markers (hotlinked from Wikipedia, fetched
+  per club by `data/teams.json`'s `logo` field — see below); falls back to
+  the plain colored marker if a club has no crest on file or the image
+  fails to load
 - "Combinable trips" panel: for the selected league + matchday's home
   fixtures ("anchors"), finds realistic multi-stop trips — including other
   leagues/countries — where every leg is checked against actual driving time
@@ -98,12 +106,27 @@ error instead of silently falling back to straight-line guesses.
 
 ## Data structure
 
-**`teams.json`** — nested by league, keyed by short team code:
+**`teams.json`** — nested by league, keyed by short team code. `logo` is
+optional (present for ~490/499 clubs):
 ```json
 { "primeira_liga": {
-    "POR": { "name": "FC Porto", "city": "Porto", "lat": 41.16177, "lng": -8.583591 }
+    "POR": { "name": "FC Porto", "city": "Porto", "lat": 41.16177, "lng": -8.583591,
+             "logo": "https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg" }
 } }
 ```
+
+**Club crests**: fetched once via Wikipedia's API (`action=query&generator=search&prop=pageimages&pilicense=any`,
+searching each club's name and taking the page's main image) and hotlinked
+directly from `upload.wikimedia.org` — not downloaded into this repo. These
+are club logos/crests, typically hosted under a "fair use" rationale for
+identification, not a freely-licensed asset; fine for this kind of internal
+tool, but don't treat them as cleared for arbitrary reuse. A handful of
+clubs (mostly obscure reserve/lower-league sides) have no `logo` field
+because the search didn't turn up a usable image — the map falls back to
+the plain colored marker for those automatically. Run `python3
+fetch_logos.py` to fill in any club still missing one (safe to re-run,
+skips clubs that already have a `logo`), or `python3 fetch_logos.py
+--refresh` to re-fetch everything.
 
 **`fixtures.json`** — nested by league, array of fixtures referencing team codes:
 ```json
@@ -138,8 +161,14 @@ search, not a live feed (except the big 5, see below).
 | Pro League (BEL) | MD1 (+1 MD2 game) | High | 18 clubs (league expanded from 16) |
 | Allsvenskan (SWE), Veikkausliiga (FIN) | Current round only | Medium | Calendar-year seasons already in progress; round numbers approximate |
 | Eliteserien (NOR) | Round 18 | Medium | 1 of 8 fixtures (Bodø/Glimt–Start) uses a **placeholder date/time** — home/away was inferred from a season ground-pattern, not confirmed directly |
+| League One (ENG), 3. Liga (GER), Eerste Divisie (NED), Scottish Premiership, Swiss Super League, Turkish Süper Lig, Croatian HNL | MD1 | High | Full 2026/27 roster + confirmed kickoff times from official/press sources |
+| Challenger Pro League (BEL) | MD1 | High | 15 clubs; one team (Club NXT) has a bye in MD1 (odd number of clubs), so it appears with no home fixture that round — expected, not a data gap |
+| Austrian Bundesliga | MD1 | Medium | Full roster + 4 of 6 kickoff times confirmed; 2 matches (Wolfsberger AC–Austria Wien, Austria Lustenau–SV Ried) have a confirmed time but the **date is assumed** (same weekend as the rest of MD1, not individually verified) |
+| Greek Super League | MD1 | Medium | Full roster + correct match dates (22–23 Aug) confirmed; **no source gave kickoff times**, so all 7 matches use the same **placeholder time** (20:00 EEST) |
+| Polish Ekstraklasa | MD1 | Medium | Full roster + all 9 pairings confirmed; only 2 kickoff times individually confirmed (Radomiak–Wieczysta, Pogoń–Legia) — the other 7 use a **placeholder time** (Sat 14:45 CEST), dates for those 7 are assumed |
+| Czech First League (Chance Liga) | MD1 | High | Full roster + 7 of 8 kickoff times confirmed; 1 match (Artis Brno–Mladá Boleslav) has confirmed date but **placeholder time** |
 
-**Second-tier leagues added 2026-08-13** (Championship, LaLiga Hypermotion, 2. Bundesliga, Serie B, Ligue 2): rosters and MD1 fixtures researched via web search (Wikipedia, official league sites, sports press), not the Claude.ai sports-data tool. Stadium coordinates are from general knowledge, not individually re-verified per club — flag any that look off.
+**12 more leagues added 2026-08-13** (League One, 3. Liga, Eerste Divisie, Challenger Pro League, Scottish Premiership, Swiss Super League, Austrian Bundesliga, Greek Super League, Süper Lig, Ekstraklasa, Czech First League, Croatian HNL): same research method as the second-tier leagues above (web search, not the Claude.ai sports-data tool). Stadium coordinates are city-level from general knowledge, not individually re-verified per club.
 
 ## The live sports-data gap
 

@@ -3,35 +3,50 @@ let TEAMS = {};
 let FIXTURES = {};
 
 const LEAGUE_COLOR = {
-  epl:"#1c3f95", championship:"#7b2d8e",
+  epl:"#1c3f95", championship:"#7b2d8e", league_one:"#556b2f",
   la_liga:"#c8102e", la_liga_2:"#e07b13",
-  bundesliga:"#2b2b2b", bundesliga_2:"#0c8a8a",
+  bundesliga:"#2b2b2b", bundesliga_2:"#0c8a8a", liga3_de:"#6a3d9a",
   serie_a:"#008c45", serie_b:"#a8763e",
   ligue_1:"#0055a4", ligue_2:"#c23b6f",
-  primeira_liga:"#046a38", eredivisie:"#ff8c00", pro_league:"#f7c631",
-  allsvenskan:"#005293", eliteserien:"#a3123a", superliga:"#c8102e", veikkausliiga:"#003580"
+  primeira_liga:"#046a38",
+  eredivisie:"#ff8c00", eerste_divisie:"#b5651d",
+  pro_league:"#f7c631", challenger_pro_league:"#4a4a8a",
+  allsvenskan:"#005293", eliteserien:"#a3123a", superliga:"#c8102e", veikkausliiga:"#003580",
+  scottish_prem:"#1a5c38", swiss_super_league:"#b03a2e", austrian_bundesliga:"#2f6f6f",
+  super_league_greece:"#003087", super_lig:"#e30a17", ekstraklasa:"#996515",
+  czech_first_league:"#11457e", croatian_hnl:"#c65102"
 };
 const COUNTRY_TAG = {
-  epl:"ENG", championship:"ENG",
+  epl:"ENG", championship:"ENG", league_one:"ENG",
   la_liga:"ESP", la_liga_2:"ESP",
-  bundesliga:"GER", bundesliga_2:"GER",
+  bundesliga:"GER", bundesliga_2:"GER", liga3_de:"GER",
   serie_a:"ITA", serie_b:"ITA",
   ligue_1:"FRA", ligue_2:"FRA",
   primeira_liga:"POR",
-  eredivisie:"NED", pro_league:"BEL", allsvenskan:"SWE", eliteserien:"NOR", superliga:"DEN", veikkausliiga:"FIN"
+  eredivisie:"NED", eerste_divisie:"NED",
+  pro_league:"BEL", challenger_pro_league:"BEL",
+  allsvenskan:"SWE", eliteserien:"NOR", superliga:"DEN", veikkausliiga:"FIN",
+  scottish_prem:"SCO", swiss_super_league:"SUI", austrian_bundesliga:"AUT",
+  super_league_greece:"GRE", super_lig:"TUR", ekstraklasa:"POL",
+  czech_first_league:"CZE", croatian_hnl:"CRO"
 };
 // Canonical league list + display labels, in dropdown order (top flight
-// immediately followed by its own second tier where we have one).
+// immediately followed by its own lower tiers where we have them).
 const LEAGUE_LABELS = {
-  epl: "Premier League (ENG)", championship: "Championship (ENG)",
+  epl: "Premier League (ENG)", championship: "Championship (ENG)", league_one: "League One (ENG)",
   la_liga: "La Liga (ESP)", la_liga_2: "LaLiga Hypermotion (ESP)",
-  bundesliga: "Bundesliga (GER)", bundesliga_2: "2. Bundesliga (GER)",
+  bundesliga: "Bundesliga (GER)", bundesliga_2: "2. Bundesliga (GER)", liga3_de: "3. Liga (GER)",
   serie_a: "Serie A (ITA)", serie_b: "Serie B (ITA)",
   ligue_1: "Ligue 1 (FRA)", ligue_2: "Ligue 2 (FRA)",
   primeira_liga: "Primeira Liga (POR)",
-  eredivisie: "Eredivisie (NED)", pro_league: "Pro League (BEL)",
+  eredivisie: "Eredivisie (NED)", eerste_divisie: "Eerste Divisie (NED)",
+  pro_league: "Pro League (BEL)", challenger_pro_league: "Challenger Pro League (BEL)",
   allsvenskan: "Allsvenskan (SWE)", eliteserien: "Eliteserien (NOR)",
-  superliga: "Superliga (DEN)", veikkausliiga: "Veikkausliiga (FIN)"
+  superliga: "Superliga (DEN)", veikkausliiga: "Veikkausliiga (FIN)",
+  scottish_prem: "Premiership (SCO)", swiss_super_league: "Super League (SUI)",
+  austrian_bundesliga: "Bundesliga (AUT)", super_league_greece: "Super League (GRE)",
+  super_lig: "Süper Lig (TUR)", ekstraklasa: "Ekstraklasa (POL)",
+  czech_first_league: "Chance Liga (CZE)", croatian_hnl: "HNL (CRO)"
 };
 
 // ===== Map setup =====
@@ -42,11 +57,31 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 
 let currentMarkers = [];
 
-function makeIcon(color){
+function makeDiamondIcon(color){
   return L.divIcon({
     className:'',
     html:`<div style="width:14px;height:14px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:1.5px solid #fffdf4;box-shadow:0 1px 3px rgba(0,0,0,0.4);"></div>`,
     iconSize:[14,14], iconAnchor:[7,14], popupAnchor:[0,-14]
+  });
+}
+
+// If a club has a logo URL, show it as a circular badge with a league-color
+// ring; otherwise fall back to the plain colored diamond. handleLogoError
+// swaps a broken/missing image (e.g. a stale hotlinked URL) back to the
+// diamond at runtime too.
+function handleLogoError(imgEl){
+  const color = imgEl.dataset.fallbackColor;
+  imgEl.parentElement.outerHTML = `<div style="width:14px;height:14px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:1.5px solid #fffdf4;box-shadow:0 1px 3px rgba(0,0,0,0.4);"></div>`;
+}
+
+function makeIcon(color, logoUrl){
+  if(!logoUrl) return makeDiamondIcon(color);
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:24px;height:24px;border-radius:50%;background:#fffdf4;border:2px solid ${color};box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+      <img src="${logoUrl}" data-fallback-color="${color}" onerror="handleLogoError(this)" style="width:17px;height:17px;object-fit:contain;" />
+    </div>`,
+    iconSize:[24,24], iconAnchor:[12,24], popupAnchor:[0,-24]
   });
 }
 
@@ -215,7 +250,7 @@ function renderAll(){
       const a = teams[f.away];
       if(!h) return;
       const stopKey = `${league}::${f.home}`;
-      const marker = L.marker([h.lat, h.lng], { icon: makeIcon(color) });
+      const marker = L.marker([h.lat, h.lng], { icon: makeIcon(color, h.logo) });
       marker.bindTooltip(h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
       marker.bindPopup(`
         <div class="popup-club">${h.name} vs ${a ? a.name : f.away}</div>
