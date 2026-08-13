@@ -25,7 +25,7 @@ header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-sys
 }
 #league-picker-btn:hover{ background:#f3efd4; }
 #league-panel{
-  display:none; position:absolute; top:calc(100% + 4px); left:0; z-index:50;
+  display:none; position:absolute; top:calc(100% + 4px); left:0; z-index:2000;
   background:#fffdf4; border:1px solid var(--line); border-radius:8px;
   box-shadow:0 3px 10px rgba(0,0,0,0.18); padding:6px 4px; min-width:240px;
   max-height:340px; overflow-y:auto;
@@ -81,6 +81,42 @@ header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-sys
   border:1px solid var(--green); background:#fff; color:var(--green-dark); cursor:pointer;
 }
 .route-btn:disabled{ opacity:0.4; cursor:default; }
+
+/* Radius search panel */
+#radius-panel{
+  position:absolute; top:56px; left:10px; z-index:1000;
+  background:rgba(255,253,244,0.97);
+  border:1px solid var(--line); border-radius:8px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.14);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  width:220px; max-width:calc(100vw - 24px);
+}
+#radius-header{ padding:7px 10px; border-bottom:2px solid var(--gold); background:var(--green-dark); border-radius:8px 8px 0 0; }
+#radius-title{ font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--gold); }
+#radius-body{ padding:8px 10px 9px 10px; }
+#radius-address{
+  width:100%; font-family:inherit; font-size:0.72rem; padding:5px 7px; border-radius:5px;
+  border:1px solid var(--green); background:#fff; color:var(--ink); box-sizing:border-box;
+}
+.radius-row{ display:flex; gap:6px; margin-top:6px; }
+#radius-km{
+  flex:1; font-family:inherit; font-size:0.72rem; padding:5px 4px; border-radius:5px;
+  border:1px solid var(--green); background:#fff; color:var(--ink); cursor:pointer;
+}
+#radius-status{ font-size:0.63rem; color:#6b6455; margin-top:6px; line-height:1.35; min-height:0; }
+#radius-results{ max-height:220px; overflow-y:auto; margin-top:4px; }
+.radius-result{
+  padding:5px 4px; border-bottom:1px solid #eee6c8; font-size:0.68rem; cursor:pointer; color:var(--ink);
+}
+.radius-result:last-child{ border-bottom:none; }
+.radius-result:hover{ background:#fdf6c8; }
+.radius-result .rteams{ font-weight:700; }
+.radius-result .rmeta{ font-size:0.6rem; color:#6b6455; margin-top:1px; }
+.radius-pin{
+  width:16px; height:16px; border-radius:50%;
+  background:var(--gold); border:2px solid var(--green-dark);
+  box-shadow:0 0 0 3px rgba(255,242,0,0.35), 0 1px 3px rgba(0,0,0,0.4);
+}
 .add-stop-btn{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   font-size:0.66rem; font-weight:600; padding:4px 8px; border-radius:5px;

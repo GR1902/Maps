@@ -611,6 +611,108 @@ function computeRoute(){
   });
 }
 
+// ===== Radius search =====
+// Straight-line ("as the crow flies") distance — the right metric for "is
+// this fixture within X km of this point", unlike the drive-time/distance
+// used for routing and combinable trips.
+function haversine(lat1,lng1,lat2,lng2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// Free, keyless geocoding via OpenStreetMap's Nominatim — same data source
+// as the map tiles and OSRM routing already used elsewhere in this app.
+async function geocodeAddress(address){
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`;
+  const res = await fetch(url);
+  const results = await res.json();
+  if(!results.length) return null;
+  return { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon), label: results[0].display_name };
+}
+
+let radiusCircle = null;
+let radiusMarkers = [];
+
+function clearRadiusSearch(){
+  if(radiusCircle){ map.removeLayer(radiusCircle); radiusCircle = null; }
+  radiusMarkers.forEach(m => map.removeLayer(m));
+  radiusMarkers = [];
+  document.getElementById('radius-results').innerHTML = '';
+}
+
+async function runRadiusSearch(){
+  const address = document.getElementById('radius-address').value.trim();
+  const radiusKm = parseInt(document.getElementById('radius-km').value, 10);
+  const status = document.getElementById('radius-status');
+  const btn = document.getElementById('radius-search-btn');
+  clearRadiusSearch();
+
+  if(!address){ status.textContent = 'Enter an address first.'; return; }
+
+  status.textContent = 'Looking up address…';
+  btn.disabled = true;
+  let point;
+  try{
+    point = await geocodeAddress(address);
+  } catch(e){
+    point = null;
+  }
+  btn.disabled = false;
+
+  if(!point){
+    status.textContent = 'Could not find that address. Try a more specific one (city, country).';
+    return;
+  }
+
+  // Search across ALL leagues and ALL matchdays currently loaded — not just
+  // the leagues/matchday toggled on — since "what's near this address" is
+  // naturally a global question, independent of the current view filter.
+  const pool = buildGamePool();
+  const matches = pool
+    .map(g => ({ ...g, distKm: haversine(point.lat, point.lng, g.home.lat, g.home.lng) }))
+    .filter(g => g.distKm <= radiusKm)
+    .sort((a,b) => a.distKm - b.distKm);
+
+  status.textContent = `${matches.length} fixture${matches.length===1?'':'s'} within ${radiusKm} km of "${point.label.split(',').slice(0,3).join(',')}"`;
+
+  radiusCircle = L.circle([point.lat, point.lng], {
+    radius: radiusKm * 1000, color: '#FFF200',
+    weight: 2, fillColor: '#FFF200', fillOpacity: 0.08
+  }).addTo(map);
+
+  const bounds = [[point.lat, point.lng]];
+  const resultsList = document.getElementById('radius-results');
+
+  matches.slice(0, 60).forEach(g => {
+    const stopKey = `${g.league}::${g.homeCode}`;
+    const marker = L.marker([g.home.lat, g.home.lng], {
+      icon: L.divIcon({ className:'', html:'<div class="radius-pin"></div>', iconSize:[16,16], iconAnchor:[8,16], popupAnchor:[0,-16] })
+    });
+    marker.bindPopup(`
+      <div class="popup-club">${g.home.name} vs ${g.awayName}</div>
+      <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
+    `);
+    bindStopButton(marker, stopKey, g.home);
+    marker.addTo(map);
+    radiusMarkers.push(marker);
+    bounds.push([g.home.lat, g.home.lng]);
+
+    const item = document.createElement('div');
+    item.className = 'radius-result';
+    item.innerHTML = `
+      <div class="rteams">${g.home.name} – ${g.awayName}</div>
+      <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+    `;
+    item.onclick = () => { map.setView([g.home.lat, g.home.lng], 10); marker.openPopup(); };
+    resultsList.appendChild(item);
+  });
+
+  map.fitBounds(bounds, { padding: [50,50] });
+}
+
 // ===== Bootstrap: load data, then render =====
 async function loadData(){
   const [teamsRes, fixturesRes] = await Promise.all([

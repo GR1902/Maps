@@ -40,6 +40,24 @@
           <button class="route-btn" id="clear-route-btn" onclick="clearRoute()" disabled>Clear</button>
         </div>
       </div>
+      <div id="radius-panel">
+        <div id="radius-header"><span id="radius-title">Radius Search</span></div>
+        <div id="radius-body">
+          <input type="text" id="radius-address" placeholder="Address, city, postcode…" onkeydown="if(event.key==='Enter')runRadiusSearch()" />
+          <div class="radius-row">
+            <select id="radius-km">
+              <option value="25">25 km</option>
+              <option value="50">50 km</option>
+              <option value="100" selected>100 km</option>
+              <option value="200">200 km</option>
+              <option value="300">300 km</option>
+            </select>
+            <button class="route-btn" id="radius-search-btn" onclick="runRadiusSearch()">Search</button>
+          </div>
+          <div id="radius-status"></div>
+          <div id="radius-results"></div>
+        </div>
+      </div>
     </div>
     <div id="side">
       <div id="fixtures-container"></div>
