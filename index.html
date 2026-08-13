@@ -18,28 +18,13 @@
     </div>
   </header>
   <div id="controls">
-    <label for="league-select">League:</label>
-    <select id="league-select" onchange="onLeagueChange()">
-      <option value="epl">Premier League (ENG)</option>
-      <option value="championship">Championship (ENG)</option>
-      <option value="la_liga">La Liga (ESP)</option>
-      <option value="la_liga_2">LaLiga Hypermotion (ESP)</option>
-      <option value="bundesliga">Bundesliga (GER)</option>
-      <option value="bundesliga_2">2. Bundesliga (GER)</option>
-      <option value="serie_a">Serie A (ITA)</option>
-      <option value="serie_b">Serie B (ITA)</option>
-      <option value="ligue_1">Ligue 1 (FRA)</option>
-      <option value="ligue_2">Ligue 2 (FRA)</option>
-      <option value="primeira_liga">Primeira Liga (POR)</option>
-      <option value="eredivisie">Eredivisie (NED)</option>
-      <option value="pro_league">Pro League (BEL)</option>
-      <option value="allsvenskan">Allsvenskan (SWE)</option>
-      <option value="eliteserien">Eliteserien (NOR)</option>
-      <option value="superliga">Superliga (DEN)</option>
-      <option value="veikkausliiga">Veikkausliiga (FIN)</option>
-    </select>
-    <label for="matchday-select">Matchday:</label>
-    <select id="matchday-select" onchange="renderLeague(document.getElementById('league-select').value)"></select>
+    <label for="league-picker-btn">Leagues:</label>
+    <div id="league-picker">
+      <button id="league-picker-btn" type="button" onclick="toggleLeaguePanel()">
+        <span id="league-picker-label">Premier League (ENG)</span> <span aria-hidden="true">▾</span>
+      </button>
+      <div id="league-panel"></div>
+    </div>
     <span id="snapshot-note">ENG/ESP/GER/ITA/FRA: live snapshot · Other leagues: latest confirmed round via official/press sources</span>
   </div>
   <div id="body">
@@ -57,9 +42,8 @@
       </div>
     </div>
     <div id="side">
-      <h2 id="fixtures-heading">Home Fixtures</h2>
-      <div id="fixtures-list"></div>
-      <h2 id="combos-heading">Combinable Trips (all loaded leagues)</h2>
+      <div id="fixtures-container"></div>
+      <h2 id="combos-heading">Combinable Trips</h2>
       <div id="combos-list"></div>
     </div>
   </div>

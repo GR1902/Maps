@@ -14,11 +14,47 @@ header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-sys
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 #controls label{ font-size:0.72rem; font-weight:600; color:var(--green-dark); }
-#league-select, #matchday-select{
+#snapshot-note{ font-size:0.66rem; color:#6b6455; margin-left:auto; }
+
+/* League picker (multi-select) */
+#league-picker{ position:relative; }
+#league-picker-btn{
   font-family:inherit; font-size:0.8rem; padding:6px 10px; border-radius:6px;
   border:1px solid var(--green); background:#fff; color:var(--ink); cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px;
 }
-#snapshot-note{ font-size:0.66rem; color:#6b6455; margin-left:auto; }
+#league-picker-btn:hover{ background:#f3efd4; }
+#league-panel{
+  display:none; position:absolute; top:calc(100% + 4px); left:0; z-index:50;
+  background:#fffdf4; border:1px solid var(--line); border-radius:8px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.18); padding:6px 4px; min-width:240px;
+  max-height:340px; overflow-y:auto;
+}
+#league-panel.open{ display:block; }
+.league-row{
+  display:flex; align-items:center; gap:7px; font-size:0.76rem; color:var(--ink);
+  padding:4px 8px; cursor:pointer; border-radius:4px;
+}
+.league-row:hover{ background:#f3efd4; }
+.league-row input{ margin:0; cursor:pointer; flex-shrink:0; }
+.league-row .swatch{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+/* Per-league fixtures blocks in the side panel */
+#side .league-block h2{
+  font-size:0.68rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--green-dark);
+  margin:0; padding:10px 14px 7px 14px; background:#f3efd4; border-bottom:1px solid var(--line);
+  border-top:1px solid var(--line);
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  position:static;
+}
+#side .league-block:first-child h2{ border-top:none; }
+.league-block h2 .league-name{ font-weight:700; }
+.league-block h2 .md-select{
+  font-family:inherit; font-size:0.68rem; padding:2px 5px; border-radius:4px;
+  border:1px solid var(--green); background:#fff; color:var(--ink); cursor:pointer;
+}
+.league-block h2 .count{ margin-left:auto; font-weight:400; color:#6b6455; text-transform:none; letter-spacing:normal; }
 
 /* Route panel */
 #route-panel{

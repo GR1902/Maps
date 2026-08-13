@@ -20,6 +20,19 @@ const COUNTRY_TAG = {
   primeira_liga:"POR",
   eredivisie:"NED", pro_league:"BEL", allsvenskan:"SWE", eliteserien:"NOR", superliga:"DEN", veikkausliiga:"FIN"
 };
+// Canonical league list + display labels, in dropdown order (top flight
+// immediately followed by its own second tier where we have one).
+const LEAGUE_LABELS = {
+  epl: "Premier League (ENG)", championship: "Championship (ENG)",
+  la_liga: "La Liga (ESP)", la_liga_2: "LaLiga Hypermotion (ESP)",
+  bundesliga: "Bundesliga (GER)", bundesliga_2: "2. Bundesliga (GER)",
+  serie_a: "Serie A (ITA)", serie_b: "Serie B (ITA)",
+  ligue_1: "Ligue 1 (FRA)", ligue_2: "Ligue 2 (FRA)",
+  primeira_liga: "Primeira Liga (POR)",
+  eredivisie: "Eredivisie (NED)", pro_league: "Pro League (BEL)",
+  allsvenskan: "Allsvenskan (SWE)", eliteserien: "Eliteserien (NOR)",
+  superliga: "Superliga (DEN)", veikkausliiga: "Veikkausliiga (FIN)"
+};
 
 // ===== Map setup =====
 const map = L.map('map', { zoomControl:true }).setView([48, 5], 4);
@@ -72,28 +85,67 @@ function makeLeagueIcon(color, size){
   });
 }
 
-function onLeagueChange(){
-  const league = document.getElementById('league-select').value;
-  const mdSelect = document.getElementById('matchday-select');
-  const matchdays = [...new Set(FIXTURES[league].map(f => f.matchday))].sort((a,b)=>a-b);
-  mdSelect.innerHTML = matchdays.map(md => `<option value="${md}">Matchday ${md}</option>`).join('');
-  renderLeague(league);
+// ===== League picker (multi-select) =====
+let selectedLeagues = new Set(['epl']);
+let leagueMatchday = {}; // league code -> chosen matchday number
+
+function buildLeaguePanel(){
+  const panel = document.getElementById('league-panel');
+  panel.innerHTML = Object.keys(LEAGUE_LABELS).map(code => `
+    <label class="league-row">
+      <input type="checkbox" value="${code}" ${selectedLeagues.has(code) ? 'checked' : ''} onchange="toggleLeague('${code}', this.checked)">
+      <span class="swatch" style="background:${LEAGUE_COLOR[code]}"></span>
+      ${LEAGUE_LABELS[code]}
+    </label>
+  `).join('');
+  updateLeaguePickerLabel();
 }
 
-function renderLeague(league){
+function toggleLeague(code, checked){
+  if(checked) selectedLeagues.add(code); else selectedLeagues.delete(code);
+  updateLeaguePickerLabel();
+  renderAll();
+}
+
+function updateLeaguePickerLabel(){
+  const label = document.getElementById('league-picker-label');
+  const n = selectedLeagues.size;
+  if(n === 0) label.textContent = 'Select leagues…';
+  else if(n === 1) label.textContent = LEAGUE_LABELS[[...selectedLeagues][0]];
+  else label.textContent = `${n} leagues selected`;
+}
+
+function toggleLeaguePanel(){
+  document.getElementById('league-panel').classList.toggle('open');
+}
+document.addEventListener('click', (e) => {
+  const picker = document.getElementById('league-picker');
+  const panel = document.getElementById('league-panel');
+  if(panel.classList.contains('open') && !picker.contains(e.target)) panel.classList.remove('open');
+});
+
+function changeLeagueMatchday(league, md){
+  leagueMatchday[league] = parseInt(md, 10);
+  renderAll();
+}
+
+function renderAll(){
   currentMarkers.forEach(m => map.removeLayer(m));
   currentMarkers = [];
 
-  const teams = TEAMS[league];
-  const selectedMd = parseInt(document.getElementById('matchday-select').value, 10);
-  const fixtures = FIXTURES[league].filter(f => f.matchday === selectedMd).slice().sort((a,b)=> new Date(a.start)-new Date(b.start));
-  const color = LEAGUE_COLOR[league];
-  const lightColor = lightenColor(color, 0.72);
   const bounds = [];
+  const orderedSelected = Object.keys(LEAGUE_LABELS).filter(c => selectedLeagues.has(c));
 
-  // Muted grey markers for all OTHER leagues, for geographic context
+  orderedSelected.forEach(league => {
+    if(!(league in leagueMatchday)){
+      const mds = [...new Set(FIXTURES[league].map(f => f.matchday))].sort((a,b)=>a-b);
+      leagueMatchday[league] = mds[0];
+    }
+  });
+
+  // Muted grey markers for every league NOT selected, for geographic context
   Object.keys(FIXTURES).forEach(otherLeague => {
-    if(otherLeague === league) return;
+    if(selectedLeagues.has(otherLeague)) return;
     const otherTeams = TEAMS[otherLeague];
     FIXTURES[otherLeague].forEach(f => {
       const h = otherTeams[f.home];
@@ -112,62 +164,85 @@ function renderLeague(league){
     });
   });
 
-  // Which clubs of the selected league have an upcoming home fixture in this data window?
-  const homeThisWindow = new Set(fixtures.map(f => f.home));
+  const fixturesContainer = document.getElementById('fixtures-container');
+  fixturesContainer.innerHTML = '';
+  const anchorSelections = [];
 
-  // All other clubs of the SAME league without a home fixture right now: pale version of the league color
-  Object.keys(teams).forEach(code => {
-    if(homeThisWindow.has(code)) return; // will be drawn highlighted below
-    const t = teams[code];
-    const stopKey = `${league}::${code}`;
-    const marker = L.marker([t.lat, t.lng], { icon: makeLeagueIcon(lightColor, 11) });
-    marker.bindTooltip(t.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
-    marker.bindPopup(`
-      <div class="popup-club">${t.name}</div>
-      <div class="popup-meta">${t.city} · no home fixture in this data window</div>
-      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
-    `);
-    bindStopButton(marker, stopKey, t);
-    marker.addTo(map);
-    currentMarkers.push(marker);
-    bounds.push([t.lat, t.lng]);
-  });
+  orderedSelected.forEach(league => {
+    const teams = TEAMS[league];
+    const selectedMd = leagueMatchday[league];
+    const fixtures = FIXTURES[league].filter(f => f.matchday === selectedMd).slice().sort((a,b)=> new Date(a.start)-new Date(b.start));
+    const color = LEAGUE_COLOR[league];
+    const lightColor = lightenColor(color, 0.72);
+    const homeThisWindow = new Set(fixtures.map(f => f.home));
 
-  // Fixtures list + highlighted markers (selected league, clubs WITH a home fixture)
-  const fixturesList = document.getElementById('fixtures-list');
-  fixturesList.innerHTML = '';
-  document.getElementById('fixtures-heading').textContent = `Home Fixtures – Matchday ${selectedMd} (${fixtures.length})`;
+    // Other clubs of THIS league without a home fixture right now: pale marker
+    Object.keys(teams).forEach(code => {
+      if(homeThisWindow.has(code)) return;
+      const t = teams[code];
+      const stopKey = `${league}::${code}`;
+      const marker = L.marker([t.lat, t.lng], { icon: makeLeagueIcon(lightColor, 11) });
+      marker.bindTooltip(t.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
+      marker.bindPopup(`
+        <div class="popup-club">${t.name}</div>
+        <div class="popup-meta">${t.city} · no home fixture in this data window</div>
+        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
+      `);
+      bindStopButton(marker, stopKey, t);
+      marker.addTo(map);
+      currentMarkers.push(marker);
+      bounds.push([t.lat, t.lng]);
+    });
 
-  fixtures.forEach(f => {
-    const h = teams[f.home];
-    const a = teams[f.away];
-    if(!h) return;
-    const stopKey = `${league}::${f.home}`;
-    const marker = L.marker([h.lat, h.lng], { icon: makeIcon(color) });
-    marker.bindTooltip(h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
-    marker.bindPopup(`
-      <div class="popup-club">${h.name} vs ${a ? a.name : f.away}</div>
-      <div class="popup-meta">${h.city} · ${fmtDate(f.start)}</div>
-      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
-    `);
-    bindStopButton(marker, stopKey, h);
-    marker.addTo(map);
-    currentMarkers.push(marker);
-    bounds.push([h.lat, h.lng]);
-
-    const item = document.createElement('div');
-    item.className = 'fixture-item';
-    item.innerHTML = `
-      <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
-      <div class="meta">${h.city} · ${fmtDate(f.start)}</div>
+    // Fixtures block for this league, with its own matchday picker
+    const mds = [...new Set(FIXTURES[league].map(f => f.matchday))].sort((a,b)=>a-b);
+    const block = document.createElement('div');
+    block.className = 'league-block';
+    block.innerHTML = `
+      <h2>
+        <span class="league-name">${LEAGUE_LABELS[league]}</span>
+        <select class="md-select">${mds.map(md => `<option value="${md}" ${md===selectedMd?'selected':''}>Matchday ${md}</option>`).join('')}</select>
+        <span class="count">(${fixtures.length})</span>
+      </h2>
+      <div class="fixture-list-inner"></div>
     `;
-    item.onclick = () => { map.setView([h.lat, h.lng], 9); marker.openPopup(); };
-    fixturesList.appendChild(item);
+    fixturesContainer.appendChild(block);
+    block.querySelector('.md-select').addEventListener('change', (e) => changeLeagueMatchday(league, e.target.value));
+    const listDiv = block.querySelector('.fixture-list-inner');
+
+    fixtures.forEach(f => {
+      const h = teams[f.home];
+      const a = teams[f.away];
+      if(!h) return;
+      const stopKey = `${league}::${f.home}`;
+      const marker = L.marker([h.lat, h.lng], { icon: makeIcon(color) });
+      marker.bindTooltip(h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
+      marker.bindPopup(`
+        <div class="popup-club">${h.name} vs ${a ? a.name : f.away}</div>
+        <div class="popup-meta">${h.city} · ${fmtDate(f.start)}</div>
+        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
+      `);
+      bindStopButton(marker, stopKey, h);
+      marker.addTo(map);
+      currentMarkers.push(marker);
+      bounds.push([h.lat, h.lng]);
+
+      const item = document.createElement('div');
+      item.className = 'fixture-item';
+      item.innerHTML = `
+        <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
+        <div class="meta">${h.city} · ${fmtDate(f.start)}</div>
+      `;
+      item.onclick = () => { map.setView([h.lat, h.lng], 9); marker.openPopup(); };
+      listDiv.appendChild(item);
+    });
+
+    anchorSelections.push({ league, matchday: selectedMd, fixtures });
   });
 
   if(bounds.length) map.fitBounds(bounds, { padding:[40,40] });
 
-  renderCombos(league, selectedMd, fixtures);
+  renderCombosMulti(anchorSelections);
 }
 
 // ===== Cross-league trip clustering (drive-time feasibility) =====
@@ -215,24 +290,38 @@ async function fetchDurationMatrix(points){
 
 let combosRequestId = 0;
 
-async function renderCombos(league, selectedMd, anchorFixtures){
+// selections: [{ league, matchday, fixtures }, ...] — one entry per
+// currently selected league, each with its own chosen matchday's fixtures.
+async function renderCombosMulti(selections){
   const requestId = ++combosRequestId;
   const combosList = document.getElementById('combos-list');
   const heading = document.getElementById('combos-heading');
-  const leagueLabel = document.getElementById('league-select').selectedOptions[0].textContent;
-  if(heading) heading.textContent = `Combinable Trips – ${leagueLabel}, Matchday ${selectedMd}`;
 
-  if(anchorFixtures.length === 0){
+  const withFixtures = selections.filter(s => s.fixtures.length > 0);
+  const summaryLabel = selections.map(s => `${LEAGUE_LABELS[s.league]} MD${s.matchday}`).join(' · ');
+  if(heading) heading.textContent = selections.length ? `Combinable Trips – ${summaryLabel}` : 'Combinable Trips';
+
+  if(selections.length === 0){
+    combosList.innerHTML = `<div class="empty-note">Select at least one league to see combinable trips.</div>`;
+    return;
+  }
+  if(withFixtures.length === 0){
     combosList.innerHTML = `<div class="empty-note">No home fixtures to combine for this matchday.</div>`;
     return;
   }
 
   combosList.innerHTML = `<div class="empty-note">Calculating realistic routes…</div>`;
 
-  // Anchor set: the fixtures actually shown for this league + matchday.
-  // Every trip must include at least one of these.
-  const anchorSet = new Set(anchorFixtures.map(f => `${league}::${f.home}`));
-  const anchorTimes = anchorFixtures.map(f => new Date(f.start).getTime());
+  // Anchor set: the fixtures actually shown for every selected league +
+  // its chosen matchday. Every trip must include at least one of these.
+  const anchorSet = new Set();
+  const anchorTimes = [];
+  withFixtures.forEach(s => {
+    s.fixtures.forEach(f => {
+      anchorSet.add(`${s.league}::${f.home}`);
+      anchorTimes.push(new Date(f.start).getTime());
+    });
+  });
   const minAnchor = Math.min(...anchorTimes), maxAnchor = Math.max(...anchorTimes);
   const windowMs = MAX_TRIP_SPAN_H * 3600 * 1000;
 
@@ -353,7 +442,7 @@ async function renderCombos(league, selectedMd, anchorFixtures){
   trips.sort((x,y) => y.length - x.length || pool[x[0]].start - pool[y[0]].start);
 
   if(trips.length === 0){
-    combosList.innerHTML = `<div class="empty-note">No realistic combinations found around Matchday ${selectedMd} of ${leagueLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`;
+    combosList.innerHTML = `<div class="empty-note">No realistic combinations found around ${summaryLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`;
     return;
   }
 
@@ -495,7 +584,8 @@ async function loadData(){
   ]);
   TEAMS = await teamsRes.json();
   FIXTURES = await fixturesRes.json();
-  onLeagueChange();
+  buildLeaguePanel();
+  renderAll();
 }
 
 loadData();
