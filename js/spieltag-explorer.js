@@ -2,6 +2,7 @@
 let TEAMS = {};
 let FIXTURES = {};
 let AIRPORTS = [];
+let LEAGUE_LOGO = {}; // league code -> competition logo URL, loaded from data/leagues.json
 
 // ===== Watchlist ("My Plan") — persisted in localStorage, drag-orderable,
 // multiple named plans so e.g. different people can each have their own =====
@@ -353,12 +354,21 @@ function toggleAirports(){
 let selectedLeagues = new Set(['epl']);
 let leagueMatchday = {}; // league code -> chosen matchday number
 
+// If a league has a competition logo, show it as a small badge; otherwise
+// fall back to the plain color swatch. handleLeagueLogoError swaps a
+// broken/missing image back to the swatch at runtime too.
+function handleLeagueLogoError(imgEl, color){
+  imgEl.outerHTML = `<span class="swatch" style="background:${color}"></span>`;
+}
+
 function buildLeaguePanel(){
   const panel = document.getElementById('league-panel');
   panel.innerHTML = Object.keys(LEAGUE_LABELS).map(code => `
     <label class="league-row">
       <input type="checkbox" value="${code}" ${selectedLeagues.has(code) ? 'checked' : ''} onchange="toggleLeague('${code}', this.checked)">
-      <span class="swatch" style="background:${LEAGUE_COLOR[code]}"></span>
+      ${LEAGUE_LOGO[code]
+        ? `<img class="league-logo" src="${LEAGUE_LOGO[code]}" alt="" onerror="handleLeagueLogoError(this,'${LEAGUE_COLOR[code]}')">`
+        : `<span class="swatch" style="background:${LEAGUE_COLOR[code]}"></span>`}
       ${LEAGUE_LABELS[code]}
     </label>
   `).join('');
@@ -379,13 +389,20 @@ function updateLeaguePickerLabel(){
   else label.textContent = `${n} leagues selected`;
 }
 
-function toggleLeaguePanel(){
-  document.getElementById('league-panel').classList.toggle('open');
+// Generic open/close for the header dropdowns (Leagues, Plan Route, Radius
+// Search) — opening one closes any other that's open, and clicking outside
+// a dropdown's own button+panel closes it.
+function toggleDropdown(panelId){
+  const panel = document.getElementById(panelId);
+  const wasOpen = panel.classList.contains('open');
+  document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
+  if(!wasOpen) panel.classList.add('open');
 }
 document.addEventListener('click', (e) => {
-  const picker = document.getElementById('league-picker');
-  const panel = document.getElementById('league-panel');
-  if(panel.classList.contains('open') && !picker.contains(e.target)) panel.classList.remove('open');
+  document.querySelectorAll('.header-dropdown-panel.open').forEach(panel => {
+    const wrapper = panel.closest('.header-dropdown');
+    if(wrapper && !wrapper.contains(e.target)) panel.classList.remove('open');
+  });
 });
 
 function changeLeagueMatchday(league, md){
@@ -464,6 +481,7 @@ function renderAll(){
     block.className = 'league-block';
     block.innerHTML = `
       <h2>
+        ${LEAGUE_LOGO[league] ? `<img class="league-logo-block" src="${LEAGUE_LOGO[league]}" alt="" onerror="this.remove()">` : ''}
         <span class="league-name">${LEAGUE_LABELS[league]}</span>
         <select class="md-select">${mds.map(md => `<option value="${md}" ${md===selectedMd?'selected':''}>Matchday ${md}</option>`).join('')}</select>
         <span class="count">(${fixtures.length})</span>
@@ -1042,18 +1060,24 @@ map.on('click', async (e) => {
   lastRadiusPoint = point;
   const radiusKm = parseInt(document.getElementById('radius-km').value, 10);
   renderRadiusResults(point, radiusKm, true);
+  // The click that picked this point also bubbled to the generic dropdown
+  // outside-click handler, which closed this panel before this async
+  // handler could finish — reopen it so the results are actually visible.
+  document.getElementById('radius-panel').classList.add('open');
 });
 
 // ===== Bootstrap: load data, then render =====
 async function loadData(){
-  const [teamsRes, fixturesRes, airportsRes] = await Promise.all([
+  const [teamsRes, fixturesRes, airportsRes, leaguesRes] = await Promise.all([
     fetch('data/teams.json'),
     fetch('data/fixtures.json'),
-    fetch('data/airports.json')
+    fetch('data/airports.json'),
+    fetch('data/leagues.json')
   ]);
   TEAMS = await teamsRes.json();
   FIXTURES = await fixturesRes.json();
   AIRPORTS = await airportsRes.json();
+  LEAGUE_LOGO = await leaguesRes.json();
   buildLeaguePanel();
   renderWatchlist();
   renderAll();

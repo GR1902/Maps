@@ -17,9 +17,11 @@ norwich-scouting-map/
 ├── data/
 │   ├── teams.json             499 club/venue records, keyed by league → team code
 │   ├── fixtures.json          275 fixtures, keyed by league, with matchday numbers
-│   └── airports.json          ~60 major European airports (name, IATA, city, lat/lng)
+│   ├── airports.json          ~60 major European airports (name, IATA, city, lat/lng)
+│   └── leagues.json           Competition logo URL per league code (see below)
 ├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
-└── fetch_logos.py             Fills in data/teams.json's "logo" field via Wikipedia (see below)
+├── fetch_logos.py             Fills in data/teams.json's "logo" field via Wikipedia (see below)
+└── fetch_league_logos.py      Fills in data/leagues.json's competition logos via Wikipedia (see below)
 ```
 
 Leaflet + Leaflet Routing Machine are loaded via CDN. Everything else is
@@ -65,12 +67,17 @@ to refresh it; `dist/` isn't tracked in git.
   per club by `data/teams.json`'s `logo` field — see below); falls back to
   the plain colored marker if a club has no crest on file or the image
   fails to load
+- Competition logos (`data/leagues.json`, all 29 leagues) next to each
+  league in the picker checklist and at the top of that league's fixture
+  block in the side panel; falls back to the plain color swatch/dot if a
+  logo is missing or fails to load
 - "✈️ Airports" toggle (top control bar): overlays ~60 major European
   airports (`data/airports.json`) as a reference layer, independent of the
   league/matchday filters — handy for judging how reachable a fixture
   cluster is by air, not just by road. Off by default; click the button to
   show/hide, click a plane marker for the airport name, IATA code, and city
-- Radius search (top-left panel): enter an address, or click "📍 Pick point
+- Radius search ("📍 Radius Search" in the top control bar, opens as a
+  dropdown like the league picker): enter an address, or click "📍 Pick point
   on map" and click anywhere on the map instead — either way, see every home
   fixture within a radius (10–500 km) of that point, across *all* 29 leagues
   and every matchday currently loaded, independent of which leagues are
@@ -87,7 +94,9 @@ to refresh it; `dist/` isn't tracked in git.
   leagues/countries — where every leg is checked against actual driving time
   (see below), not just distance
 - Point-to-point route planning (click marker → "+ Add to route" → real
-  driving route via OSRM, with distance/time)
+  driving route via OSRM, with distance/time); stops and the running
+  distance/time summary live under "🚗 Plan Route" in the top control bar,
+  same dropdown pattern as the league picker and radius search
 - "⭐ My Plan" watchlist (top of the side panel) — separate from the route
   planner: this is for marking games you want to see, not for building a
   drivable itinerary. Add a fixture by clicking its ☆ (fixture list, radius
@@ -156,6 +165,18 @@ the plain colored marker for those automatically. Run `python3
 fetch_logos.py` to fill in any club still missing one (safe to re-run,
 skips clubs that already have a `logo`), or `python3 fetch_logos.py
 --refresh` to re-fetch everything.
+
+**`leagues.json`** — flat map of league code → competition logo URL:
+```json
+{ "epl": "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" }
+```
+Fetched once via `fetch_league_logos.py`, which looks up each league's
+Wikipedia page directly (by title, not free-text search — a search for e.g.
+"Bundesliga" can resolve to the country rather than the competition) and
+takes the page's main image. Same hotlinking/fair-use caveat as club crests
+above applies. Re-run `python3 fetch_league_logos.py` to refresh all 29 (it
+always overwrites — there's no per-league skip-if-present logic since the
+whole file is small enough to just regenerate).
 
 **`fixtures.json`** — nested by league, array of fixtures referencing team codes:
 ```json
