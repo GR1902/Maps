@@ -1,9 +1,17 @@
 :root{
-  --ink: #14210a;
-  --paper: #fffdf4;
+  --ink: #16181c;
+  --text-muted: #6b7280;
+  --paper: #ffffff;
+  --surface: #f5f6f7;
+  --surface-strong: #eef0f1;
   --green-dark: #00622F;
   --green: #00A650;
   --gold: #FFF200;
-  --line: #d8d2a8;
-  --red: #a3341f;
+  --line: #e3e5e7;
+  --red: #c0392b;
+  --radius: 10px;
+  --radius-sm: 7px;
+  --shadow-sm: 0 1px 2px rgba(16,24,32,0.06);
+  --shadow-md: 0 4px 16px rgba(16,24,32,0.10);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }

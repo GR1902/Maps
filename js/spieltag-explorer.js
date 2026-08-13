@@ -4,6 +4,18 @@ let FIXTURES = {};
 let AIRPORTS = [];
 let LEAGUE_LOGO = {}; // league code -> competition logo URL, loaded from data/leagues.json
 
+// Small inline-SVG icon set (stroke-based, currentColor) used in place of
+// emoji throughout the UI — kept as plain template strings, mirrored in
+// index.html for the icons baked into the static markup.
+const ICONS = {
+  flag: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h13l-3 4 3 4H5"/></svg>`,
+  sparkle: `<svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/></svg>`,
+  globe: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3.5 3 14.5 0 18"/><path d="M12 3c-3 3.5-3 14.5 0 18"/></svg>`,
+  plane: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L11 13"/><path d="M21 3l-7 18-4-8-8-4 19-6z"/></svg>`,
+  target: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>`,
+  expand: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M9 21H5a2 2 0 0 1-2-2v-4"/><path d="M15 21h4a2 2 0 0 0 2-2v-4"/></svg>`,
+};
+
 // ===== Watchlist ("My Plan") — persisted in localStorage, drag-orderable,
 // multiple named plans so e.g. different people can each have their own =====
 const PLANS_STORAGE_KEY = 'scoutingPlans';
@@ -324,7 +336,7 @@ let airportMarkers = [];
 function makeAirportIcon(){
   return L.divIcon({
     className:'',
-    html:`<div class="airport-icon">✈️</div>`,
+    html:`<div class="airport-icon">${ICONS.plane}</div>`,
     iconSize:[18,18], iconAnchor:[9,9], popupAnchor:[0,-9]
   });
 }
@@ -337,9 +349,9 @@ function renderAirports(){
     const marker = L.marker([ap.lat, ap.lng], { icon: makeAirportIcon(), zIndexOffset: -1000 });
     const startPoint = { name: `${ap.name} (${ap.iata})`, lat: ap.lat, lng: ap.lng };
     marker.bindPopup(`
-      <div class="popup-club">✈️ ${ap.name} (${ap.iata})</div>
+      <div class="popup-club">${ap.name} (${ap.iata})</div>
       <div class="popup-meta">${ap.city}</div>
-      <div><button class="start-stop-btn" data-start="airport::${ap.iata}">🏁 Set as start point</button></div>
+      <div><button class="start-stop-btn" data-start="airport::${ap.iata}">${ICONS.flag} Set as start point</button></div>
     `);
     bindStartButton(marker, `airport::${ap.iata}`, startPoint);
     marker.addTo(map);
@@ -508,7 +520,7 @@ function renderAll(){
       marker.bindPopup(`
         <div class="popup-club">${gameLabel}</div>
         <div class="popup-meta">${h.city} · ${fmtDate(f.start)}</div>
-        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">🔀 Suggest trip</button></div>
+        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">${ICONS.sparkle} Suggest trip</button></div>
       `);
       bindStopButton(marker, stopKey, h);
       bindWatchButton(marker, watchItem);
@@ -525,7 +537,7 @@ function renderAll(){
           <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
           <div class="meta">${h.city} · ${fmtDate(f.start)}</div>
         </div>
-        <span class="suggest-btn" title="Suggest a trip around this game">🔀</span>
+        <span class="suggest-btn" title="Suggest a trip around this game">${ICONS.sparkle}</span>
       `;
       item.querySelector('.fbody').onclick = () => { map.setView([h.lat, h.lng], 9); marker.openPopup(); };
       makeWatchable(item, watchItem, item.querySelector('.watch-star'));
@@ -686,7 +698,7 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
       totalDriveSec += info.driveSec;
       totalKm += info.driveKm;
       const slackMin = Math.round((info.availableSec - info.driveSec)/60);
-      legLabels.push(`🚗 ${fmtHM(info.driveSec)} · ${info.driveKm.toFixed(0)} km · ${slackMin} min to spare`);
+      legLabels.push(`${fmtHM(info.driveSec)} · ${info.driveKm.toFixed(0)} km · ${slackMin} min to spare`);
     }
     const gamesHtml = games.map((g,i) => {
       const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}`);
@@ -699,7 +711,7 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
     const card = document.createElement('div');
     card.className = 'combo-card';
     card.innerHTML = `
-      <div class="combo-title">${crossBorder ? '🌍 Cross-border trip' : 'Trip'} ${cIdx+1} · ${games.length} games</div>
+      <div class="combo-title">${crossBorder ? ICONS.globe + ' Cross-border trip' : 'Trip'} ${cIdx+1} · ${games.length} games</div>
       ${gamesHtml}
       <div class="combo-stats">≈ ${fmtHM(totalDriveSec)} · ${totalKm.toFixed(0)} km total driving · ${countries.join(' → ')}</div>
     `;
@@ -891,7 +903,7 @@ function toggleFullscreen(){
 }
 document.addEventListener('fullscreenchange', () => {
   const btn = document.getElementById('fullscreen-btn');
-  btn.textContent = document.fullscreenElement ? '× Close' : '⤢ Fullscreen';
+  btn.innerHTML = document.fullscreenElement ? '✕ Close' : `${ICONS.expand} Fullscreen`;
   setTimeout(()=>map.invalidateSize(),150);
 });
 window.addEventListener('resize', () => map.invalidateSize());
@@ -985,7 +997,7 @@ function renderStops(){
   clearBtn.disabled = false;
   const startHtml = routeStart ? `
     <div class="route-stop route-start">
-      <span class="num start-flag">🏁</span>
+      <span class="num start-flag">${ICONS.flag}</span>
       <span class="name">${routeStart.name}</span>
       <span class="rm" onclick="clearRouteStart()">×</span>
     </div>
@@ -1123,7 +1135,7 @@ function renderRadiusResults(point, radiusKm, fitView){
     marker.bindPopup(`
       <div class="popup-club">${gameLabel}</div>
       <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
-      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">🔀 Suggest trip</button></div>
+      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">${ICONS.sparkle} Suggest trip</button></div>
     `);
     bindStopButton(marker, stopKey, g.home);
     bindWatchButton(marker, watchItem);
@@ -1141,7 +1153,7 @@ function renderRadiusResults(point, radiusKm, fitView){
         <div class="rteams">${g.home.name} – ${g.awayName}</div>
         <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
       </div>
-      <span class="suggest-btn" title="Suggest a trip around this game">🔀</span>
+      <span class="suggest-btn" title="Suggest a trip around this game">${ICONS.sparkle}</span>
     `;
     item.querySelector('.rbody').onclick = () => { map.setView([g.home.lat, g.home.lng], 10); marker.openPopup(); };
     makeWatchable(item, watchItem, item.querySelector('.watch-star'));
@@ -1230,7 +1242,7 @@ function toggleMapPick(){
   const btn = document.getElementById('radius-pick-btn');
   const mapEl = document.getElementById('map');
   btn.classList.toggle('active', mapPickMode);
-  btn.textContent = mapPickMode ? 'Click anywhere on the map…' : '📍 Pick point on map';
+  btn.innerHTML = mapPickMode ? 'Click anywhere on the map…' : `${ICONS.target} Pick point on map`;
   mapEl.classList.toggle('picking', mapPickMode);
 }
 
@@ -1240,7 +1252,7 @@ map.on('click', async (e) => {
   const btn = document.getElementById('radius-pick-btn');
   const mapEl = document.getElementById('map');
   btn.classList.remove('active');
-  btn.textContent = '📍 Pick point on map';
+  btn.innerHTML = `${ICONS.target} Pick point on map`;
   mapEl.classList.remove('picking');
 
   const { lat, lng } = e.latlng;

@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matchday Explorer – Home Fixtures &amp; Scouting Routes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.css" />
 <link rel="stylesheet" href="css/variables.css" />
@@ -27,10 +30,11 @@
     </div>
     <div id="route-picker" class="header-dropdown">
       <button id="route-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('route-panel')">
-        🚗 Plan Route <span aria-hidden="true">▾</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="6" r="2.2" fill="currentColor" stroke="none"/><circle cx="19" cy="18" r="2.2" fill="currentColor" stroke="none"/><path d="M6.8 7.5C10 11 8 13 12 13s2-2 5.2 1.5" stroke-dasharray="2.2 2.6"/></svg>
+        Plan Route <span aria-hidden="true">▾</span>
       </button>
       <div id="route-panel" class="header-dropdown-panel">
-        <div id="route-hint">Open a popup → "+ Add to route". Optionally set a 🏁 start point from an airport or the radius search.</div>
+        <div id="route-hint">Open a popup → "Add to route". Optionally set a start point from an airport or the radius search.</div>
         <div id="route-stops"></div>
         <div id="route-summary"></div>
         <div id="route-actions">
@@ -40,7 +44,8 @@
     </div>
     <div id="radius-picker" class="header-dropdown">
       <button id="radius-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('radius-panel')">
-        📍 Radius Search <span aria-hidden="true">▾</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        Radius Search <span aria-hidden="true">▾</span>
       </button>
       <div id="radius-panel" class="header-dropdown-panel">
         <div id="radius-body">
@@ -49,30 +54,50 @@
             <input type="range" id="radius-km" min="5" max="500" step="5" value="100" title="Drag or scroll to adjust">
             <span id="radius-km-label">100 km</span>
           </div>
-          <button class="route-btn" id="radius-search-btn" onclick="runRadiusSearch()" style="width:100%; margin-top:6px;">Search</button>
-          <button class="route-btn" id="radius-pick-btn" onclick="toggleMapPick()" style="width:100%; margin-top:6px;">📍 Pick point on map</button>
-          <button class="route-btn" id="radius-use-start-btn" onclick="useRadiusPointAsStart()" style="width:100%; margin-top:6px;">🏁 Use as route start</button>
+          <button class="route-btn route-btn-primary" id="radius-search-btn" onclick="runRadiusSearch()" style="width:100%; margin-top:8px;">Search</button>
+          <button class="route-btn" id="radius-pick-btn" onclick="toggleMapPick()" style="width:100%; margin-top:6px;">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+            Pick point on map
+          </button>
+          <button class="route-btn" id="radius-use-start-btn" onclick="useRadiusPointAsStart()" style="width:100%; margin-top:6px;">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h13l-3 4 3 4H5"/></svg>
+            Use as route start
+          </button>
           <div id="radius-status"></div>
           <div id="radius-results"></div>
         </div>
       </div>
     </div>
-    <button id="airports-toggle-btn" type="button" onclick="toggleAirports()">✈️ Airports</button>
-    <button id="reset-filters-btn" type="button" onclick="resetAllFilters()" title="Reset leagues, matchdays, airports, radius search, and trip filters back to defaults">↺ Reset filters</button>
+    <button id="airports-toggle-btn" type="button" onclick="toggleAirports()">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L11 13"/><path d="M21 3l-7 18-4-8-8-4 19-6z"/></svg>
+      Airports
+    </button>
+    <button id="reset-filters-btn" type="button" onclick="resetAllFilters()" title="Reset leagues, matchdays, airports, radius search, and trip filters back to defaults">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4"/><path d="M21 12a9 9 0 0 1-15.3 6.4"/><path d="M18.5 3v4.5H14"/><path d="M5.5 21v-4.5H10"/></svg>
+      Reset filters
+    </button>
     <span id="snapshot-note">ENG/ESP/GER/ITA/FRA: live snapshot · Other leagues: latest confirmed round via official/press sources</span>
   </div>
   <div id="body">
     <div id="map-wrap">
       <div id="map"></div>
-      <button id="fullscreen-btn" onclick="toggleFullscreen()">⤢ Fullscreen</button>
+      <button id="fullscreen-btn" onclick="toggleFullscreen()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M9 21H5a2 2 0 0 1-2-2v-4"/><path d="M15 21h4a2 2 0 0 0 2-2v-4"/></svg>
+        Fullscreen
+      </button>
     </div>
     <div id="side">
-      <h2 id="watchlist-heading">⭐ <span id="plan-name-display">My Plan</span> <span class="count" id="watchlist-count">(0)</span></h2>
+      <h2 id="watchlist-heading">★ <span id="plan-name-display">My Plan</span> <span class="count" id="watchlist-count">(0)</span></h2>
       <div id="plan-toolbar">
         <select id="plan-select" onchange="switchPlan(this.value)"></select>
-        <button class="mini-btn" onclick="renamePlan()" title="Rename this plan">✎ Rename</button>
+        <button class="mini-btn" onclick="renamePlan()" title="Rename this plan">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.2L15.5 5.3a1.5 1.5 0 0 1 2.1 0l1.1 1.1a1.5 1.5 0 0 1 0 2.1L8.2 19 4 20z"/></svg>
+          Rename
+        </button>
         <button class="mini-btn" onclick="newPlan()" title="Create a new plan">+ New</button>
-        <button class="mini-btn" onclick="deletePlan()" title="Delete this plan">🗑</button>
+        <button class="mini-btn" onclick="deletePlan()" title="Delete this plan">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4.5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V7"/><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg>
+        </button>
       </div>
       <div id="watchlist-dropzone">
         <div id="watchlist-list"></div>
@@ -82,7 +107,8 @@
       <h2 id="combos-heading">Combinable Trips</h2>
       <label id="cross-border-toggle-row">
         <input type="checkbox" id="cross-border-toggle" onchange="toggleIncludeCrossBorder(this.checked)">
-        🌍 Include cross-border trips
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3.5 3 14.5 0 18"/><path d="M12 3c-3 3.5-3 14.5 0 18"/></svg>
+        Include cross-border trips
       </label>
       <div id="combos-focus-bar" style="display:none;">
         Showing suggestions for one game only.

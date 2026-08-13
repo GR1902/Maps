@@ -2,7 +2,13 @@
 
 A Leaflet-based tool for planning European scouting trips: league/matchday
 fixture browsing plus point-to-point route planning. Norwich City brand
-colors throughout (canary yellow `#FFF200` / green `#00622F`).
+colors used as accents (canary yellow `#FFF200` / green `#00622F`) on a
+clean, flat, white/neutral-gray UI — Inter as the typeface throughout, and
+a small inline-SVG icon set (`ICONS` in `js/spieltag-explorer.js`, mirrored
+in `index.html`'s static markup) in place of emoji for buttons and section
+headers. A few plain glyphs (☆★ for favoriting, ✕ for close, ‹› for the
+trip carousel) are kept deliberately — they're simple monochrome symbols,
+not colorful emoji, and match the same clean-lines aesthetic.
 
 ## Project structure
 
