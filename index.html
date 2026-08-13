@@ -66,7 +66,13 @@
       </div>
     </div>
     <div id="side">
-      <h2 id="watchlist-heading">⭐ My Plan <span class="count" id="watchlist-count">(0)</span></h2>
+      <h2 id="watchlist-heading">⭐ <span id="plan-name-display">My Plan</span> <span class="count" id="watchlist-count">(0)</span></h2>
+      <div id="plan-toolbar">
+        <select id="plan-select" onchange="switchPlan(this.value)"></select>
+        <button class="mini-btn" onclick="renamePlan()" title="Rename this plan">✎ Rename</button>
+        <button class="mini-btn" onclick="newPlan()" title="Create a new plan">+ New</button>
+        <button class="mini-btn" onclick="deletePlan()" title="Delete this plan">🗑</button>
+      </div>
       <div id="watchlist-dropzone">
         <div id="watchlist-list"></div>
         <div id="watchlist-hint" class="empty-note">Drag a fixture here, or click ☆ on any game, to plan it. Drag rows below to set priority.</div>

@@ -2,25 +2,51 @@
 let TEAMS = {};
 let FIXTURES = {};
 
-// ===== Watchlist ("My Plan") — persisted in localStorage, drag-orderable =====
-const WATCHLIST_STORAGE_KEY = 'scoutingWatchlist';
-let watchlist = [];
-try{ watchlist = JSON.parse(localStorage.getItem(WATCHLIST_STORAGE_KEY) || '[]'); } catch(e){ watchlist = []; }
+// ===== Watchlist ("My Plan") — persisted in localStorage, drag-orderable,
+// multiple named plans so e.g. different people can each have their own =====
+const PLANS_STORAGE_KEY = 'scoutingPlans';
+const OLD_WATCHLIST_KEY = 'scoutingWatchlist'; // pre-multi-plan format, migrated below
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+let plans = [];
+let activePlanId = null;
+
+(function loadPlans(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(PLANS_STORAGE_KEY) || 'null');
+    if(saved && Array.isArray(saved.plans) && saved.plans.length){
+      plans = saved.plans;
+      activePlanId = saved.activePlanId && plans.some(p => p.id === activePlanId) ? saved.activePlanId : plans[0].id;
+      return;
+    }
+  } catch(e){ /* fall through to migration/default below */ }
+
+  // Migrate the old single-list format if present, otherwise start fresh.
+  let migratedItems = [];
+  try{ migratedItems = JSON.parse(localStorage.getItem(OLD_WATCHLIST_KEY) || '[]'); } catch(e){ /* ignore */ }
+  const first = { id: uid(), name: 'My Plan', items: migratedItems };
+  plans = [first];
+  activePlanId = first.id;
+})();
+
+function activePlan(){ return plans.find(p => p.id === activePlanId) || plans[0]; }
+function savePlans(){ localStorage.setItem(PLANS_STORAGE_KEY, JSON.stringify({ plans, activePlanId })); }
 
 function watchKeyFor(league, homeCode, matchday){ return `${league}::${homeCode}::${matchday}`; }
-function isWatched(key){ return watchlist.some(w => w.key === key); }
-function saveWatchlist(){ localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(watchlist)); }
+function isWatched(key){ return activePlan().items.some(w => w.key === key); }
 
 function addToWatchlist(item){
   if(isWatched(item.key)) return;
-  watchlist.push(item);
-  saveWatchlist();
+  activePlan().items.push(item);
+  savePlans();
   renderWatchlist();
   refreshWatchStars();
 }
 function removeFromWatchlist(key){
-  watchlist = watchlist.filter(w => w.key !== key);
-  saveWatchlist();
+  const plan = activePlan();
+  plan.items = plan.items.filter(w => w.key !== key);
+  savePlans();
   renderWatchlist();
   refreshWatchStars();
 }
@@ -37,17 +63,68 @@ function refreshWatchStars(){
   });
 }
 
+// ----- Plan management (rename / switch / create / delete) -----
+function renderPlanToolbar(){
+  const select = document.getElementById('plan-select');
+  select.innerHTML = plans.map(p => `<option value="${p.id}" ${p.id===activePlanId?'selected':''}>${p.name} (${p.items.length})</option>`).join('');
+  document.getElementById('plan-name-display').textContent = activePlan().name;
+}
+
+function switchPlan(id){
+  activePlanId = id;
+  savePlans();
+  renderWatchlist();
+  refreshWatchStars();
+}
+
+function renamePlan(){
+  const plan = activePlan();
+  const name = prompt('Rename this plan:', plan.name);
+  if(name === null) return;
+  const trimmed = name.trim();
+  if(!trimmed) return;
+  plan.name = trimmed;
+  savePlans();
+  renderWatchlist();
+}
+
+function newPlan(){
+  const name = prompt('Name for the new plan (e.g. a person\'s name):', `Plan ${plans.length + 1}`);
+  if(name === null) return;
+  const trimmed = name.trim();
+  if(!trimmed) return;
+  const plan = { id: uid(), name: trimmed, items: [] };
+  plans.push(plan);
+  activePlanId = plan.id;
+  savePlans();
+  renderWatchlist();
+  refreshWatchStars();
+}
+
+function deletePlan(){
+  if(plans.length <= 1){ alert('You need at least one plan — rename this one instead of deleting it.'); return; }
+  const plan = activePlan();
+  if(!confirm(`Delete "${plan.name}" and its ${plan.items.length} planned game(s)? This can't be undone.`)) return;
+  plans = plans.filter(p => p.id !== plan.id);
+  activePlanId = plans[0].id;
+  savePlans();
+  renderWatchlist();
+  refreshWatchStars();
+}
+
 let watchDragIndex = null;
 
 function renderWatchlist(){
+  renderPlanToolbar();
+  const items = activePlan().items;
   const list = document.getElementById('watchlist-list');
   const dropzone = document.getElementById('watchlist-dropzone');
   const countEl = document.getElementById('watchlist-count');
-  countEl.textContent = `(${watchlist.length})`;
-  dropzone.classList.toggle('empty', watchlist.length === 0);
+  countEl.textContent = `(${items.length})`;
+  dropzone.classList.toggle('empty', items.length === 0);
   list.innerHTML = '';
 
-  watchlist.forEach((w, idx) => {
+  items.forEach((w, idx) => {
     const row = document.createElement('div');
     row.className = 'watch-row';
     row.draggable = true;
@@ -69,12 +146,13 @@ function renderWatchlist(){
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', w.key); // needed for some browsers to allow the drag
     });
-    row.addEventListener('dragend', () => { row.classList.remove('dragging'); saveWatchlist(); });
+    row.addEventListener('dragend', () => { row.classList.remove('dragging'); savePlans(); });
     row.addEventListener('dragover', (e) => {
       e.preventDefault();
       if(watchDragIndex === null || watchDragIndex === idx) return;
-      const [moved] = watchlist.splice(watchDragIndex, 1);
-      watchlist.splice(idx, 0, moved);
+      const arr = activePlan().items;
+      const [moved] = arr.splice(watchDragIndex, 1);
+      arr.splice(idx, 0, moved);
       watchDragIndex = idx;
       renderWatchlist();
     });

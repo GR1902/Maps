@@ -87,8 +87,12 @@ to refresh it; `dist/` isn't tracked in git.
   drivable itinerary. Add a fixture by clicking its ☆ (fixture list, radius
   results, or marker popup) or by dragging it into the panel; drag rows
   within the panel to reorder — order = priority, shown as a rank number.
-  Persisted in the browser's `localStorage`, so it survives reloads (but is
-  local to one browser/device — there's no account or sync)
+  **Multiple named plans**: the dropdown at the top of the panel switches
+  between plans (e.g. one per scout/person), with buttons to rename, create,
+  or delete a plan (the last remaining plan can't be deleted — rename it
+  instead). Everything's persisted in the browser's `localStorage`, so it
+  survives reloads (but is local to one browser/device — there's no account
+  or sync between devices)
 
 ### How "Combinable Trips" works
 
