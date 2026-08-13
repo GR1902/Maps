@@ -43,11 +43,42 @@ Then open `http://localhost:8000/`.
 - League dropdown + matchday dropdown (populated dynamically per league)
 - Shows selected league's home fixtures highlighted; other clubs of the same
   league in a pale shade; all other leagues' clubs in muted grey
-- "Combinable trips" panel: cross-league clustering algorithm (Union-Find)
-  that groups fixtures into feasible multi-stop scouting trips — same-day
-  trips capped at 150 km, overnight/next-day trips allowed up to 500 km
+- "Combinable trips" panel: for the selected league + matchday's home
+  fixtures ("anchors"), finds realistic multi-stop trips — including other
+  leagues/countries — where every leg is checked against actual driving time
+  (see below), not just distance
 - Point-to-point route planning (click marker → "+ Add to route" → real
   driving route via OSRM, with distance/time)
+
+### How "Combinable Trips" works
+
+A trip is a chronological sequence of home fixtures where every consecutive
+leg is individually feasible: you can leave the earlier match after
+full-time and reach the next stadium with time to spare before kickoff.
+
+- **Full-time** is assumed 2 hours after kickoff (`POST_MATCH_BUFFER_MIN`).
+- You need to arrive at least 15 minutes before the next kickoff
+  (`PRE_MATCH_BUFFER_MIN`).
+- So a leg is feasible if `real driving time ≤ (next kickoff − 15 min) −
+  (this kickoff + 2h)`. Driving time is the actual road duration between the
+  two stadiums, fetched in one batched request per render from OSRM's public
+  `table` service (`js/spieltag-explorer.js` → `fetchDurationMatrix`) — not
+  straight-line distance.
+- Every combinable trip shown must include at least one fixture from the
+  currently selected league + matchday (the "★" marked entries); the other
+  legs can come from any league or country, on any matchday, as long as the
+  timing works.
+- A trip's total span (first game to last) is capped at 48h
+  (`MAX_TRIP_SPAN_H`) so legs don't chain into an unrealistic multi-day
+  itinerary just because each individual hop was technically feasible.
+- Legs where OSRM can't find a road route at all (e.g. islands reachable
+  only by ferry) are treated as infeasible and excluded.
+
+This means the routing service is called live every time you change league
+or matchday — same public OSRM demo server already used for the point-to-
+point route panel, so the same "not for heavy production use" caveat
+applies (see console warning). If it's ever unavailable, the panel shows an
+error instead of silently falling back to straight-line guesses.
 
 ## Data structure
 

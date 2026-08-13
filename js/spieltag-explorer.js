@@ -24,13 +24,6 @@ function makeIcon(color){
   });
 }
 
-function haversine(lat1,lng1,lat2,lng2){
-  const R=6371;
-  const dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-
 function fmtDate(iso){
   const d = new Date(iso);
   return d.toLocaleString('en-GB', { weekday:'short', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
@@ -156,24 +149,18 @@ function renderLeague(league){
 
   if(bounds.length) map.fitBounds(bounds, { padding:[40,40] });
 
-  renderCombos(league);
+  renderCombos(league, selectedMd, fixtures);
 }
 
-// ===== Cross-league trip clustering =====
-// Realistic thresholds for an actual scouting road trip:
-// Same-day games: tight radius (you're driving straight there and back / same day).
-// Next-day games (overnight stay possible, e.g. a Saturday-into-Sunday weekend): much larger radius.
-const MAX_KM_SAME_DAY = 150;
-const MAX_KM_NEXT_DAY = 500;
-const MIN_GAP_H = 3;         // need at least a few hours to travel + get to the ground
-const SAME_DAY_MAX_H = 14;   // still counts as "same day", tight radius applies
-const MAX_GAP_H = 48;        // covers a full weekend (Fri evening -> Sun evening)
-
-function maxKmFor(gapH){
-  if(gapH <= SAME_DAY_MAX_H) return MAX_KM_SAME_DAY;
-  if(gapH <= MAX_GAP_H) return MAX_KM_NEXT_DAY;
-  return 0;
-}
+// ===== Cross-league trip clustering (drive-time feasibility) =====
+// A leg between two home fixtures is only offered as a combo if you could
+// realistically make it: leave venue A after full-time, arrive at venue B
+// with time to spare before kickoff, using real driving time (not straight-
+// line distance) between the two stadiums.
+const POST_MATCH_BUFFER_MIN = 120; // assume full-time ~2h after kickoff
+const PRE_MATCH_BUFFER_MIN = 15;   // want to arrive at least 15 min early
+const MAX_TRIP_SPAN_H = 48;        // don't chain fixtures more than a weekend apart
+const MAX_ROUTING_POOL = 80;       // cap on points sent to the OSRM table API per render
 
 function buildGamePool(){
   const pool = [];
@@ -184,7 +171,7 @@ function buildGamePool(){
       const a = teams[f.away];
       if(!h) return;
       pool.push({
-        league, country: COUNTRY_TAG[league],
+        league, country: COUNTRY_TAG[league], homeCode: f.home,
         home: h, awayName: a ? a.name : f.away,
         start: new Date(f.start)
       });
@@ -194,89 +181,188 @@ function buildGamePool(){
   return pool;
 }
 
-function renderCombos(selectedLeague){
+// Real driving-time matrix (seconds) between all given points, via OSRM's
+// table service — one request for the whole pool instead of one per pair.
+async function fetchDurationMatrix(points){
+  if(points.length < 2) return [];
+  const coordStr = points.map(p => `${p.lng},${p.lat}`).join(';');
+  const url = `https://router.project-osrm.org/table/v1/driving/${coordStr}?annotations=duration`;
+  const res = await fetch(url);
+  const json = await res.json();
+  if(json.code !== 'Ok') return null;
+  return json.durations;
+}
+
+let combosRequestId = 0;
+
+async function renderCombos(league, selectedMd, anchorFixtures){
+  const requestId = ++combosRequestId;
   const combosList = document.getElementById('combos-list');
-  combosList.innerHTML = '';
+  const heading = document.getElementById('combos-heading');
+  const leagueLabel = document.getElementById('league-select').selectedOptions[0].textContent;
+  if(heading) heading.textContent = `Combinable Trips – ${leagueLabel}, Matchday ${selectedMd}`;
 
-  const pool = buildGamePool();
+  if(anchorFixtures.length === 0){
+    combosList.innerHTML = `<div class="empty-note">No home fixtures to combine for this matchday.</div>`;
+    return;
+  }
+
+  combosList.innerHTML = `<div class="empty-note">Calculating realistic routes…</div>`;
+
+  // Anchor set: the fixtures actually shown for this league + matchday.
+  // Every trip must include at least one of these.
+  const anchorSet = new Set(anchorFixtures.map(f => `${league}::${f.home}`));
+  const anchorTimes = anchorFixtures.map(f => new Date(f.start).getTime());
+  const minAnchor = Math.min(...anchorTimes), maxAnchor = Math.max(...anchorTimes);
+  const windowMs = MAX_TRIP_SPAN_H * 3600 * 1000;
+
+  // Pre-filter the full cross-league pool to fixtures that could plausibly
+  // chain to an anchor fixture, so the routing request stays small.
+  let pool = buildGamePool().filter(g => {
+    const t = g.start.getTime();
+    return t >= minAnchor - windowMs && t <= maxAnchor + windowMs;
+  });
+  if(pool.length > MAX_ROUTING_POOL){
+    const mid = (minAnchor + maxAnchor) / 2;
+    pool = pool.slice()
+      .sort((a,b) => Math.abs(a.start-mid) - Math.abs(b.start-mid))
+      .slice(0, MAX_ROUTING_POOL)
+      .sort((a,b) => a.start - b.start);
+  }
+
   const n = pool.length;
+  if(n < 2){
+    combosList.innerHTML = `<div class="empty-note">Not enough nearby fixtures in this data window to form a trip.</div>`;
+    return;
+  }
 
-  // Union-Find to build trip clusters across ALL loaded leagues
-  const parent = Array.from({length:n}, (_,i)=>i);
-  function find(x){ while(parent[x]!==x){ parent[x]=parent[parent[x]]; x=parent[x]; } return x; }
-  function union(a,b){ const ra=find(a), rb=find(b); if(ra!==rb) parent[ra]=rb; }
+  let durations;
+  try{
+    durations = await fetchDurationMatrix(pool.map(g => ({ lat:g.home.lat, lng:g.home.lng })));
+  } catch(e){
+    durations = null;
+  }
+  if(requestId !== combosRequestId) return; // a newer selection has since superseded this one
+  if(!durations){
+    combosList.innerHTML = `<div class="empty-note">Could not calculate driving times right now (routing service unavailable). Try again shortly.</div>`;
+    return;
+  }
+
+  // Feasible legs: i -> j (i earlier than j) is usable if the real driving
+  // time from i's venue to j's venue fits between full-time at i and
+  // kickoff minus the arrival buffer at j. Every leg actually shown must be
+  // one of these checked edges — a trip is only valid if EVERY consecutive
+  // hop is individually feasible, not just "somehow connected".
+  const edgesFrom = Array.from({length:n}, () => []);
+  const edgesTo = Array.from({length:n}, () => []);
+  const legInfo = {};
 
   for(let i=0;i<n;i++){
     for(let j=i+1;j<n;j++){
-      const gapH = (pool[j].start - pool[i].start) / 36e5;
-      if(gapH > MAX_GAP_H) break; // sorted by time, no need to check further j for this i
-      if(gapH < MIN_GAP_H) continue;
-      const allowedKm = maxKmFor(gapH);
-      if(allowedKm === 0) continue;
-      const dist = haversine(pool[i].home.lat,pool[i].home.lng,pool[j].home.lat,pool[j].home.lng);
-      if(dist <= allowedKm){
-        union(i,j);
+      const gapSec = (pool[j].start - pool[i].start) / 1000;
+      if(gapSec/3600 > MAX_TRIP_SPAN_H) break; // sorted by time, no need to check further j
+      const availableSec = gapSec - (POST_MATCH_BUFFER_MIN + PRE_MATCH_BUFFER_MIN) * 60;
+      if(availableSec <= 0) continue;
+      const driveSec = durations[i][j];
+      if(driveSec == null) continue; // unreachable by road (e.g. ferry-only crossing)
+      if(driveSec <= availableSec){
+        edgesFrom[i].push(j);
+        edgesTo[j].push(i);
+        legInfo[`${i}-${j}`] = { driveSec, availableSec };
       }
     }
   }
 
-  const groups = {};
-  for(let i=0;i<n;i++){
-    const r = find(i);
-    if(!groups[r]) groups[r] = [];
-    groups[r].push(pool[i]);
+  // Longest feasible chain starting at / ending at each node (DAG longest
+  // path DP — edges only ever point forward in time, so this terminates).
+  const fwdLen = new Array(n).fill(1), fwdNext = new Array(n).fill(-1);
+  for(let i=n-1;i>=0;i--){
+    for(const j of edgesFrom[i]){
+      if(1 + fwdLen[j] > fwdLen[i]){ fwdLen[i] = 1 + fwdLen[j]; fwdNext[i] = j; }
+    }
+  }
+  const bwdLen = new Array(n).fill(1), bwdPrev = new Array(n).fill(-1);
+  for(let j=0;j<n;j++){
+    for(const i of edgesTo[j]){
+      if(1 + bwdLen[i] > bwdLen[j]){ bwdLen[j] = 1 + bwdLen[i]; bwdPrev[j] = i; }
+    }
   }
 
-  let clusters = Object.values(groups).filter(g => g.length >= 2);
-
-  // Filter: only keep trips that include at least one game from the selected league
-  if(selectedLeague){
-    clusters = clusters.filter(cluster => cluster.some(g => g.league === selectedLeague));
+  // Per-edge feasibility alone doesn't stop a chain of individually-valid
+  // hops from drifting across many days (e.g. Wed -> Fri -> Sun -> Mon, each
+  // hop within the cap but the whole "trip" spanning almost a week). Trim
+  // each candidate down to the longest window containing the anchor whose
+  // *total* span (first game to last) still fits within MAX_TRIP_SPAN_H.
+  function trimToSpan(chain, anchorPos){
+    const capMs = MAX_TRIP_SPAN_H * 3600 * 1000;
+    const times = chain.map(i => pool[i].start.getTime());
+    let bestLo = anchorPos, bestHi = anchorPos;
+    for(let lo=0; lo<=anchorPos; lo++){
+      if(times[anchorPos] - times[lo] > capMs) continue;
+      let hi = anchorPos;
+      while(hi+1 < chain.length && times[hi+1] - times[lo] <= capMs) hi++;
+      if(hi - lo > bestHi - bestLo){ bestLo = lo; bestHi = hi; }
+    }
+    return chain.slice(bestLo, bestHi+1);
   }
 
-  clusters.forEach(c => c.sort((a,b)=> a.start-b.start));
-  // Sort clusters: bigger trips first, then earliest
-  clusters.sort((a,b) => b.length - a.length || a[0].start - b[0].start);
-
-  const heading = document.getElementById('combos-heading');
-  if(heading){
-    const leagueLabel = document.getElementById('league-select').selectedOptions[0].textContent;
-    heading.textContent = selectedLeague ? `Combinable Trips (involving ${leagueLabel})` : `Combinable Trips (all loaded leagues)`;
+  // One candidate trip per anchor fixture: the longest feasible chain that
+  // passes through it (predecessors walked backward, successors forward),
+  // trimmed to a single realistic trip window.
+  const seen = new Set();
+  let trips = [];
+  for(let a=0;a<n;a++){
+    if(!anchorSet.has(`${pool[a].league}::${pool[a].homeCode}`)) continue;
+    const chain = [a];
+    for(let cur=a; bwdPrev[cur] !== -1; ){ cur = bwdPrev[cur]; chain.unshift(cur); }
+    const anchorPos = chain.length - 1;
+    for(let cur=a; fwdNext[cur] !== -1; ){ cur = fwdNext[cur]; chain.push(cur); }
+    const trimmed = trimToSpan(chain, anchorPos);
+    if(trimmed.length < 2) continue;
+    const key = trimmed.join(',');
+    if(seen.has(key)) continue;
+    seen.add(key);
+    trips.push(trimmed);
   }
+  trips.sort((x,y) => y.length - x.length || pool[x[0]].start - pool[y[0]].start);
 
-  if(clusters.length === 0){
-    combosList.innerHTML = `<div class="empty-note">With the currently loaded leagues and this data snapshot, no home fixtures involving this league are close enough together to form a sensible trip (≤ ${MAX_KM_SAME_DAY} km same-day, ≤ ${MAX_KM_NEXT_DAY} km if overnight into the next day, ${MIN_GAP_H}–${MAX_GAP_H} hrs apart).</div>`;
+  if(trips.length === 0){
+    combosList.innerHTML = `<div class="empty-note">No realistic combinations found around Matchday ${selectedMd} of ${leagueLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`;
     return;
   }
 
-  clusters.slice(0, 10).forEach((cluster, idx) => {
-    const countries = [...new Set(cluster.map(g => g.country))];
+  combosList.innerHTML = '';
+  trips.slice(0, 10).forEach((idxs, cIdx) => {
+    const games = idxs.map(i => pool[i]);
+    const countries = [...new Set(games.map(g => g.country))];
     const crossBorder = countries.length > 1;
-    let totalKm = 0;
-    let legNotes = [];
-    for(let k=1;k<cluster.length;k++){
-      const legKm = haversine(cluster[k-1].home.lat,cluster[k-1].home.lng,cluster[k].home.lat,cluster[k].home.lng);
-      const legGapH = (cluster[k].start - cluster[k-1].start) / 36e5;
-      totalKm += legKm;
-      legNotes.push(legGapH > SAME_DAY_MAX_H ? 'overnight' : 'same day');
+    let totalDriveSec = 0;
+    const legLabels = [];
+    for(let k=1;k<idxs.length;k++){
+      const info = legInfo[`${idxs[k-1]}-${idxs[k]}`];
+      totalDriveSec += info.driveSec;
+      const dh = Math.floor(info.driveSec/3600), dm = Math.round((info.driveSec%3600)/60);
+      const slackMin = Math.round((info.availableSec - info.driveSec)/60);
+      legLabels.push(`🚗 ${dh}h ${dm}m drive · ${slackMin} min to spare`);
     }
-    const card = document.createElement('div');
-    card.className = 'combo-card';
-    let gamesHtml = cluster.map((g,i) => {
-      const isSelected = selectedLeague && g.league === selectedLeague;
-      const legNote = i > 0 ? ` <span style="color:#00A650; font-size:0.62rem;">(${legNotes[i-1]} leg)</span>` : '';
+    const gamesHtml = games.map((g,i) => {
+      const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}`);
+      const legNote = i > 0 ? `<br><span style="color:#00A650; font-size:0.62rem;">${legLabels[i-1]}</span>` : '';
       return `
-      <div class="combo-game" style="${isSelected ? 'font-weight:700;' : ''}">${i+1}. ${g.home.name} <span style="color:#6b6455;">(${g.country})</span> – ${g.awayName}${isSelected ? ' ★' : ''}${legNote}<br>
-      <span style="color:#6b6455; font-size:0.66rem;">${g.home.city} · ${fmtDate(g.start.toISOString())}</span></div>
+      <div class="combo-game" style="${isAnchor ? 'font-weight:700;' : ''}">${i+1}. ${g.home.name} <span style="color:#6b6455;">(${g.country})</span> – ${g.awayName}${isAnchor ? ' ★' : ''}<br>
+      <span style="color:#6b6455; font-size:0.66rem;">${g.home.city} · ${fmtDate(g.start.toISOString())}</span>${legNote}</div>
     `;
     }).join('');
+    const th = Math.floor(totalDriveSec/3600), tm = Math.round((totalDriveSec%3600)/60);
+    const card = document.createElement('div');
+    card.className = 'combo-card';
     card.innerHTML = `
-      <div class="combo-title">${crossBorder ? '🌍 Cross-border trip' : 'Trip'} ${idx+1} · ${cluster.length} games</div>
+      <div class="combo-title">${crossBorder ? '🌍 Cross-border trip' : 'Trip'} ${cIdx+1} · ${games.length} games</div>
       ${gamesHtml}
-      <div class="combo-stats">≈ ${totalKm.toFixed(0)} km total (straight-line, leg by leg) · ${countries.join(' → ')}</div>
+      <div class="combo-stats">≈ ${th}h ${tm}m total driving · ${countries.join(' → ')}</div>
     `;
     card.onclick = () => {
-      const bnds = cluster.map(g => [g.home.lat, g.home.lng]);
+      const bnds = games.map(g => [g.home.lat, g.home.lng]);
       map.fitBounds(bnds, { padding:[60,60] });
     };
     combosList.appendChild(card);
