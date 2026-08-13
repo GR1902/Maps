@@ -63,6 +63,12 @@ to refresh it; `dist/` isn't tracked in git.
 - Shows every selected league's home fixtures highlighted (own color per
   league); other clubs of the same league in a pale shade; unselected
   leagues' clubs in muted grey
+- "↺ Reset filters" (top control bar): puts leagues/matchdays, the airports
+  layer, the cross-border toggle, any single-game trip focus, and the
+  radius search all back to their defaults in one click. Deliberately
+  leaves route planning and the "My Plan" watchlist alone — those are
+  content you built on purpose, not a filter, and already have their own
+  Clear/rename/delete controls
 - Club crests on this-matchday markers (hotlinked from Wikipedia, fetched
   per club by `data/teams.json`'s `logo` field — see below); falls back to
   the plain colored marker if a club has no crest on file or the image

@@ -1258,6 +1258,34 @@ map.on('click', async (e) => {
   document.getElementById('radius-panel').classList.add('open');
 });
 
+// ===== Reset all filters =====
+// Deliberately scoped to *filters/view state*, not to content the user
+// built up on purpose — route planning (its own "Clear") and the "My Plan"
+// watchlist (its own rename/delete flow) are left untouched.
+function resetAllFilters(){
+  selectedLeagues = new Set(['epl']);
+  leagueMatchday = {};
+  buildLeaguePanel();
+
+  if(showAirports) toggleAirports();
+
+  includeCrossBorder = false;
+  const cbToggle = document.getElementById('cross-border-toggle');
+  if(cbToggle) cbToggle.checked = false;
+  focusedFixture = null;
+
+  if(mapPickMode) toggleMapPick();
+  clearRadiusSearch();
+  lastRadiusPoint = null;
+  document.getElementById('radius-address').value = '';
+  document.getElementById('radius-status').textContent = '';
+  setRadiusSlider(100, false);
+
+  document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
+
+  renderAll();
+}
+
 // ===== Bootstrap: load data, then render =====
 async function loadData(){
   const [teamsRes, fixturesRes, airportsRes, leaguesRes] = await Promise.all([
