@@ -93,12 +93,12 @@ to refresh it; `dist/` isn't tracked in git.
   via OpenStreetMap's free Nominatim API (same data source as the map tiles
   and OSRM routing already used elsewhere)
 - "Combinable trips" panel: for the selected league + matchday's home
-  fixtures ("anchors"), finds realistic multi-stop trips — including other
-  leagues/countries — where every leg is checked against actual driving time
-  (see below), not just distance. A "🌍 Cross-border only" toggle above the
-  list filters to trips that cross at least one country border, re-filtering
-  instantly from the already-computed trips (no re-fetch from the routing
-  service)
+  fixtures ("anchors"), finds realistic multi-stop trips — where every leg
+  is checked against actual driving time (see below), not just distance. By
+  default only same-country trips are shown; a "🌍 Include cross-border
+  trips" toggle above the list opts in to also seeing trips that reach into
+  a neighboring country's leagues, re-filtering instantly from the
+  already-computed trips (no re-fetch from the routing service)
 - Point-to-point route planning (click marker → "+ Add to route" → real
   driving route via OSRM, with distance/time); stops and the running
   distance/time summary live under "🚗 Plan Route" in the top control bar,

@@ -578,28 +578,30 @@ async function fetchDurationMatrix(points){
 }
 
 let combosRequestId = 0;
-let crossBorderOnly = false;
+// Default is same-country trips only; the toggle opts in to also seeing
+// trips that reach into a neighboring country.
+let includeCrossBorder = false;
 // Cached inputs for the last successfully computed set of trips, so the
 // cross-border toggle can re-filter and re-render instantly without
 // redoing the OSRM routing request.
 let lastCombos = null;
 
-function toggleCrossBorderOnly(checked){
-  crossBorderOnly = checked;
+function toggleIncludeCrossBorder(checked){
+  includeCrossBorder = checked;
   if(lastCombos) renderComboCards(lastCombos);
 }
 
 // Builds the combo-card elements for an already-computed trips list.
 function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
   const combosList = document.getElementById('combos-list');
-  const filtered = crossBorderOnly
-    ? trips.filter(idxs => new Set(idxs.map(i => pool[i].country)).size > 1)
-    : trips;
+  const filtered = includeCrossBorder
+    ? trips
+    : trips.filter(idxs => new Set(idxs.map(i => pool[i].country)).size === 1);
 
   if(filtered.length === 0){
-    combosList.innerHTML = crossBorderOnly
-      ? `<div class="empty-note">No cross-border trips found around ${summaryLabel}. Turn off "Cross-border only" to see same-country combinations too.</div>`
-      : `<div class="empty-note">No realistic combinations found around ${summaryLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`;
+    combosList.innerHTML = includeCrossBorder
+      ? `<div class="empty-note">No realistic combinations found around ${summaryLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`
+      : `<div class="empty-note">No same-country combinations found around ${summaryLabel}. Turn on "Include cross-border trips" to see trips that reach into a neighboring country too.</div>`;
     return;
   }
 
