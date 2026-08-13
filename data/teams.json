@@ -1,0 +1,1262 @@
+{
+  "epl": {
+    "LFC": {
+      "name": "Liverpool FC",
+      "city": "Liverpool",
+      "lat": 53.4308,
+      "lng": -2.9608
+    },
+    "ARS": {
+      "name": "Arsenal FC",
+      "city": "London",
+      "lat": 51.5549,
+      "lng": -0.1084
+    },
+    "MCI": {
+      "name": "Manchester City",
+      "city": "Manchester",
+      "lat": 53.4831,
+      "lng": -2.2004
+    },
+    "CFC": {
+      "name": "Chelsea FC",
+      "city": "London",
+      "lat": 51.4817,
+      "lng": -0.191
+    },
+    "NEW": {
+      "name": "Newcastle United",
+      "city": "Newcastle",
+      "lat": 54.9756,
+      "lng": -1.6217
+    },
+    "AVL": {
+      "name": "Aston Villa",
+      "city": "Birmingham",
+      "lat": 52.509,
+      "lng": -1.8848
+    },
+    "NFO": {
+      "name": "Nottingham Forest",
+      "city": "Nottingham",
+      "lat": 52.9399,
+      "lng": -1.1327
+    },
+    "BRI": {
+      "name": "Brighton & Hove Albion",
+      "city": "Falmer",
+      "lat": 50.8617,
+      "lng": -0.0837
+    },
+    "BOU": {
+      "name": "AFC Bournemouth",
+      "city": "Bournemouth",
+      "lat": 50.7352,
+      "lng": -1.8384
+    },
+    "BRE": {
+      "name": "Brentford FC",
+      "city": "London",
+      "lat": 51.4907,
+      "lng": -0.2886
+    },
+    "FUL": {
+      "name": "Fulham FC",
+      "city": "London",
+      "lat": 51.4749,
+      "lng": -0.2216
+    },
+    "CRY": {
+      "name": "Crystal Palace",
+      "city": "London",
+      "lat": 51.3983,
+      "lng": -0.0854
+    },
+    "EVE": {
+      "name": "Everton FC",
+      "city": "Liverpool",
+      "lat": 53.4384,
+      "lng": -2.9633
+    },
+    "MUN": {
+      "name": "Manchester United",
+      "city": "Manchester",
+      "lat": 53.4631,
+      "lng": -2.2913
+    },
+    "TOT": {
+      "name": "Tottenham Hotspur",
+      "city": "London",
+      "lat": 51.6043,
+      "lng": -0.0664
+    },
+    "SUN": {
+      "name": "Sunderland AFC",
+      "city": "Sunderland",
+      "lat": 54.9144,
+      "lng": -1.3883
+    },
+    "LEE": {
+      "name": "Leeds United",
+      "city": "Leeds",
+      "lat": 53.7778,
+      "lng": -1.5723
+    },
+    "COV": {
+      "name": "Coventry City",
+      "city": "Coventry",
+      "lat": 52.4489,
+      "lng": -1.4954
+    },
+    "IPS": {
+      "name": "Ipswich Town",
+      "city": "Ipswich",
+      "lat": 52.0552,
+      "lng": 1.145
+    },
+    "HUL": {
+      "name": "Hull City",
+      "city": "Hull",
+      "lat": 53.7466,
+      "lng": -0.3672
+    }
+  },
+  "la_liga": {
+    "BAR": {
+      "name": "FC Barcelona",
+      "city": "Barcelona",
+      "lat": 41.3809,
+      "lng": 2.1228
+    },
+    "RMA": {
+      "name": "Real Madrid",
+      "city": "Madrid",
+      "lat": 40.4531,
+      "lng": -3.6883
+    },
+    "ATM": {
+      "name": "Atletico Madrid",
+      "city": "Madrid",
+      "lat": 40.4362,
+      "lng": -3.5995
+    },
+    "VIL": {
+      "name": "Villarreal CF",
+      "city": "Villarreal",
+      "lat": 39.9442,
+      "lng": -0.1035
+    },
+    "RBB": {
+      "name": "Real Betis Seville",
+      "city": "Sevilla",
+      "lat": 37.3568,
+      "lng": -5.9822
+    },
+    "RSO": {
+      "name": "Real Sociedad San Sebastian",
+      "city": "San Sebastián",
+      "lat": 43.3014,
+      "lng": -1.9736
+    },
+    "RCC": {
+      "name": "RC Celta de Vigo",
+      "city": "Vigo",
+      "lat": 42.2119,
+      "lng": -8.7422
+    },
+    "GET": {
+      "name": "Getafe CF",
+      "city": "Getafe",
+      "lat": 40.3255,
+      "lng": -3.7146
+    },
+    "ATH": {
+      "name": "Athletic Bilbao",
+      "city": "Bilbao",
+      "lat": 43.2642,
+      "lng": -2.9494
+    },
+    "SEV": {
+      "name": "Sevilla FC",
+      "city": "Sevilla",
+      "lat": 37.384,
+      "lng": -5.9709
+    },
+    "VAL": {
+      "name": "Valencia CF",
+      "city": "Valencia",
+      "lat": 39.4747,
+      "lng": -0.3585
+    },
+    "RVC": {
+      "name": "Rayo Vallecano",
+      "city": "Madrid",
+      "lat": 40.3921,
+      "lng": -3.6608
+    },
+    "OSA": {
+      "name": "CA Osasuna",
+      "city": "Pamplona",
+      "lat": 42.7967,
+      "lng": -1.6367
+    },
+    "ELC": {
+      "name": "Elche CF",
+      "city": "Elche",
+      "lat": 38.2669,
+      "lng": -0.6975
+    },
+    "LEV": {
+      "name": "Levante UD",
+      "city": "Valencia",
+      "lat": 39.4839,
+      "lng": -0.3623
+    },
+    "ESP": {
+      "name": "Espanyol Barcelona",
+      "city": "Barcelona",
+      "lat": 41.3467,
+      "lng": 2.0757
+    },
+    "ALA": {
+      "name": "Deportivo Alaves",
+      "city": "Vitoria-Gasteiz",
+      "lat": 42.8467,
+      "lng": -2.6892
+    },
+    "RAC": {
+      "name": "Racing Santander",
+      "city": "Santander",
+      "lat": 43.4589,
+      "lng": -3.8194
+    },
+    "DEP": {
+      "name": "RC Deportivo De A Coruna",
+      "city": "A Coruña",
+      "lat": 43.3623,
+      "lng": -8.4165
+    },
+    "MCF": {
+      "name": "Malaga CF",
+      "city": "Málaga",
+      "lat": 36.7211,
+      "lng": -4.4258
+    }
+  },
+  "bundesliga": {
+    "BMU": {
+      "name": "Bayern Munich",
+      "city": "München",
+      "lat": 48.2188,
+      "lng": 11.6247
+    },
+    "VFB": {
+      "name": "VfB Stuttgart",
+      "city": "Stuttgart",
+      "lat": 48.7924,
+      "lng": 9.2321
+    },
+    "RBL": {
+      "name": "RB Leipzig",
+      "city": "Leipzig",
+      "lat": 51.3459,
+      "lng": 12.3482
+    },
+    "BMG": {
+      "name": "Borussia Monchengladbach",
+      "city": "Mönchengladbach",
+      "lat": 51.1746,
+      "lng": 6.3851
+    },
+    "M05": {
+      "name": "FSV Mainz",
+      "city": "Mainz",
+      "lat": 49.984,
+      "lng": 8.2246
+    },
+    "PAD": {
+      "name": "SC Paderborn 07",
+      "city": "Paderborn",
+      "lat": 51.7189,
+      "lng": 8.7575
+    },
+    "UNI": {
+      "name": "Union Berlin",
+      "city": "Berlin",
+      "lat": 52.4571,
+      "lng": 13.5687
+    },
+    "SGE": {
+      "name": "Eintracht Frankfurt",
+      "city": "Frankfurt",
+      "lat": 50.0685,
+      "lng": 8.6455
+    },
+    "KOE": {
+      "name": "1. FC Cologne",
+      "city": "Köln",
+      "lat": 50.9339,
+      "lng": 6.8751
+    },
+    "TSG": {
+      "name": "TSG Hoffenheim",
+      "city": "Sinsheim",
+      "lat": 49.2381,
+      "lng": 8.8888
+    },
+    "SVE": {
+      "name": "SV 07 Elversberg",
+      "city": "Elversberg",
+      "lat": 49.2597,
+      "lng": 7.1108
+    },
+    "LEV": {
+      "name": "Bayer Leverkusen",
+      "city": "Leverkusen",
+      "lat": 51.0382,
+      "lng": 6.999
+    },
+    "BVB": {
+      "name": "Borussia Dortmund",
+      "city": "Dortmund",
+      "lat": 51.4926,
+      "lng": 7.4517
+    },
+    "HSV": {
+      "name": "Hamburger SV",
+      "city": "Hamburg",
+      "lat": 53.5872,
+      "lng": 9.8985
+    },
+    "SCF": {
+      "name": "SC Freiburg",
+      "city": "Freiburg",
+      "lat": 47.9896,
+      "lng": 7.9169
+    },
+    "SVW": {
+      "name": "Werder Bremen",
+      "city": "Bremen",
+      "lat": 53.0663,
+      "lng": 8.8377
+    },
+    "FCA": {
+      "name": "FC Augsburg",
+      "city": "Augsburg",
+      "lat": 48.3231,
+      "lng": 10.8863
+    },
+    "SCH": {
+      "name": "Schalke 04",
+      "city": "Gelsenkirchen",
+      "lat": 51.5547,
+      "lng": 7.0669
+    }
+  },
+  "serie_a": {
+    "INT": {
+      "name": "Inter Milano",
+      "city": "Mailand",
+      "lat": 45.4781,
+      "lng": 9.124
+    },
+    "MON": {
+      "name": "AC Monza",
+      "city": "Monza",
+      "lat": 45.5845,
+      "lng": 9.2744
+    },
+    "UDI": {
+      "name": "Udinese Calcio",
+      "city": "Udine",
+      "lat": 46.0803,
+      "lng": 13.2035
+    },
+    "COM": {
+      "name": "Como 1907",
+      "city": "Como",
+      "lat": 45.8081,
+      "lng": 9.0852
+    },
+    "GEN": {
+      "name": "Genoa CFC",
+      "city": "Genua",
+      "lat": 44.4144,
+      "lng": 8.9524
+    },
+    "NAP": {
+      "name": "SSC Napoli",
+      "city": "Neapel",
+      "lat": 40.8279,
+      "lng": 14.193
+    },
+    "PAR": {
+      "name": "Parma Calcio",
+      "city": "Parma",
+      "lat": 44.8015,
+      "lng": 10.3279
+    },
+    "CAG": {
+      "name": "Cagliari Calcio",
+      "city": "Cagliari",
+      "lat": 39.2385,
+      "lng": 9.142
+    },
+    "FRO": {
+      "name": "Frosinone Calcio",
+      "city": "Frosinone",
+      "lat": 41.6401,
+      "lng": 13.3378
+    },
+    "JUV": {
+      "name": "Juventus Turin",
+      "city": "Turin",
+      "lat": 45.1096,
+      "lng": 7.6413
+    },
+    "VEN": {
+      "name": "Venezia FC",
+      "city": "Venedig",
+      "lat": 45.4279,
+      "lng": 12.3567
+    },
+    "LEC": {
+      "name": "US Lecce",
+      "city": "Lecce",
+      "lat": 40.3672,
+      "lng": 18.1734
+    },
+    "ATA": {
+      "name": "Atalanta BC",
+      "city": "Bergamo",
+      "lat": 45.7091,
+      "lng": 9.681
+    },
+    "SAS": {
+      "name": "Sassuolo Calcio",
+      "city": "Sassuolo",
+      "lat": 44.5486,
+      "lng": 10.7797
+    },
+    "TOR": {
+      "name": "Torino FC",
+      "city": "Turin",
+      "lat": 45.0421,
+      "lng": 7.6496
+    },
+    "ACM": {
+      "name": "AC Milan",
+      "city": "Mailand",
+      "lat": 45.4781,
+      "lng": 9.124
+    },
+    "BFC": {
+      "name": "Bologna FC",
+      "city": "Bologna",
+      "lat": 44.4923,
+      "lng": 11.3096
+    },
+    "LAZ": {
+      "name": "Lazio Rome",
+      "city": "Rom",
+      "lat": 41.9339,
+      "lng": 12.4547
+    },
+    "ROM": {
+      "name": "AS Roma",
+      "city": "Rom",
+      "lat": 41.9339,
+      "lng": 12.4547
+    },
+    "FIO": {
+      "name": "ACF Fiorentina",
+      "city": "Florenz",
+      "lat": 43.7809,
+      "lng": 11.2822
+    }
+  },
+  "ligue_1": {
+    "OLM": {
+      "name": "Olympique Marseille",
+      "city": "Marseille",
+      "lat": 43.2696,
+      "lng": 5.3958
+    },
+    "RCS": {
+      "name": "Strasbourg Alsace",
+      "city": "Strasbourg",
+      "lat": 48.5602,
+      "lng": 7.7553
+    },
+    "RCL": {
+      "name": "Racing Club De Lens",
+      "city": "Lens",
+      "lat": 50.4331,
+      "lng": 2.8151
+    },
+    "AUX": {
+      "name": "AJ Auxerre",
+      "city": "Auxerre",
+      "lat": 47.8004,
+      "lng": 3.573
+    },
+    "MAN": {
+      "name": "Le Mans FC",
+      "city": "Le Mans",
+      "lat": 48.0077,
+      "lng": 0.1984
+    },
+    "STB": {
+      "name": "Stade Brest 29",
+      "city": "Brest",
+      "lat": 48.4082,
+      "lng": -4.4737
+    },
+    "NIC": {
+      "name": "OGC Nice",
+      "city": "Nizza",
+      "lat": 43.7052,
+      "lng": 7.1928
+    },
+    "FCL": {
+      "name": "FC Lorient",
+      "city": "Lorient",
+      "lat": 47.7482,
+      "lng": -3.3651
+    },
+    "TFC": {
+      "name": "Toulouse FC",
+      "city": "Toulouse",
+      "lat": 43.5828,
+      "lng": 1.4342
+    },
+    "OL": {
+      "name": "Olympique Lyon",
+      "city": "Décines-Charpieu",
+      "lat": 45.7652,
+      "lng": 4.9822
+    },
+    "EST": {
+      "name": "ESTAC Troyes",
+      "city": "Troyes",
+      "lat": 48.3097,
+      "lng": 4.0743
+    },
+    "PAR": {
+      "name": "Paris FC",
+      "city": "Paris",
+      "lat": 48.8188,
+      "lng": 2.2534
+    },
+    "ANG": {
+      "name": "Angers SCO",
+      "city": "Angers",
+      "lat": 47.4553,
+      "lng": -0.5354
+    },
+    "LIL": {
+      "name": "Lille OSC",
+      "city": "Villeneuve-d'Ascq",
+      "lat": 50.6119,
+      "lng": 3.13
+    },
+    "HAC": {
+      "name": "Le Havre AC",
+      "city": "Le Havre",
+      "lat": 49.5104,
+      "lng": 0.1745
+    },
+    "ASM": {
+      "name": "AS Monaco",
+      "city": "Monaco",
+      "lat": 43.7276,
+      "lng": 7.4153
+    },
+    "PSG": {
+      "name": "Paris Saint-Germain",
+      "city": "Paris",
+      "lat": 48.8414,
+      "lng": 2.253
+    },
+    "REN": {
+      "name": "Stade Rennais FC",
+      "city": "Rennes",
+      "lat": 48.1073,
+      "lng": -1.7128
+    }
+  },
+  "primeira_liga": {
+    "EST": {
+      "name": "Estoril Praia",
+      "city": "Estoril",
+      "lat": 38.715188,
+      "lng": -9.4063357
+    },
+    "FAM": {
+      "name": "FC Famalicão",
+      "city": "Vila Nova de Famalicão",
+      "lat": 41.4014067,
+      "lng": -8.522406
+    },
+    "MAR": {
+      "name": "CS Marítimo",
+      "city": "Funchal",
+      "lat": 32.6455903,
+      "lng": -16.9283415
+    },
+    "CAS": {
+      "name": "Casa Pia AC",
+      "city": "Rio Maior",
+      "lat": 39.344524,
+      "lng": -8.935189
+    },
+    "VSC": {
+      "name": "Vitória SC",
+      "city": "Guimarães",
+      "lat": 41.4458812,
+      "lng": -8.3009296
+    },
+    "ARO": {
+      "name": "FC Arouca",
+      "city": "Arouca",
+      "lat": 40.9328839,
+      "lng": -8.2503344
+    },
+    "AMA": {
+      "name": "Estrela da Amadora",
+      "city": "Amadora",
+      "lat": 38.7520239,
+      "lng": -9.2278967
+    },
+    "SCP": {
+      "name": "Sporting CP",
+      "city": "Lissabon",
+      "lat": 38.7612216,
+      "lng": -9.16179
+    },
+    "POR": {
+      "name": "FC Porto",
+      "city": "Porto",
+      "lat": 41.16177,
+      "lng": -8.583591
+    },
+    "ALV": {
+      "name": "FC Alverca",
+      "city": "Alverca do Ribatejo",
+      "lat": 38.89788,
+      "lng": -9.0350158
+    },
+    "GIL": {
+      "name": "Gil Vicente FC",
+      "city": "Barcelos",
+      "lat": 41.5511628,
+      "lng": -8.6230127
+    },
+    "RAV": {
+      "name": "Rio Ave FC",
+      "city": "Vila do Conde",
+      "lat": 41.3627211,
+      "lng": -8.7400931
+    },
+    "MOR": {
+      "name": "Moreirense FC",
+      "city": "Moreira de Cónegos",
+      "lat": 41.378076,
+      "lng": -8.3545795
+    },
+    "BRA": {
+      "name": "SC Braga",
+      "city": "Braga",
+      "lat": 41.5620136,
+      "lng": -8.4304269
+    },
+    "BEN": {
+      "name": "SL Benfica",
+      "city": "Lissabon",
+      "lat": 38.7526905,
+      "lng": -9.184692
+    },
+    "AVI": {
+      "name": "Académico de Viseu FC",
+      "city": "Viseu",
+      "lat": 40.6595491,
+      "lng": -7.9004812
+    },
+    "SCL": {
+      "name": "CD Santa Clara",
+      "city": "Ponta Delgada",
+      "lat": 37.763779,
+      "lng": -25.6226351
+    },
+    "NAC": {
+      "name": "CD Nacional",
+      "city": "Funchal",
+      "lat": 32.6706067,
+      "lng": -16.8835298
+    }
+  },
+  "eredivisie": {
+    "ADO": {
+      "name": "ADO Den Haag",
+      "city": "The Hague",
+      "lat": 52.0787,
+      "lng": 4.2926
+    },
+    "AJA": {
+      "name": "Ajax Amsterdam",
+      "city": "Amsterdam",
+      "lat": 52.3143,
+      "lng": 4.9425
+    },
+    "AZA": {
+      "name": "AZ Alkmaar",
+      "city": "Alkmaar",
+      "lat": 52.6132,
+      "lng": 4.7458
+    },
+    "CAM": {
+      "name": "SC Cambuur",
+      "city": "Leeuwarden",
+      "lat": 53.1975,
+      "lng": 5.7947
+    },
+    "EXC": {
+      "name": "Excelsior Rotterdam",
+      "city": "Rotterdam",
+      "lat": 51.907,
+      "lng": 4.5033
+    },
+    "FEY": {
+      "name": "Feyenoord Rotterdam",
+      "city": "Rotterdam",
+      "lat": 51.8935,
+      "lng": 4.5233
+    },
+    "FOR": {
+      "name": "Fortuna Sittard",
+      "city": "Sittard",
+      "lat": 50.9987,
+      "lng": 5.8695
+    },
+    "GAE": {
+      "name": "Go Ahead Eagles",
+      "city": "Deventer",
+      "lat": 52.2551,
+      "lng": 6.1663
+    },
+    "GRO": {
+      "name": "FC Groningen",
+      "city": "Groningen",
+      "lat": 53.2109,
+      "lng": 6.5836
+    },
+    "HEE": {
+      "name": "sc Heerenveen",
+      "city": "Heerenveen",
+      "lat": 52.9564,
+      "lng": 5.9391
+    },
+    "NEC": {
+      "name": "NEC Nijmegen",
+      "city": "Nijmegen",
+      "lat": 51.8425,
+      "lng": 5.8514
+    },
+    "PEC": {
+      "name": "PEC Zwolle",
+      "city": "Zwolle",
+      "lat": 52.5225,
+      "lng": 6.0931
+    },
+    "PSV": {
+      "name": "PSV Eindhoven",
+      "city": "Eindhoven",
+      "lat": 51.4416,
+      "lng": 5.4677
+    },
+    "SPA": {
+      "name": "Sparta Rotterdam",
+      "city": "Rotterdam",
+      "lat": 51.9187,
+      "lng": 4.4645
+    },
+    "TEL": {
+      "name": "Telstar",
+      "city": "Velsen-Zuid",
+      "lat": 52.46,
+      "lng": 4.6425
+    },
+    "TWE": {
+      "name": "FC Twente",
+      "city": "Enschede",
+      "lat": 52.2434,
+      "lng": 6.8888
+    },
+    "UTR": {
+      "name": "FC Utrecht",
+      "city": "Utrecht",
+      "lat": 52.0895,
+      "lng": 5.1201
+    },
+    "WIL": {
+      "name": "Willem II",
+      "city": "Tilburg",
+      "lat": 51.5555,
+      "lng": 5.0664
+    }
+  },
+  "pro_league": {
+    "CLB": {
+      "name": "Club Brugge",
+      "city": "Bruges",
+      "lat": 51.1958,
+      "lng": 3.1817
+    },
+    "KVK": {
+      "name": "KV Kortrijk",
+      "city": "Kortrijk",
+      "lat": 50.8375,
+      "lng": 3.2649
+    },
+    "WES": {
+      "name": "KVC Westerlo",
+      "city": "Westerlo",
+      "lat": 51.0917,
+      "lng": 4.9186
+    },
+    "USG": {
+      "name": "Union Saint-Gilloise",
+      "city": "Brussels",
+      "lat": 50.8221,
+      "lng": 4.3487
+    },
+    "CHA": {
+      "name": "Sporting Charleroi",
+      "city": "Charleroi",
+      "lat": 50.4152,
+      "lng": 4.4487
+    },
+    "OHL": {
+      "name": "OH Leuven",
+      "city": "Leuven",
+      "lat": 50.8823,
+      "lng": 4.6903
+    },
+    "STA": {
+      "name": "Standard Liège",
+      "city": "Liège",
+      "lat": 50.6108,
+      "lng": 5.5536
+    },
+    "CER": {
+      "name": "Cercle Brugge",
+      "city": "Bruges",
+      "lat": 51.1958,
+      "lng": 3.1817
+    },
+    "STV": {
+      "name": "Sint-Truidense VV",
+      "city": "Sint-Truiden",
+      "lat": 50.818,
+      "lng": 5.1837
+    },
+    "LOM": {
+      "name": "Lommel SK",
+      "city": "Lommel",
+      "lat": 51.2306,
+      "lng": 5.3136
+    },
+    "GEN": {
+      "name": "KAA Gent",
+      "city": "Ghent",
+      "lat": 51.0294,
+      "lng": 3.7181
+    },
+    "MEC": {
+      "name": "KV Mechelen",
+      "city": "Mechelen",
+      "lat": 51.0294,
+      "lng": 4.4844
+    },
+    "ZUL": {
+      "name": "SV Zulte Waregem",
+      "city": "Waregem",
+      "lat": 50.8886,
+      "lng": 3.4278
+    },
+    "KRC": {
+      "name": "KRC Genk",
+      "city": "Genk",
+      "lat": 50.9649,
+      "lng": 5.4959
+    },
+    "AND": {
+      "name": "RSC Anderlecht",
+      "city": "Brussels",
+      "lat": 50.8341,
+      "lng": 4.2929
+    },
+    "RAA": {
+      "name": "RAAL La Louvière",
+      "city": "La Louvière",
+      "lat": 50.4667,
+      "lng": 4.1878
+    },
+    "ANT": {
+      "name": "Royal Antwerp FC",
+      "city": "Antwerp",
+      "lat": 51.2278,
+      "lng": 4.4425
+    },
+    "BEV": {
+      "name": "SK Beveren",
+      "city": "Beveren",
+      "lat": 51.2136,
+      "lng": 4.2649
+    }
+  },
+  "allsvenskan": {
+    "ELF": {
+      "name": "IF Elfsborg",
+      "city": "Borås",
+      "lat": 57.7185,
+      "lng": 12.9268
+    },
+    "VAS": {
+      "name": "Västerås SK",
+      "city": "Västerås",
+      "lat": 59.6162,
+      "lng": 16.5528
+    },
+    "MJA": {
+      "name": "Mjällby AIF",
+      "city": "Hällevik",
+      "lat": 56.1667,
+      "lng": 15.7833
+    },
+    "SIR": {
+      "name": "IK Sirius",
+      "city": "Uppsala",
+      "lat": 59.8422,
+      "lng": 17.6539
+    },
+    "DJU": {
+      "name": "Djurgårdens IF",
+      "city": "Stockholm",
+      "lat": 59.3499,
+      "lng": 18.0836
+    },
+    "AIK": {
+      "name": "AIK Solna",
+      "city": "Stockholm",
+      "lat": 59.3728,
+      "lng": 18.0011
+    },
+    "BRP": {
+      "name": "IF Brommapojkarna",
+      "city": "Stockholm",
+      "lat": 59.3572,
+      "lng": 17.9309
+    },
+    "ORG": {
+      "name": "Örgryte IS",
+      "city": "Gothenburg",
+      "lat": 57.6975,
+      "lng": 11.9908
+    },
+    "DEG": {
+      "name": "Degerfors IF",
+      "city": "Degerfors",
+      "lat": 59.2333,
+      "lng": 14.4333
+    },
+    "IFG": {
+      "name": "IFK Göteborg",
+      "city": "Gothenburg",
+      "lat": 57.7025,
+      "lng": 11.9253
+    },
+    "GAI": {
+      "name": "GAIS",
+      "city": "Gothenburg",
+      "lat": 57.6975,
+      "lng": 11.967
+    },
+    "MAL": {
+      "name": "Malmö FF",
+      "city": "Malmö",
+      "lat": 55.5911,
+      "lng": 13.0009
+    },
+    "KAL": {
+      "name": "Kalmar FF",
+      "city": "Kalmar",
+      "lat": 56.6634,
+      "lng": 16.3423
+    },
+    "HAM": {
+      "name": "Hammarby IF",
+      "city": "Stockholm",
+      "lat": 59.2907,
+      "lng": 18.0973
+    },
+    "HAC_S": {
+      "name": "BK Häcken",
+      "city": "Gothenburg",
+      "lat": 57.7089,
+      "lng": 11.9391
+    },
+    "HAL": {
+      "name": "Halmstads BK",
+      "city": "Halmstad",
+      "lat": 56.6745,
+      "lng": 12.857
+    }
+  },
+  "eliteserien": {
+    "AAL": {
+      "name": "Aalesunds FK",
+      "city": "Ålesund",
+      "lat": 62.4722,
+      "lng": 6.1549
+    },
+    "VAL_N": {
+      "name": "Vålerenga IF",
+      "city": "Oslo",
+      "lat": 59.9139,
+      "lng": 10.7825
+    },
+    "MOL": {
+      "name": "Molde FK",
+      "city": "Molde",
+      "lat": 62.738,
+      "lng": 7.14
+    },
+    "TRO": {
+      "name": "Tromsø IL",
+      "city": "Tromsø",
+      "lat": 69.6489,
+      "lng": 18.9427
+    },
+    "BRN": {
+      "name": "SK Brann",
+      "city": "Bergen",
+      "lat": 60.3833,
+      "lng": 5.3253
+    },
+    "HAM_N": {
+      "name": "HamKam",
+      "city": "Hamar",
+      "lat": 60.7945,
+      "lng": 11.068
+    },
+    "SAR": {
+      "name": "Sarpsborg 08",
+      "city": "Sarpsborg",
+      "lat": 59.2839,
+      "lng": 11.1097
+    },
+    "SAN": {
+      "name": "Sandefjord Fotball",
+      "city": "Sandefjord",
+      "lat": 59.131,
+      "lng": 10.2168
+    },
+    "FRE": {
+      "name": "Fredrikstad FK",
+      "city": "Fredrikstad",
+      "lat": 59.2181,
+      "lng": 10.9298
+    },
+    "KRI": {
+      "name": "Kristiansund BK",
+      "city": "Kristiansund",
+      "lat": 63.1105,
+      "lng": 7.728
+    },
+    "ROS": {
+      "name": "Rosenborg BK",
+      "city": "Trondheim",
+      "lat": 63.4306,
+      "lng": 10.3987
+    },
+    "VIK": {
+      "name": "Viking FK",
+      "city": "Stavanger",
+      "lat": 58.9524,
+      "lng": 5.7003
+    },
+    "KFU": {
+      "name": "KFUM Oslo",
+      "city": "Oslo",
+      "lat": 59.937,
+      "lng": 10.7735
+    },
+    "LIL": {
+      "name": "Lillestrøm SK",
+      "city": "Lillestrøm",
+      "lat": 59.9569,
+      "lng": 11.0465
+    },
+    "BOG": {
+      "name": "FK Bodø/Glimt",
+      "city": "Bodø",
+      "lat": 67.2827,
+      "lng": 14.3719
+    },
+    "STR": {
+      "name": "IK Start",
+      "city": "Kristiansand",
+      "lat": 58.1467,
+      "lng": 7.9956
+    }
+  },
+  "superliga": {
+    "VIB": {
+      "name": "Viborg FF",
+      "city": "Viborg",
+      "lat": 56.446,
+      "lng": 9.4022
+    },
+    "OBK": {
+      "name": "Odense Boldklub",
+      "city": "Odense",
+      "lat": 55.3961,
+      "lng": 10.4028
+    },
+    "AGF": {
+      "name": "AGF Aarhus",
+      "city": "Aarhus",
+      "lat": 56.1497,
+      "lng": 10.2144
+    },
+    "BIF": {
+      "name": "Brøndby IF",
+      "city": "Brøndby",
+      "lat": 55.6403,
+      "lng": 12.4167
+    },
+    "SON": {
+      "name": "Sønderjyske",
+      "city": "Haderslev",
+      "lat": 55.25,
+      "lng": 9.5
+    },
+    "FCM": {
+      "name": "FC Midtjylland",
+      "city": "Herning",
+      "lat": 56.1417,
+      "lng": 8.9931
+    },
+    "RAN": {
+      "name": "Randers FC",
+      "city": "Randers",
+      "lat": 56.4536,
+      "lng": 10.0364
+    },
+    "SIL": {
+      "name": "Silkeborg IF",
+      "city": "Silkeborg",
+      "lat": 56.1697,
+      "lng": 9.5453
+    },
+    "HOR": {
+      "name": "AC Horsens",
+      "city": "Horsens",
+      "lat": 55.8607,
+      "lng": 9.8503
+    },
+    "FCN": {
+      "name": "FC Nordsjælland",
+      "city": "Farum",
+      "lat": 55.8107,
+      "lng": 12.3556
+    },
+    "FCK": {
+      "name": "FC København",
+      "city": "Copenhagen",
+      "lat": 55.7031,
+      "lng": 12.5766
+    },
+    "LYN": {
+      "name": "Lyngby BK",
+      "city": "Lyngby",
+      "lat": 55.7908,
+      "lng": 12.5054
+    }
+  },
+  "veikkausliiga": {
+    "VPS": {
+      "name": "VPS Vaasa",
+      "city": "Vaasa",
+      "lat": 63.0961,
+      "lng": 21.6156
+    },
+    "TPS": {
+      "name": "TPS Turku",
+      "city": "Turku",
+      "lat": 60.4548,
+      "lng": 22.261
+    },
+    "MAR_F": {
+      "name": "IFK Mariehamn",
+      "city": "Mariehamn",
+      "lat": 60.0973,
+      "lng": 19.9348
+    },
+    "SJK": {
+      "name": "SJK Seinäjoki",
+      "city": "Seinäjoki",
+      "lat": 62.7936,
+      "lng": 22.8375
+    },
+    "HJK": {
+      "name": "HJK Helsinki",
+      "city": "Helsinki",
+      "lat": 60.1841,
+      "lng": 24.9204
+    },
+    "JAR": {
+      "name": "FF Jaro",
+      "city": "Pietarsaari",
+      "lat": 63.6742,
+      "lng": 22.7025
+    },
+    "LAH": {
+      "name": "FC Lahti",
+      "city": "Lahti",
+      "lat": 60.9827,
+      "lng": 25.6612
+    },
+    "KUP": {
+      "name": "KuPS Kuopio",
+      "city": "Kuopio",
+      "lat": 62.8942,
+      "lng": 27.6675
+    },
+    "OUL": {
+      "name": "AC Oulu",
+      "city": "Oulu",
+      "lat": 65.0121,
+      "lng": 25.4651
+    },
+    "INT": {
+      "name": "FC Inter Turku",
+      "city": "Turku",
+      "lat": 60.4514,
+      "lng": 22.2716
+    },
+    "GNI": {
+      "name": "IF Gnistan",
+      "city": "Helsinki",
+      "lat": 60.2103,
+      "lng": 24.8371
+    },
+    "ILV": {
+      "name": "Ilves Tampere",
+      "city": "Tampere",
+      "lat": 61.4977,
+      "lng": 23.7859
+    }
+  }
+}

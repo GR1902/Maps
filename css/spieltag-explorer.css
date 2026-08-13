@@ -1,0 +1,107 @@
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; height:100%; font-family:'Georgia','Iowan Old Style',serif; background:var(--paper); color:var(--ink); }
+#app{ display:flex; flex-direction:column; height:100vh; }
+header{
+  padding:12px 18px 9px 18px; border-bottom:3px solid var(--gold); background:var(--green-dark);
+  display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;
+}
+header h1{ font-size:1.02rem; margin:0; font-weight:700; color:var(--gold); }
+header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; text-transform:uppercase; letter-spacing:0.03em; }
+
+#controls{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:10px 18px; border-bottom:1px solid var(--line); background:#fbf9e8;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+#controls label{ font-size:0.72rem; font-weight:600; color:var(--green-dark); }
+#league-select, #matchday-select{
+  font-family:inherit; font-size:0.8rem; padding:6px 10px; border-radius:6px;
+  border:1px solid var(--green); background:#fff; color:var(--ink); cursor:pointer;
+}
+#snapshot-note{ font-size:0.66rem; color:#6b6455; margin-left:auto; }
+
+/* Route panel */
+#route-panel{
+  position:absolute; top:56px; right:10px; z-index:1000;
+  background:rgba(255,253,244,0.97);
+  border:1px solid var(--line); border-radius:8px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.14);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  width:220px; max-width:calc(100vw - 24px);
+}
+#route-header{ display:flex; align-items:center; justify-content:space-between; padding:7px 10px; border-bottom:2px solid var(--gold); background:var(--green-dark); border-radius:8px 8px 0 0; }
+#route-title{ font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--gold); }
+#route-hint{ font-size:0.63rem; color:#6b6455; padding:6px 10px 0 10px; line-height:1.3; }
+#route-stops{ padding:5px 10px; max-height:150px; overflow-y:auto; }
+.route-stop{ display:flex; align-items:center; gap:6px; font-size:0.68rem; padding:2.5px 0; color:var(--ink); }
+.route-stop .num{ width:15px; height:15px; border-radius:50%; background:var(--green); color:#fff; font-size:0.58rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.route-stop .name{ flex:1; }
+.route-stop .rm{ cursor:pointer; color:#a3341f; font-weight:700; font-size:0.72rem; padding:0 2px; }
+#route-summary{ padding:5px 10px 0 10px; font-size:0.65rem; color:var(--green-dark); font-weight:600; display:none; }
+#route-actions{ display:flex; gap:6px; padding:7px 10px 9px 10px; }
+.route-btn{
+  flex:1; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:0.66rem; font-weight:600; padding:5px 8px; border-radius:5px;
+  border:1px solid var(--green); background:#fff; color:var(--green-dark); cursor:pointer;
+}
+.route-btn:disabled{ opacity:0.4; cursor:default; }
+.add-stop-btn{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:0.66rem; font-weight:600; padding:4px 8px; border-radius:5px;
+  border:1px solid var(--green); background:var(--gold); color:#14210a; cursor:pointer; margin-top:5px; font-weight:700;
+}
+
+#body{ flex:1; display:flex; min-height:0; }
+#map-wrap{ position:relative; flex:1.3; min-width:0; }
+#map{ width:100%; height:100%; background:#e7e2c0; }
+
+#side{
+  flex:1; min-width:280px; max-width:380px; border-left:1px solid var(--line);
+  overflow-y:auto; background:#fffdf4;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+#side h2{
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; color:#fff;
+  margin:0; padding:12px 14px 8px 14px; border-bottom:2px solid var(--gold); background:var(--green-dark);
+  position:sticky; top:0;
+}
+.fixture-item{
+  padding:9px 14px; border-bottom:1px solid #eee6c8; font-size:0.76rem; cursor:pointer;
+}
+.fixture-item:hover{ background:#fdf6c8; }
+.fixture-item .teams{ font-weight:700; color:var(--ink); }
+.fixture-item .meta{ font-size:0.66rem; color:#6b6455; margin-top:2px; }
+
+.combo-card{
+  margin:10px 14px; padding:10px 12px; border-radius:8px; background:#fff;
+  border:1px solid var(--line); border-left:4px solid var(--gold); box-shadow:0 1px 4px rgba(0,0,0,0.08);
+}
+.combo-card .combo-title{ font-size:0.72rem; font-weight:700; color:var(--green-dark); margin-bottom:5px; }
+.combo-card .combo-game{ font-size:0.74rem; padding:2px 0; }
+.combo-card .combo-stats{ font-size:0.66rem; color:#6b6455; margin-top:5px; border-top:1px solid #eee; padding-top:5px; }
+.empty-note{ padding:16px 14px; font-size:0.75rem; color:#6b6455; line-height:1.4; }
+
+.club-label{
+  background:rgba(255,253,244,0.92); border:none; box-shadow:none;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:0.62rem; font-weight:700; color:var(--ink); padding:0 3px; white-space:nowrap; pointer-events:none;
+}
+.club-label::before{ display:none; }
+
+.popup-club{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:700; font-size:0.82rem; color:var(--green-dark); }
+.popup-meta{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:0.72rem; color:#4a4438; margin-top:2px; }
+
+.leaflet-routing-container{ display:none; }
+
+#fullscreen-btn{
+  position:absolute; top:10px; right:10px; z-index:1000;
+  background:var(--green-dark); border:1px solid var(--gold); color:var(--gold);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:0.72rem; font-weight:600; padding:6px 10px; border-radius:6px; cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 700px){
+  #body{ flex-direction:column; }
+  #side{ max-width:100%; border-left:none; border-top:1px solid var(--line); max-height:45vh; }
+}

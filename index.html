@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norwich City Scouting Map</title>
+<link rel="stylesheet" href="css/variables.css" />
+<style>
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; min-height:100%; font-family:'Georgia','Iowan Old Style',serif; background:var(--paper); color:var(--ink); }
+  header{
+    padding:14px 22px 11px 22px; border-bottom:3px solid var(--gold); background:var(--green-dark);
+  }
+  header h1{ font-size:1.2rem; margin:0; font-weight:700; color:var(--gold); }
+  header .sub{
+    font-size:0.72rem; color:#fff; opacity:0.85; margin-top:4px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    text-transform:uppercase; letter-spacing:0.03em;
+  }
+  main{ max-width:640px; margin:0 auto; padding:32px 22px; }
+  .tool-card{
+    display:block; text-decoration:none; color:inherit;
+    border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin-bottom:16px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08); transition:box-shadow 0.15s, transform 0.15s;
+  }
+  .tool-card:hover{ box-shadow:0 3px 10px rgba(0,0,0,0.14); transform:translateY(-1px); }
+  .tool-card h2{
+    margin:0 0 6px 0; font-size:1.02rem; color:var(--green-dark);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  .tool-card p{ margin:0; font-size:0.85rem; color:#4a4438; line-height:1.4; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Norwich City Scouting Map</h1>
+  <div class="sub">Europe club map &amp; matchday route planning</div>
+</header>
+<main>
+  <a class="tool-card" href="europa-ligen-karte.html">
+    <h2>Europe's Top Leagues – Club Map</h2>
+    <p>Static map of 204 clubs across 12 countries' top divisions, with country filters and point-to-point route planning.</p>
+  </a>
+  <a class="tool-card" href="spieltag-explorer.html">
+    <h2>Matchday Explorer</h2>
+    <p>League &amp; matchday view of home fixtures, combinable cross-league scouting trips, and route planning.</p>
+  </a>
+</main>
+</body>
+</html>
