@@ -29,6 +29,11 @@ function fmtDate(iso){
   return d.toLocaleString('en-GB', { weekday:'short', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
 }
 
+function fmtHM(totalSeconds){
+  const totalMin = Math.round(totalSeconds/60);
+  return `${Math.floor(totalMin/60)}h ${totalMin%60}m`;
+}
+
 function makeMutedIcon(){
   return L.divIcon({
     className:'',
@@ -159,7 +164,8 @@ function renderLeague(league){
 // line distance) between the two stadiums.
 const POST_MATCH_BUFFER_MIN = 120; // assume full-time ~2h after kickoff
 const PRE_MATCH_BUFFER_MIN = 15;   // want to arrive at least 15 min early
-const MAX_TRIP_SPAN_H = 48;        // don't chain fixtures more than a weekend apart
+const MAX_TRIP_SPAN_H = 72;        // covers a full Fri-to-Mon matchday window
+const MAX_LEG_KM = 600;            // don't offer a single hop longer than this, even if time allows it
 const MAX_ROUTING_POOL = 80;       // cap on points sent to the OSRM table API per render
 
 function buildGamePool(){
@@ -181,16 +187,17 @@ function buildGamePool(){
   return pool;
 }
 
-// Real driving-time matrix (seconds) between all given points, via OSRM's
-// table service — one request for the whole pool instead of one per pair.
+// Real driving-time + distance matrices between all given points, via
+// OSRM's table service — one request for the whole pool instead of one
+// route request per pair. durations are seconds, distances are meters.
 async function fetchDurationMatrix(points){
-  if(points.length < 2) return [];
+  if(points.length < 2) return null;
   const coordStr = points.map(p => `${p.lng},${p.lat}`).join(';');
-  const url = `https://router.project-osrm.org/table/v1/driving/${coordStr}?annotations=duration`;
+  const url = `https://router.project-osrm.org/table/v1/driving/${coordStr}?annotations=duration,distance`;
   const res = await fetch(url);
   const json = await res.json();
   if(json.code !== 'Ok') return null;
-  return json.durations;
+  return { durations: json.durations, distances: json.distances };
 }
 
 let combosRequestId = 0;
@@ -236,23 +243,27 @@ async function renderCombos(league, selectedMd, anchorFixtures){
     return;
   }
 
-  let durations;
+  let matrix;
   try{
-    durations = await fetchDurationMatrix(pool.map(g => ({ lat:g.home.lat, lng:g.home.lng })));
+    matrix = await fetchDurationMatrix(pool.map(g => ({ lat:g.home.lat, lng:g.home.lng })));
   } catch(e){
-    durations = null;
+    matrix = null;
   }
   if(requestId !== combosRequestId) return; // a newer selection has since superseded this one
-  if(!durations){
+  if(!matrix){
     combosList.innerHTML = `<div class="empty-note">Could not calculate driving times right now (routing service unavailable). Try again shortly.</div>`;
     return;
   }
+  const { durations, distances } = matrix;
 
-  // Feasible legs: i -> j (i earlier than j) is usable if the real driving
-  // time from i's venue to j's venue fits between full-time at i and
-  // kickoff minus the arrival buffer at j. Every leg actually shown must be
-  // one of these checked edges — a trip is only valid if EVERY consecutive
-  // hop is individually feasible, not just "somehow connected".
+  // Feasible legs: i -> j (i earlier than j) is usable if (a) the real
+  // driving time from i's venue to j's venue fits between full-time at i
+  // and kickoff minus the arrival buffer at j, AND (b) the drive itself
+  // isn't longer than MAX_LEG_KM — plenty of slack in the schedule doesn't
+  // make an 800 km overnight drive a "combinable" trip. Every leg actually
+  // shown must be one of these checked edges — a trip is only valid if
+  // EVERY consecutive hop is individually feasible, not just "somehow
+  // connected".
   const edgesFrom = Array.from({length:n}, () => []);
   const edgesTo = Array.from({length:n}, () => []);
   const legInfo = {};
@@ -264,11 +275,13 @@ async function renderCombos(league, selectedMd, anchorFixtures){
       const availableSec = gapSec - (POST_MATCH_BUFFER_MIN + PRE_MATCH_BUFFER_MIN) * 60;
       if(availableSec <= 0) continue;
       const driveSec = durations[i][j];
-      if(driveSec == null) continue; // unreachable by road (e.g. ferry-only crossing)
+      const driveMeters = distances[i][j];
+      if(driveSec == null || driveMeters == null) continue; // unreachable by road (e.g. ferry-only crossing)
+      if(driveMeters > MAX_LEG_KM * 1000) continue;
       if(driveSec <= availableSec){
         edgesFrom[i].push(j);
         edgesTo[j].push(i);
-        legInfo[`${i}-${j}`] = { driveSec, availableSec };
+        legInfo[`${i}-${j}`] = { driveSec, availableSec, driveKm: driveMeters / 1000 };
       }
     }
   }
@@ -336,14 +349,14 @@ async function renderCombos(league, selectedMd, anchorFixtures){
     const games = idxs.map(i => pool[i]);
     const countries = [...new Set(games.map(g => g.country))];
     const crossBorder = countries.length > 1;
-    let totalDriveSec = 0;
+    let totalDriveSec = 0, totalKm = 0;
     const legLabels = [];
     for(let k=1;k<idxs.length;k++){
       const info = legInfo[`${idxs[k-1]}-${idxs[k]}`];
       totalDriveSec += info.driveSec;
-      const dh = Math.floor(info.driveSec/3600), dm = Math.round((info.driveSec%3600)/60);
+      totalKm += info.driveKm;
       const slackMin = Math.round((info.availableSec - info.driveSec)/60);
-      legLabels.push(`🚗 ${dh}h ${dm}m drive · ${slackMin} min to spare`);
+      legLabels.push(`🚗 ${fmtHM(info.driveSec)} · ${info.driveKm.toFixed(0)} km · ${slackMin} min to spare`);
     }
     const gamesHtml = games.map((g,i) => {
       const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}`);
@@ -353,13 +366,12 @@ async function renderCombos(league, selectedMd, anchorFixtures){
       <span style="color:#6b6455; font-size:0.66rem;">${g.home.city} · ${fmtDate(g.start.toISOString())}</span>${legNote}</div>
     `;
     }).join('');
-    const th = Math.floor(totalDriveSec/3600), tm = Math.round((totalDriveSec%3600)/60);
     const card = document.createElement('div');
     card.className = 'combo-card';
     card.innerHTML = `
       <div class="combo-title">${crossBorder ? '🌍 Cross-border trip' : 'Trip'} ${cIdx+1} · ${games.length} games</div>
       ${gamesHtml}
-      <div class="combo-stats">≈ ${th}h ${tm}m total driving · ${countries.join(' → ')}</div>
+      <div class="combo-stats">≈ ${fmtHM(totalDriveSec)} · ${totalKm.toFixed(0)} km total driving · ${countries.join(' → ')}</div>
     `;
     card.onclick = () => {
       const bnds = games.map(g => [g.home.lat, g.home.lng]);

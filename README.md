@@ -60,17 +60,20 @@ full-time and reach the next stadium with time to spare before kickoff.
 - You need to arrive at least 15 minutes before the next kickoff
   (`PRE_MATCH_BUFFER_MIN`).
 - So a leg is feasible if `real driving time ≤ (next kickoff − 15 min) −
-  (this kickoff + 2h)`. Driving time is the actual road duration between the
-  two stadiums, fetched in one batched request per render from OSRM's public
-  `table` service (`js/spieltag-explorer.js` → `fetchDurationMatrix`) — not
-  straight-line distance.
+  (this kickoff + 2h)` **and** the driving distance is at most 600 km
+  (`MAX_LEG_KM`) — plenty of schedule slack doesn't make an 800 km overnight
+  drive "combinable". Driving time and distance both come from a single
+  batched request per render to OSRM's public `table` service
+  (`js/spieltag-explorer.js` → `fetchDurationMatrix`) — not straight-line
+  distance.
 - Every combinable trip shown must include at least one fixture from the
   currently selected league + matchday (the "★" marked entries); the other
   legs can come from any league or country, on any matchday, as long as the
-  timing works.
-- A trip's total span (first game to last) is capped at 48h
-  (`MAX_TRIP_SPAN_H`) so legs don't chain into an unrealistic multi-day
-  itinerary just because each individual hop was technically feasible.
+  timing and distance work.
+- A trip's total span (first game to last) is capped at 72h
+  (`MAX_TRIP_SPAN_H`, a Friday-to-Monday matchday window) so legs don't
+  chain into an unrealistic multi-day itinerary just because each
+  individual hop was technically feasible.
 - Legs where OSRM can't find a road route at all (e.g. islands reachable
   only by ferry) are treated as infeasible and excluded.
 
