@@ -14,9 +14,10 @@ norwich-scouting-map/
 │   └── spieltag-explorer.css  Page styles
 ├── js/
 │   └── spieltag-explorer.js   App logic (fetches data/teams.json + data/fixtures.json)
-└── data/
-    ├── teams.json             206 club/venue records, keyed by league → team code
-    └── fixtures.json          129 fixtures, keyed by league, with matchday numbers
+├── data/
+│   ├── teams.json             206 club/venue records, keyed by league → team code
+│   └── fixtures.json          129 fixtures, keyed by league, with matchday numbers
+└── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
 ```
 
 Leaflet + Leaflet Routing Machine are loaded via CDN. Everything else is
@@ -38,6 +39,18 @@ python3 -m http.server 8000
 ```
 
 Then open `http://localhost:8000/`.
+
+## Sharing with people who can't run a local server
+
+Run `python3 build_standalone.py` to produce
+`dist/matchday-explorer-standalone.html` — a single self-contained file with
+the CSS, JS, and current contents of `data/*.json` all inlined. No fetch to
+local files, so it opens directly by double-clicking, no server needed; just
+send that one file. It still loads Leaflet/Leaflet Routing Machine from CDN
+and calls the OSRM routing API live, so an internet connection is still
+required. It's a snapshot — re-run the build script after changing
+`data/*.json`, the CSS, `js/spieltag-explorer.js`, or `index.html`'s markup
+to refresh it; `dist/` isn't tracked in git.
 
 ## Features
 - League dropdown + matchday dropdown (populated dynamically per league)
