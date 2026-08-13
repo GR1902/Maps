@@ -153,7 +153,8 @@ search, not a live feed (except the big 5, see below).
 
 | League | Coverage | Confidence | Notes |
 |---|---|---|---|
-| Premier League, La Liga, Bundesliga, Serie A, Ligue 1 | Live snapshot | High | Pulled from a sports-data tool internal to Claude.ai chat — **not available in Claude Code**, see below |
+| Premier League | MD1–2 | High | MD2 added 2026-08-13, confirmed kickoff times |
+| La Liga, Bundesliga, Serie A, Ligue 1 | Live snapshot | High | Pulled from a sports-data tool internal to Claude.ai chat — **not available in Claude Code**, see below |
 | Championship (ENG), 2. Bundesliga (GER), Ligue 2 (FRA) | MD1 | High | Full 2026/27 roster + confirmed opening-round kickoff times from official/press sources |
 | LaLiga Hypermotion (ESP) | MD1 | Medium | Full 2026/27 roster confirmed; only 2 of 11 kickoff times were confirmed by the source found (Real Sociedad B–Castellón, Almería–Eldense) — the other 9 use **placeholder times** (typical Segunda weekend slots), dates are correct |
 | Serie B (ITA) | MD1 | Medium | Full 2026/27 roster + correct matchday date (Sat 22 Aug) confirmed; **no source gave individual kickoff times**, so all 10 matches use the same **placeholder time** (18:00 CEST) |
@@ -169,6 +170,29 @@ search, not a live feed (except the big 5, see below).
 | Czech First League (Chance Liga) | MD1 | High | Full roster + 7 of 8 kickoff times confirmed; 1 match (Artis Brno–Mladá Boleslav) has confirmed date but **placeholder time** |
 
 **12 more leagues added 2026-08-13** (League One, 3. Liga, Eerste Divisie, Challenger Pro League, Scottish Premiership, Swiss Super League, Austrian Bundesliga, Greek Super League, Süper Lig, Ekstraklasa, Czech First League, Croatian HNL): same research method as the second-tier leagues above (web search, not the Claude.ai sports-data tool). Stadium coordinates are city-level from general knowledge, not individually re-verified per club.
+
+## Why most leagues only go 1–2 matchdays deep
+
+We tried extending every league to matchdays 1–5 in one pass (2026-08-13) and
+hit a hard limit: most federations/leagues release kickoff times in
+**stages**, weeks ahead of each round, not for the whole season at once —
+e.g. the DFL (Bundesliga) had only matchdays 1–4 time-confirmed at the time
+of writing, with the rest following later. Beyond that point there's
+nothing to fetch; it's not a research gap. The **weekly scheduled routine**
+(see below) is the actual answer to "extend this over time" — it picks up
+newly-confirmed matchdays automatically as each federation releases them,
+rather than this being a one-time manual push.
+
+## Automated weekly updates
+
+A scheduled cloud agent ("Norwich Scouting Map - Weekly Fixture Update")
+runs every Monday morning, checks each league in `data/fixtures.json`
+against its official site (falling back to reputable sports press when the
+official site isn't cleanly scrapable), adds any newly-confirmed matchdays
+or corrects postponed/rescheduled fixtures, and commits + pushes the
+result. It never invents placeholder dates/times — a league with nothing
+newly confirmed is simply left alone until next week. Managed at
+[claude.ai/code/routines](https://claude.ai/code/routines).
 
 ## The live sports-data gap
 

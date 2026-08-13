@@ -59,6 +59,66 @@
       "away": "CFC",
       "start": "2026-08-24T19:00:00+00:00",
       "matchday": 1
+    },
+    {
+      "home": "LFC",
+      "away": "NFO",
+      "start": "2026-08-29T11:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "BOU",
+      "away": "EVE",
+      "start": "2026-08-29T14:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "COV",
+      "away": "HUL",
+      "start": "2026-08-29T14:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "TOT",
+      "away": "NEW",
+      "start": "2026-08-29T16:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "CFC",
+      "away": "BRI",
+      "start": "2026-08-30T13:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "CRY",
+      "away": "MCI",
+      "start": "2026-08-28T19:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "LEE",
+      "away": "BRE",
+      "start": "2026-08-30T13:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "SUN",
+      "away": "FUL",
+      "start": "2026-08-30T13:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "MUN",
+      "away": "IPS",
+      "start": "2026-08-30T15:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "AVL",
+      "away": "ARS",
+      "start": "2026-08-31T19:00:00+00:00",
+      "matchday": 2
     }
   ],
   "la_liga": [
