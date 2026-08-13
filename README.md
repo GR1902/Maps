@@ -16,7 +16,8 @@ norwich-scouting-map/
 │   └── spieltag-explorer.js   App logic (fetches data/teams.json + data/fixtures.json)
 ├── data/
 │   ├── teams.json             499 club/venue records, keyed by league → team code
-│   └── fixtures.json          275 fixtures, keyed by league, with matchday numbers
+│   ├── fixtures.json          275 fixtures, keyed by league, with matchday numbers
+│   └── airports.json          ~60 major European airports (name, IATA, city, lat/lng)
 ├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
 └── fetch_logos.py             Fills in data/teams.json's "logo" field via Wikipedia (see below)
 ```
@@ -64,6 +65,11 @@ to refresh it; `dist/` isn't tracked in git.
   per club by `data/teams.json`'s `logo` field — see below); falls back to
   the plain colored marker if a club has no crest on file or the image
   fails to load
+- "✈️ Airports" toggle (top control bar): overlays ~60 major European
+  airports (`data/airports.json`) as a reference layer, independent of the
+  league/matchday filters — handy for judging how reachable a fixture
+  cluster is by air, not just by road. Off by default; click the button to
+  show/hide, click a plane marker for the airport name, IATA code, and city
 - Radius search (top-left panel): enter an address, or click "📍 Pick point
   on map" and click anywhere on the map instead — either way, see every home
   fixture within a radius (10–500 km) of that point, across *all* 29 leagues

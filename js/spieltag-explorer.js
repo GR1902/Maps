@@ -1,6 +1,7 @@
 // ===== Team + fixture data, loaded from data/*.json =====
 let TEAMS = {};
 let FIXTURES = {};
+let AIRPORTS = [];
 
 // ===== Watchlist ("My Plan") — persisted in localStorage, drag-orderable,
 // multiple named plans so e.g. different people can each have their own =====
@@ -313,6 +314,39 @@ function makeLeagueIcon(color, size){
     html:`<div style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:1.5px solid #fffdf4;box-shadow:0 1px 3px rgba(0,0,0,0.35);"></div>`,
     iconSize:[size,size], iconAnchor:[size/2,size], popupAnchor:[0,-size]
   });
+}
+
+// ===== Airports (reference layer, toggled on/off) =====
+let showAirports = false;
+let airportMarkers = [];
+
+function makeAirportIcon(){
+  return L.divIcon({
+    className:'',
+    html:`<div class="airport-icon">✈️</div>`,
+    iconSize:[18,18], iconAnchor:[9,9], popupAnchor:[0,-9]
+  });
+}
+
+function renderAirports(){
+  airportMarkers.forEach(m => map.removeLayer(m));
+  airportMarkers = [];
+  if(!showAirports) return;
+  AIRPORTS.forEach(ap => {
+    const marker = L.marker([ap.lat, ap.lng], { icon: makeAirportIcon(), zIndexOffset: -1000 });
+    marker.bindPopup(`
+      <div class="popup-club">✈️ ${ap.name} (${ap.iata})</div>
+      <div class="popup-meta">${ap.city}</div>
+    `);
+    marker.addTo(map);
+    airportMarkers.push(marker);
+  });
+}
+
+function toggleAirports(){
+  showAirports = !showAirports;
+  document.getElementById('airports-toggle-btn').classList.toggle('active', showAirports);
+  renderAirports();
 }
 
 // ===== League picker (multi-select) =====
@@ -1012,12 +1046,14 @@ map.on('click', async (e) => {
 
 // ===== Bootstrap: load data, then render =====
 async function loadData(){
-  const [teamsRes, fixturesRes] = await Promise.all([
+  const [teamsRes, fixturesRes, airportsRes] = await Promise.all([
     fetch('data/teams.json'),
-    fetch('data/fixtures.json')
+    fetch('data/fixtures.json'),
+    fetch('data/airports.json')
   ]);
   TEAMS = await teamsRes.json();
   FIXTURES = await fixturesRes.json();
+  AIRPORTS = await airportsRes.json();
   buildLeaguePanel();
   renderWatchlist();
   renderAll();
