@@ -46,20 +46,10 @@
         <div id="radius-body">
           <input type="text" id="radius-address" placeholder="Address, city, postcode…" onkeydown="if(event.key==='Enter')runRadiusSearch()" />
           <div class="radius-row">
-            <select id="radius-km" title="Scroll to adjust">
-              <option value="10">10 km</option>
-              <option value="25">25 km</option>
-              <option value="50">50 km</option>
-              <option value="75">75 km</option>
-              <option value="100" selected>100 km</option>
-              <option value="150">150 km</option>
-              <option value="200">200 km</option>
-              <option value="300">300 km</option>
-              <option value="400">400 km</option>
-              <option value="500">500 km</option>
-            </select>
-            <button class="route-btn" id="radius-search-btn" onclick="runRadiusSearch()">Search</button>
+            <input type="range" id="radius-km" min="5" max="500" step="5" value="100" title="Drag or scroll to adjust">
+            <span id="radius-km-label">100 km</span>
           </div>
+          <button class="route-btn" id="radius-search-btn" onclick="runRadiusSearch()" style="width:100%; margin-top:6px;">Search</button>
           <button class="route-btn" id="radius-pick-btn" onclick="toggleMapPick()" style="width:100%; margin-top:6px;">📍 Pick point on map</button>
           <div id="radius-status"></div>
           <div id="radius-results"></div>
@@ -88,6 +78,10 @@
       </div>
       <div id="fixtures-container"></div>
       <h2 id="combos-heading">Combinable Trips</h2>
+      <label id="cross-border-toggle-row">
+        <input type="checkbox" id="cross-border-toggle" onchange="toggleCrossBorderOnly(this.checked)">
+        🌍 Cross-border only
+      </label>
       <div id="combos-list"></div>
     </div>
   </div>

@@ -79,20 +79,26 @@ to refresh it; `dist/` isn't tracked in git.
 - Radius search ("📍 Radius Search" in the top control bar, opens as a
   dropdown like the league picker): enter an address, or click "📍 Pick point
   on map" and click anywhere on the map instead — either way, see every home
-  fixture within a radius (10–500 km) of that point, across *all* 29 leagues
-  and every matchday currently loaded, independent of which leagues are
-  toggled on in the picker, since "what's near this point" is a different
-  question from "what am I currently browsing". Scroll over the radius
-  dropdown to step through distances live (re-filters instantly against the
-  already-geocoded point — no repeated address lookups). Draws the search
-  circle, drops a marker per match, and each result supports "+ Add to
-  route" like any other marker. Geocoding (forward and reverse) via
-  OpenStreetMap's free Nominatim API (same data source as the map tiles and
-  OSRM routing already used elsewhere)
+  fixture within a radius of that point, across *all* 29 leagues and every
+  matchday currently loaded, independent of which leagues are toggled on in
+  the picker, since "what's near this point" is a different question from
+  "what am I currently browsing". The radius is a continuous slider (5–500
+  km, 5 km steps) — drag it or scroll over it and results re-filter live
+  against the already-geocoded point, no "Search" click needed (Search is
+  only for the initial address lookup). Draws the search circle, drops a
+  club-crest marker per match (same crest badge as the main fixture
+  markers, with the same colored-swatch fallback), and both the map markers
+  and each result row in the list show the crest; each result also supports
+  "+ Add to route" like any other marker. Geocoding (forward and reverse)
+  via OpenStreetMap's free Nominatim API (same data source as the map tiles
+  and OSRM routing already used elsewhere)
 - "Combinable trips" panel: for the selected league + matchday's home
   fixtures ("anchors"), finds realistic multi-stop trips — including other
   leagues/countries — where every leg is checked against actual driving time
-  (see below), not just distance
+  (see below), not just distance. A "🌍 Cross-border only" toggle above the
+  list filters to trips that cross at least one country border, re-filtering
+  instantly from the already-computed trips (no re-fetch from the routing
+  service)
 - Point-to-point route planning (click marker → "+ Add to route" → real
   driving route via OSRM, with distance/time); stops and the running
   distance/time summary live under "🚗 Plan Route" in the top control bar,

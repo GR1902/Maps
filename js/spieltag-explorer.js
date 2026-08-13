@@ -578,6 +578,67 @@ async function fetchDurationMatrix(points){
 }
 
 let combosRequestId = 0;
+let crossBorderOnly = false;
+// Cached inputs for the last successfully computed set of trips, so the
+// cross-border toggle can re-filter and re-render instantly without
+// redoing the OSRM routing request.
+let lastCombos = null;
+
+function toggleCrossBorderOnly(checked){
+  crossBorderOnly = checked;
+  if(lastCombos) renderComboCards(lastCombos);
+}
+
+// Builds the combo-card elements for an already-computed trips list.
+function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
+  const combosList = document.getElementById('combos-list');
+  const filtered = crossBorderOnly
+    ? trips.filter(idxs => new Set(idxs.map(i => pool[i].country)).size > 1)
+    : trips;
+
+  if(filtered.length === 0){
+    combosList.innerHTML = crossBorderOnly
+      ? `<div class="empty-note">No cross-border trips found around ${summaryLabel}. Turn off "Cross-border only" to see same-country combinations too.</div>`
+      : `<div class="empty-note">No realistic combinations found around ${summaryLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`;
+    return;
+  }
+
+  combosList.innerHTML = '';
+  filtered.slice(0, 10).forEach((idxs, cIdx) => {
+    const games = idxs.map(i => pool[i]);
+    const countries = [...new Set(games.map(g => g.country))];
+    const crossBorder = countries.length > 1;
+    let totalDriveSec = 0, totalKm = 0;
+    const legLabels = [];
+    for(let k=1;k<idxs.length;k++){
+      const info = legInfo[`${idxs[k-1]}-${idxs[k]}`];
+      totalDriveSec += info.driveSec;
+      totalKm += info.driveKm;
+      const slackMin = Math.round((info.availableSec - info.driveSec)/60);
+      legLabels.push(`🚗 ${fmtHM(info.driveSec)} · ${info.driveKm.toFixed(0)} km · ${slackMin} min to spare`);
+    }
+    const gamesHtml = games.map((g,i) => {
+      const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}`);
+      const legNote = i > 0 ? `<br><span style="color:#00A650; font-size:0.62rem;">${legLabels[i-1]}</span>` : '';
+      return `
+      <div class="combo-game" style="${isAnchor ? 'font-weight:700;' : ''}">${i+1}. ${g.home.name} <span style="color:#6b6455;">(${g.country})</span> – ${g.awayName}${isAnchor ? ' ★' : ''}<br>
+      <span style="color:#6b6455; font-size:0.66rem;">${g.home.city} · ${fmtDate(g.start.toISOString())}</span>${legNote}</div>
+    `;
+    }).join('');
+    const card = document.createElement('div');
+    card.className = 'combo-card';
+    card.innerHTML = `
+      <div class="combo-title">${crossBorder ? '🌍 Cross-border trip' : 'Trip'} ${cIdx+1} · ${games.length} games</div>
+      ${gamesHtml}
+      <div class="combo-stats">≈ ${fmtHM(totalDriveSec)} · ${totalKm.toFixed(0)} km total driving · ${countries.join(' → ')}</div>
+    `;
+    card.onclick = () => {
+      const bnds = games.map(g => [g.home.lat, g.home.lng]);
+      map.fitBounds(bnds, { padding:[60,60] });
+    };
+    combosList.appendChild(card);
+  });
+}
 
 // selections: [{ league, matchday, fixtures }, ...] — one entry per
 // currently selected league, each with its own chosen matchday's fixtures.
@@ -585,6 +646,7 @@ async function renderCombosMulti(selections){
   const requestId = ++combosRequestId;
   const combosList = document.getElementById('combos-list');
   const heading = document.getElementById('combos-heading');
+  lastCombos = null;
 
   const withFixtures = selections.filter(s => s.fixtures.length > 0);
   const summaryLabel = selections.map(s => `${LEAGUE_LABELS[s.league]} MD${s.matchday}`).join(' · ');
@@ -730,46 +792,8 @@ async function renderCombosMulti(selections){
   }
   trips.sort((x,y) => y.length - x.length || pool[x[0]].start - pool[y[0]].start);
 
-  if(trips.length === 0){
-    combosList.innerHTML = `<div class="empty-note">No realistic combinations found around ${summaryLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`;
-    return;
-  }
-
-  combosList.innerHTML = '';
-  trips.slice(0, 10).forEach((idxs, cIdx) => {
-    const games = idxs.map(i => pool[i]);
-    const countries = [...new Set(games.map(g => g.country))];
-    const crossBorder = countries.length > 1;
-    let totalDriveSec = 0, totalKm = 0;
-    const legLabels = [];
-    for(let k=1;k<idxs.length;k++){
-      const info = legInfo[`${idxs[k-1]}-${idxs[k]}`];
-      totalDriveSec += info.driveSec;
-      totalKm += info.driveKm;
-      const slackMin = Math.round((info.availableSec - info.driveSec)/60);
-      legLabels.push(`🚗 ${fmtHM(info.driveSec)} · ${info.driveKm.toFixed(0)} km · ${slackMin} min to spare`);
-    }
-    const gamesHtml = games.map((g,i) => {
-      const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}`);
-      const legNote = i > 0 ? `<br><span style="color:#00A650; font-size:0.62rem;">${legLabels[i-1]}</span>` : '';
-      return `
-      <div class="combo-game" style="${isAnchor ? 'font-weight:700;' : ''}">${i+1}. ${g.home.name} <span style="color:#6b6455;">(${g.country})</span> – ${g.awayName}${isAnchor ? ' ★' : ''}<br>
-      <span style="color:#6b6455; font-size:0.66rem;">${g.home.city} · ${fmtDate(g.start.toISOString())}</span>${legNote}</div>
-    `;
-    }).join('');
-    const card = document.createElement('div');
-    card.className = 'combo-card';
-    card.innerHTML = `
-      <div class="combo-title">${crossBorder ? '🌍 Cross-border trip' : 'Trip'} ${cIdx+1} · ${games.length} games</div>
-      ${gamesHtml}
-      <div class="combo-stats">≈ ${fmtHM(totalDriveSec)} · ${totalKm.toFixed(0)} km total driving · ${countries.join(' → ')}</div>
-    `;
-    card.onclick = () => {
-      const bnds = games.map(g => [g.home.lat, g.home.lng]);
-      map.fitBounds(bnds, { padding:[60,60] });
-    };
-    combosList.appendChild(card);
-  });
+  lastCombos = { trips, pool, legInfo, anchorSet, summaryLabel };
+  renderComboCards(lastCombos);
 }
 
 function toggleFullscreen(){
@@ -925,6 +949,17 @@ function clearRadiusSearch(){
 // this is what scroll-to-adjust re-runs on every tick. fitView is skipped
 // for scroll adjustments so the map doesn't jump around mid-gesture; the
 // circle/markers/list still update live.
+// Small crest thumbnail for a radius-result row; falls back to a plain
+// league-color dot if the club has no crest on file or it fails to load.
+function handleResultLogoError(imgEl, color){
+  imgEl.outerHTML = `<span class="result-logo-dot" style="background:${color}"></span>`;
+}
+function resultLogoHtml(logoUrl, color){
+  return logoUrl
+    ? `<img class="result-logo" src="${logoUrl}" onerror="handleResultLogoError(this,'${color}')">`
+    : `<span class="result-logo-dot" style="background:${color}"></span>`;
+}
+
 function renderRadiusResults(point, radiusKm, fitView){
   clearRadiusSearch();
   const status = document.getElementById('radius-status');
@@ -952,9 +987,7 @@ function renderRadiusResults(point, radiusKm, fitView){
     const stopKey = `${g.league}::${g.homeCode}`;
     const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
     const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
-    const marker = L.marker([g.home.lat, g.home.lng], {
-      icon: L.divIcon({ className:'', html:'<div class="radius-pin"></div>', iconSize:[16,16], iconAnchor:[8,16], popupAnchor:[0,-16] })
-    });
+    const marker = L.marker([g.home.lat, g.home.lng], { icon: makeIcon(LEAGUE_COLOR[g.league], g.home.logo) });
     marker.bindPopup(`
       <div class="popup-club">${g.home.name} vs ${g.awayName}</div>
       <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
@@ -970,6 +1003,7 @@ function renderRadiusResults(point, radiusKm, fitView){
     item.className = 'radius-result';
     item.innerHTML = `
       <span class="watch-star" data-key="${watchKey}">☆</span>
+      ${resultLogoHtml(g.home.logo, LEAGUE_COLOR[g.league])}
       <div class="rbody">
         <div class="rteams">${g.home.name} – ${g.awayName}</div>
         <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
@@ -1012,19 +1046,28 @@ async function runRadiusSearch(){
   renderRadiusResults(point, radiusKm, true);
 }
 
-// Scroll over the radius dropdown to step through distances without
-// re-geocoding — Nominatim is rate-limited and the address doesn't change,
-// so only the local filter/redraw needs to re-run.
-const RADIUS_STEPS = [10, 25, 50, 75, 100, 150, 200, 300, 400, 500];
-document.getElementById('radius-km').addEventListener('wheel', (e) => {
+// Radius is a continuous slider (5-500 km, step 5) rather than a fixed list
+// of stops — dragging it (or scrolling over it) re-filters live against the
+// already-geocoded point straight away, no "Search" click needed. Only a
+// brand-new address still needs Search, since that's the one step that
+// actually has to call Nominatim.
+const radiusSlider = document.getElementById('radius-km');
+const radiusKmLabel = document.getElementById('radius-km-label');
+
+function setRadiusSlider(km, live){
+  radiusSlider.value = String(km);
+  radiusKmLabel.textContent = `${km} km`;
+  if(live && lastRadiusPoint) renderRadiusResults(lastRadiusPoint, km, false);
+}
+
+radiusSlider.addEventListener('input', () => setRadiusSlider(parseInt(radiusSlider.value, 10), true));
+
+radiusSlider.addEventListener('wheel', (e) => {
   e.preventDefault();
-  const sel = e.currentTarget;
-  const current = parseInt(sel.value, 10);
-  let idx = RADIUS_STEPS.indexOf(current);
-  if(idx === -1) idx = RADIUS_STEPS.findIndex(v => v >= current);
-  idx = Math.max(0, Math.min(RADIUS_STEPS.length - 1, idx + (e.deltaY < 0 ? 1 : -1)));
-  sel.value = String(RADIUS_STEPS[idx]);
-  if(lastRadiusPoint) renderRadiusResults(lastRadiusPoint, RADIUS_STEPS[idx], false);
+  const step = parseInt(radiusSlider.step, 10);
+  const min = parseInt(radiusSlider.min, 10), max = parseInt(radiusSlider.max, 10);
+  const next = Math.max(min, Math.min(max, parseInt(radiusSlider.value, 10) + (e.deltaY < 0 ? step : -step)));
+  setRadiusSlider(next, true);
 }, { passive:false });
 
 // Pick-a-point-on-the-map mode: click the button, then click anywhere on
