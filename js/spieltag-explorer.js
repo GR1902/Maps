@@ -2,6 +2,123 @@
 let TEAMS = {};
 let FIXTURES = {};
 
+// ===== Watchlist ("My Plan") — persisted in localStorage, drag-orderable =====
+const WATCHLIST_STORAGE_KEY = 'scoutingWatchlist';
+let watchlist = [];
+try{ watchlist = JSON.parse(localStorage.getItem(WATCHLIST_STORAGE_KEY) || '[]'); } catch(e){ watchlist = []; }
+
+function watchKeyFor(league, homeCode, matchday){ return `${league}::${homeCode}::${matchday}`; }
+function isWatched(key){ return watchlist.some(w => w.key === key); }
+function saveWatchlist(){ localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(watchlist)); }
+
+function addToWatchlist(item){
+  if(isWatched(item.key)) return;
+  watchlist.push(item);
+  saveWatchlist();
+  renderWatchlist();
+  refreshWatchStars();
+}
+function removeFromWatchlist(key){
+  watchlist = watchlist.filter(w => w.key !== key);
+  saveWatchlist();
+  renderWatchlist();
+  refreshWatchStars();
+}
+function toggleWatch(item){
+  if(isWatched(item.key)) removeFromWatchlist(item.key);
+  else addToWatchlist(item);
+}
+// After adding/removing, ★/☆ toggles elsewhere on the page (fixture list,
+// popups, radius results) need to reflect the new state without a full
+// re-render of whatever list they live in.
+function refreshWatchStars(){
+  document.querySelectorAll('.watch-star[data-key]').forEach(el => {
+    el.textContent = isWatched(el.dataset.key) ? '★' : '☆';
+  });
+}
+
+let watchDragIndex = null;
+
+function renderWatchlist(){
+  const list = document.getElementById('watchlist-list');
+  const dropzone = document.getElementById('watchlist-dropzone');
+  const countEl = document.getElementById('watchlist-count');
+  countEl.textContent = `(${watchlist.length})`;
+  dropzone.classList.toggle('empty', watchlist.length === 0);
+  list.innerHTML = '';
+
+  watchlist.forEach((w, idx) => {
+    const row = document.createElement('div');
+    row.className = 'watch-row';
+    row.draggable = true;
+    row.innerHTML = `
+      <span class="rank">${idx + 1}</span>
+      <div class="wbody">
+        <div class="wteams">${w.homeName} – ${w.awayName}</div>
+        <div class="wmeta">${w.city} · ${fmtDate(w.start)} · ${LEAGUE_LABELS[w.league] || w.league}</div>
+      </div>
+      <span class="wremove" title="Remove">×</span>
+    `;
+    row.querySelector('.wbody').onclick = () => { map.setView([w.lat, w.lng], 10); };
+    row.querySelector('.wremove').onclick = () => removeFromWatchlist(w.key);
+
+    // Drag-to-reorder within the list = set priority.
+    row.addEventListener('dragstart', (e) => {
+      watchDragIndex = idx;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', w.key); // needed for some browsers to allow the drag
+    });
+    row.addEventListener('dragend', () => { row.classList.remove('dragging'); saveWatchlist(); });
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if(watchDragIndex === null || watchDragIndex === idx) return;
+      const [moved] = watchlist.splice(watchDragIndex, 1);
+      watchlist.splice(idx, 0, moved);
+      watchDragIndex = idx;
+      renderWatchlist();
+    });
+
+    list.appendChild(row);
+  });
+}
+
+// Drop target for dragging a fixture in from the side list or radius
+// results (see the .fixture-item / .radius-result drag wiring below).
+(function initWatchlistDropzone(){
+  const dropzone = document.getElementById('watchlist-dropzone');
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    dropzone.classList.add('drag-over');
+  });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('drag-over');
+    const raw = e.dataTransfer.getData('application/json');
+    if(!raw) return;
+    try{ addToWatchlist(JSON.parse(raw)); } catch(err){ /* ignore malformed payload */ }
+  });
+})();
+
+// Wires a draggable source element (a fixture-item or radius-result row) to
+// (a) start a drag carrying this fixture's data for the watchlist dropzone,
+// and (b) show/toggle a ☆/★ star that adds/removes it directly on click.
+function makeWatchable(el, item, starEl){
+  el.draggable = true;
+  el.addEventListener('dragstart', (e) => {
+    e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('application/json', JSON.stringify(item));
+  });
+  if(starEl){
+    starEl.dataset.key = item.key;
+    starEl.textContent = isWatched(item.key) ? '★' : '☆';
+    starEl.title = 'Add to / remove from My Plan';
+    starEl.onclick = (e) => { e.stopPropagation(); toggleWatch(item); };
+  }
+}
+
 const LEAGUE_COLOR = {
   epl:"#1c3f95", championship:"#7b2d8e", league_one:"#556b2f",
   la_liga:"#c8102e", la_liga_2:"#e07b13",
@@ -250,14 +367,17 @@ function renderAll(){
       const a = teams[f.away];
       if(!h) return;
       const stopKey = `${league}::${f.home}`;
+      const watchKey = watchKeyFor(league, f.home, f.matchday);
+      const watchItem = { key: watchKey, league, homeCode: f.home, homeName: h.name, awayName: a ? a.name : f.away, city: h.city, start: f.start, lat: h.lat, lng: h.lng };
       const marker = L.marker([h.lat, h.lng], { icon: makeIcon(color, h.logo) });
       marker.bindTooltip(h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
       marker.bindPopup(`
         <div class="popup-club">${h.name} vs ${a ? a.name : f.away}</div>
         <div class="popup-meta">${h.city} · ${fmtDate(f.start)}</div>
-        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
+        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button></div>
       `);
       bindStopButton(marker, stopKey, h);
+      bindWatchButton(marker, watchItem);
       marker.addTo(map);
       currentMarkers.push(marker);
       bounds.push([h.lat, h.lng]);
@@ -265,10 +385,14 @@ function renderAll(){
       const item = document.createElement('div');
       item.className = 'fixture-item';
       item.innerHTML = `
-        <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
-        <div class="meta">${h.city} · ${fmtDate(f.start)}</div>
+        <span class="watch-star" data-key="${watchKey}">☆</span>
+        <div class="fbody">
+          <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
+          <div class="meta">${h.city} · ${fmtDate(f.start)}</div>
+        </div>
       `;
-      item.onclick = () => { map.setView([h.lat, h.lng], 9); marker.openPopup(); };
+      item.querySelector('.fbody').onclick = () => { map.setView([h.lat, h.lng], 9); marker.openPopup(); };
+      makeWatchable(item, watchItem, item.querySelector('.watch-star'));
       listDiv.appendChild(item);
     });
 
@@ -300,7 +424,7 @@ function buildGamePool(){
       const a = teams[f.away];
       if(!h) return;
       pool.push({
-        league, country: COUNTRY_TAG[league], homeCode: f.home,
+        league, country: COUNTRY_TAG[league], homeCode: f.home, matchday: f.matchday,
         home: h, awayName: a ? a.name : f.away,
         start: new Date(f.start)
       });
@@ -542,6 +666,16 @@ function bindStopButton(marker, stopKey, teamData){
   });
 }
 
+function bindWatchButton(marker, watchItem){
+  marker.on('popupopen', () => {
+    const btn = document.querySelector(`.watch-btn[data-key="${CSS.escape(watchItem.key)}"]`);
+    if(btn){
+      btn.textContent = isWatched(watchItem.key) ? '★ Planned' : '☆ Plan';
+      btn.onclick = () => { toggleWatch(watchItem); btn.textContent = isWatched(watchItem.key) ? '★ Planned' : '☆ Plan'; };
+    }
+  });
+}
+
 function addStop(key, team){
   if(routeStops.some(s => s.key === key)) return;
   routeStops.push({ key, team });
@@ -686,15 +820,18 @@ function renderRadiusResults(point, radiusKm, fitView){
 
   matches.slice(0, 60).forEach(g => {
     const stopKey = `${g.league}::${g.homeCode}`;
+    const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
+    const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
     const marker = L.marker([g.home.lat, g.home.lng], {
       icon: L.divIcon({ className:'', html:'<div class="radius-pin"></div>', iconSize:[16,16], iconAnchor:[8,16], popupAnchor:[0,-16] })
     });
     marker.bindPopup(`
       <div class="popup-club">${g.home.name} vs ${g.awayName}</div>
       <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
-      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
+      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button></div>
     `);
     bindStopButton(marker, stopKey, g.home);
+    bindWatchButton(marker, watchItem);
     marker.addTo(map);
     radiusMarkers.push(marker);
     bounds.push([g.home.lat, g.home.lng]);
@@ -702,10 +839,14 @@ function renderRadiusResults(point, radiusKm, fitView){
     const item = document.createElement('div');
     item.className = 'radius-result';
     item.innerHTML = `
-      <div class="rteams">${g.home.name} – ${g.awayName}</div>
-      <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+      <span class="watch-star" data-key="${watchKey}">☆</span>
+      <div class="rbody">
+        <div class="rteams">${g.home.name} – ${g.awayName}</div>
+        <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+      </div>
     `;
-    item.onclick = () => { map.setView([g.home.lat, g.home.lng], 10); marker.openPopup(); };
+    item.querySelector('.rbody').onclick = () => { map.setView([g.home.lat, g.home.lng], 10); marker.openPopup(); };
+    makeWatchable(item, watchItem, item.querySelector('.watch-star'));
     resultsList.appendChild(item);
   });
 
@@ -800,6 +941,7 @@ async function loadData(){
   TEAMS = await teamsRes.json();
   FIXTURES = await fixturesRes.json();
   buildLeaguePanel();
+  renderWatchlist();
   renderAll();
 }
 

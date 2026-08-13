@@ -106,10 +106,12 @@ header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-sys
 #radius-status{ font-size:0.63rem; color:#6b6455; margin-top:6px; line-height:1.35; min-height:0; }
 #radius-results{ max-height:220px; overflow-y:auto; margin-top:4px; }
 .radius-result{
-  padding:5px 4px; border-bottom:1px solid #eee6c8; font-size:0.68rem; cursor:pointer; color:var(--ink);
+  display:flex; align-items:flex-start; padding:5px 4px; border-bottom:1px solid #eee6c8;
+  font-size:0.68rem; color:var(--ink);
 }
 .radius-result:last-child{ border-bottom:none; }
 .radius-result:hover{ background:#fdf6c8; }
+.radius-result .rbody{ flex:1; min-width:0; cursor:pointer; }
 .radius-result .rteams{ font-weight:700; }
 .radius-result .rmeta{ font-size:0.6rem; color:#6b6455; margin-top:1px; }
 .radius-pin{
@@ -145,6 +147,37 @@ header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-sys
 .fixture-item:hover{ background:#fdf6c8; }
 .fixture-item .teams{ font-weight:700; color:var(--ink); }
 .fixture-item .meta{ font-size:0.66rem; color:#6b6455; margin-top:2px; }
+
+/* Watchlist ("My Plan") */
+#watchlist-heading .count{ font-weight:400; text-transform:none; letter-spacing:normal; font-size:0.66rem; opacity:0.85; }
+#watchlist-dropzone{ border-bottom:1px solid var(--line); transition:background 0.12s; }
+#watchlist-dropzone.drag-over{ background:#fdf6c8; box-shadow:inset 0 0 0 2px var(--gold); }
+#watchlist-hint{ display:none; }
+#watchlist-dropzone.empty #watchlist-hint{ display:block; padding:12px 14px; }
+.watch-row{
+  display:flex; align-items:center; gap:8px; padding:7px 14px; border-bottom:1px solid #eee6c8;
+  font-size:0.74rem; cursor:grab; background:#fffdf4;
+}
+.watch-row.dragging{ opacity:0.4; }
+.watch-row .rank{
+  width:16px; height:16px; border-radius:50%; background:var(--green-dark); color:var(--gold);
+  font-size:0.6rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.watch-row .wbody{ flex:1; min-width:0; cursor:pointer; }
+.watch-row .wteams{ font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.watch-row .wmeta{ font-size:0.62rem; color:#6b6455; margin-top:1px; }
+.watch-row .wremove{ cursor:pointer; color:#a3341f; font-weight:700; font-size:0.8rem; padding:0 3px; flex-shrink:0; }
+.watch-star{
+  cursor:pointer; color:#c9a800; font-size:0.85rem; margin-right:4px; flex-shrink:0; user-select:none;
+}
+.watch-star:hover{ color:var(--green-dark); }
+.watch-btn{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:0.66rem; font-weight:600; padding:4px 8px; border-radius:5px;
+  border:1px solid var(--green-dark); background:#fff; color:var(--green-dark); cursor:pointer; margin-top:5px; margin-left:4px;
+}
+.fixture-item{ display:flex; align-items:flex-start; }
+.fixture-item .fbody{ flex:1; min-width:0; }
 
 .combo-card{
   margin:10px 14px; padding:10px 12px; border-radius:8px; background:#fff;

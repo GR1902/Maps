@@ -82,6 +82,13 @@ to refresh it; `dist/` isn't tracked in git.
   (see below), not just distance
 - Point-to-point route planning (click marker → "+ Add to route" → real
   driving route via OSRM, with distance/time)
+- "⭐ My Plan" watchlist (top of the side panel) — separate from the route
+  planner: this is for marking games you want to see, not for building a
+  drivable itinerary. Add a fixture by clicking its ☆ (fixture list, radius
+  results, or marker popup) or by dragging it into the panel; drag rows
+  within the panel to reorder — order = priority, shown as a rank number.
+  Persisted in the browser's `localStorage`, so it survives reloads (but is
+  local to one browser/device — there's no account or sync)
 
 ### How "Combinable Trips" works
 
