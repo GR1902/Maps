@@ -502,15 +502,17 @@ function renderAll(){
       const stopKey = `${league}::${f.home}`;
       const watchKey = watchKeyFor(league, f.home, f.matchday);
       const watchItem = { key: watchKey, league, homeCode: f.home, homeName: h.name, awayName: a ? a.name : f.away, city: h.city, start: f.start, lat: h.lat, lng: h.lng };
+      const gameLabel = `${h.name} vs ${a ? a.name : f.away}`;
       const marker = L.marker([h.lat, h.lng], { icon: makeIcon(color, h.logo) });
       marker.bindTooltip(h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
       marker.bindPopup(`
-        <div class="popup-club">${h.name} vs ${a ? a.name : f.away}</div>
+        <div class="popup-club">${gameLabel}</div>
         <div class="popup-meta">${h.city} · ${fmtDate(f.start)}</div>
-        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button></div>
+        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">🔀 Suggest trip</button></div>
       `);
       bindStopButton(marker, stopKey, h);
       bindWatchButton(marker, watchItem);
+      bindSuggestButton(marker, watchKey, league, f.home, f.start, gameLabel);
       marker.addTo(map);
       currentMarkers.push(marker);
       bounds.push([h.lat, h.lng]);
@@ -523,9 +525,11 @@ function renderAll(){
           <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
           <div class="meta">${h.city} · ${fmtDate(f.start)}</div>
         </div>
+        <span class="suggest-btn" title="Suggest a trip around this game">🔀</span>
       `;
       item.querySelector('.fbody').onclick = () => { map.setView([h.lat, h.lng], 9); marker.openPopup(); };
       makeWatchable(item, watchItem, item.querySelector('.watch-star'));
+      item.querySelector('.suggest-btn').onclick = (e) => { e.stopPropagation(); suggestTripsFor(league, f.home, f.start, gameLabel); };
       listDiv.appendChild(item);
     });
 
@@ -534,7 +538,8 @@ function renderAll(){
 
   if(bounds.length) map.fitBounds(bounds, { padding:[40,40] });
 
-  renderCombosMulti(anchorSelections);
+  lastAnchorSelections = anchorSelections;
+  updateCombosView();
 }
 
 // ===== Cross-league trip clustering (drive-time feasibility) =====
@@ -594,6 +599,65 @@ function toggleIncludeCrossBorder(checked){
   if(lastCombos) renderComboCards(lastCombos);
 }
 
+// ----- "Suggest a trip for this game" focus mode -----
+// Normal browsing anchors combos on every fixture of every selected
+// league's current matchday (set by renderAll below). Picking a single
+// game via its 🔀 button instead pins the anchor to just that one fixture,
+// independent of whatever leagues/matchdays are toggled on, until cleared.
+let focusedFixture = null; // { league, home, start, label } | null
+let lastAnchorSelections = []; // the normal (non-focused) anchor set, from the last renderAll()
+
+function suggestTripsFor(league, homeCode, start, label){
+  focusedFixture = { league, home: homeCode, start, label };
+  updateCombosView();
+}
+
+function clearFocusedTrip(){
+  focusedFixture = null;
+  updateCombosView();
+}
+
+function updateCombosView(){
+  if(focusedFixture){
+    renderCombosMulti(
+      [{ league: focusedFixture.league, matchday: null, fixtures: [{ home: focusedFixture.home, start: focusedFixture.start }] }],
+      focusedFixture.label
+    );
+  } else {
+    renderCombosMulti(lastAnchorSelections);
+  }
+}
+
+// ----- Swipeable trip carousel -----
+const COMBO_CARD_GAP = 10; // must match the CSS `gap` on #combos-list
+
+function updateCombosPositionUI(){
+  const list = document.getElementById('combos-list');
+  const posEl = document.getElementById('combos-position');
+  if(!list || !posEl) return;
+  const cards = list.querySelectorAll('.combo-card');
+  if(!cards.length){ posEl.textContent = ''; return; }
+  const cardSpan = cards[0].offsetWidth + COMBO_CARD_GAP;
+  const idx = cardSpan ? Math.round(list.scrollLeft / cardSpan) : 0;
+  posEl.textContent = `${Math.min(idx + 1, cards.length)} / ${cards.length}`;
+}
+
+function scrollCombos(dir){
+  const list = document.getElementById('combos-list');
+  const card = list.querySelector('.combo-card');
+  if(!card) return;
+  list.scrollBy({ left: dir * (card.offsetWidth + COMBO_CARD_GAP), behavior: 'smooth' });
+}
+
+(function initCombosScrollTracking(){
+  const list = document.getElementById('combos-list');
+  let scrollTimer = null;
+  list.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(updateCombosPositionUI, 80);
+  }, { passive:true });
+})();
+
 // Builds the combo-card elements for an already-computed trips list.
 function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
   const combosList = document.getElementById('combos-list');
@@ -605,6 +669,8 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
     combosList.innerHTML = includeCrossBorder
       ? `<div class="empty-note">No realistic combinations found around ${summaryLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`
       : `<div class="empty-note">No same-country combinations found around ${summaryLabel}. Turn on "Include cross-border trips" to see trips that reach into a neighboring country too.</div>`;
+    combosList.scrollLeft = 0;
+    updateCombosPositionUI();
     return;
   }
 
@@ -643,19 +709,29 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
     };
     combosList.appendChild(card);
   });
+  combosList.scrollLeft = 0;
+  updateCombosPositionUI();
 }
 
 // selections: [{ league, matchday, fixtures }, ...] — one entry per
-// currently selected league, each with its own chosen matchday's fixtures.
-async function renderCombosMulti(selections){
+// currently selected league, each with its own chosen matchday's fixtures,
+// UNLESS focusLabel is set, in which case selections is a single-fixture
+// anchor built by suggestTripsFor() and focusLabel names that one game.
+async function renderCombosMulti(selections, focusLabel = null){
   const requestId = ++combosRequestId;
   const combosList = document.getElementById('combos-list');
   const heading = document.getElementById('combos-heading');
+  const focusBar = document.getElementById('combos-focus-bar');
+  const posEl = document.getElementById('combos-position');
   lastCombos = null;
+  if(posEl) posEl.textContent = '';
+  if(focusBar) focusBar.style.display = focusLabel ? 'flex' : 'none';
 
   const withFixtures = selections.filter(s => s.fixtures.length > 0);
-  const summaryLabel = selections.map(s => `${LEAGUE_LABELS[s.league]} MD${s.matchday}`).join(' · ');
-  if(heading) heading.textContent = selections.length ? `Combinable Trips – ${summaryLabel}` : 'Combinable Trips';
+  const summaryLabel = focusLabel || selections.map(s => `${LEAGUE_LABELS[s.league]} MD${s.matchday}`).join(' · ');
+  if(heading) heading.textContent = focusLabel
+    ? `Suggested Trips – ${focusLabel}`
+    : (selections.length ? `Combinable Trips – ${summaryLabel}` : 'Combinable Trips');
 
   if(selections.length === 0){
     combosList.innerHTML = `<div class="empty-note">Select at least one league to see combinable trips.</div>`;
@@ -795,7 +871,14 @@ async function renderCombosMulti(selections){
     seen.add(key);
     trips.push(trimmed);
   }
-  trips.sort((x,y) => y.length - x.length || pool[x[0]].start - pool[y[0]].start);
+  // Most effective trip first: the most games, and among ties on game
+  // count, the fewest total driving km.
+  function tripKm(idxs){
+    let km = 0;
+    for(let k=1;k<idxs.length;k++) km += legInfo[`${idxs[k-1]}-${idxs[k]}`].driveKm;
+    return km;
+  }
+  trips.sort((x,y) => y.length - x.length || tripKm(x) - tripKm(y));
 
   lastCombos = { trips, pool, legInfo, anchorSet, summaryLabel };
   renderComboCards(lastCombos);
@@ -856,6 +939,15 @@ function bindWatchButton(marker, watchItem){
       btn.textContent = isWatched(watchItem.key) ? '★ Planned' : '☆ Plan';
       btn.onclick = () => { toggleWatch(watchItem); btn.textContent = isWatched(watchItem.key) ? '★ Planned' : '☆ Plan'; };
     }
+  });
+}
+
+// "🔀 Suggest trip" popup button — pins Combinable Trips to just this one
+// game (see suggestTripsFor / the focus-mode state near renderCombosMulti).
+function bindSuggestButton(marker, key, league, homeCode, start, label){
+  marker.on('popupopen', () => {
+    const btn = document.querySelector(`.suggest-trip-btn[data-key="${CSS.escape(key)}"]`);
+    if(btn) btn.onclick = () => { suggestTripsFor(league, homeCode, start, label); marker.closePopup(); };
   });
 }
 
@@ -1026,14 +1118,16 @@ function renderRadiusResults(point, radiusKm, fitView){
     const stopKey = `${g.league}::${g.homeCode}`;
     const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
     const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
+    const gameLabel = `${g.home.name} vs ${g.awayName}`;
     const marker = L.marker([g.home.lat, g.home.lng], { icon: makeIcon(LEAGUE_COLOR[g.league], g.home.logo) });
     marker.bindPopup(`
-      <div class="popup-club">${g.home.name} vs ${g.awayName}</div>
+      <div class="popup-club">${gameLabel}</div>
       <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
-      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button></div>
+      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">🔀 Suggest trip</button></div>
     `);
     bindStopButton(marker, stopKey, g.home);
     bindWatchButton(marker, watchItem);
+    bindSuggestButton(marker, watchKey, g.league, g.homeCode, g.start.toISOString(), gameLabel);
     marker.addTo(map);
     radiusMarkers.push(marker);
     bounds.push([g.home.lat, g.home.lng]);
@@ -1047,9 +1141,11 @@ function renderRadiusResults(point, radiusKm, fitView){
         <div class="rteams">${g.home.name} – ${g.awayName}</div>
         <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
       </div>
+      <span class="suggest-btn" title="Suggest a trip around this game">🔀</span>
     `;
     item.querySelector('.rbody').onclick = () => { map.setView([g.home.lat, g.home.lng], 10); marker.openPopup(); };
     makeWatchable(item, watchItem, item.querySelector('.watch-star'));
+    item.querySelector('.suggest-btn').onclick = (e) => { e.stopPropagation(); suggestTripsFor(g.league, g.homeCode, g.start.toISOString(), gameLabel); };
     resultsList.appendChild(item);
   });
 

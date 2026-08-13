@@ -83,6 +83,15 @@
         <input type="checkbox" id="cross-border-toggle" onchange="toggleIncludeCrossBorder(this.checked)">
         🌍 Include cross-border trips
       </label>
+      <div id="combos-focus-bar" style="display:none;">
+        Showing suggestions for one game only.
+        <button type="button" onclick="clearFocusedTrip()">✕ Show all trips</button>
+      </div>
+      <div id="combos-nav">
+        <button type="button" onclick="scrollCombos(-1)" aria-label="Previous trip">‹</button>
+        <span id="combos-position"></span>
+        <button type="button" onclick="scrollCombos(1)" aria-label="Next trip">›</button>
+      </div>
       <div id="combos-list"></div>
     </div>
   </div>

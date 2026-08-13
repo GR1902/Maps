@@ -97,11 +97,19 @@ to refresh it; `dist/` isn't tracked in git.
   OSRM routing already used elsewhere)
 - "Combinable trips" panel: for the selected league + matchday's home
   fixtures ("anchors"), finds realistic multi-stop trips — where every leg
-  is checked against actual driving time (see below), not just distance. By
-  default only same-country trips are shown; a "🌍 Include cross-border
-  trips" toggle above the list opts in to also seeing trips that reach into
-  a neighboring country's leagues, re-filtering instantly from the
-  already-computed trips (no re-fetch from the routing service)
+  is checked against actual driving time (see below), not just distance.
+  Sorted most-effective-first: the most games, and among trips with the
+  same number of games, the fewest total driving km. By default only
+  same-country trips are shown; a "🌍 Include cross-border trips" toggle
+  above the list opts in to also seeing trips that reach into a
+  neighboring country's leagues, re-filtering instantly from the
+  already-computed trips (no re-fetch from the routing service). Shown as
+  a swipeable/scrollable carousel — one trip card at a time, with a
+  position readout ("2 / 7") and ‹ › buttons — instead of a long vertical
+  list. A "🔀 Suggest trip" button on any single fixture (list row, radius
+  result, or marker popup) pins the panel to trip suggestions built around
+  just that one game, independent of whatever leagues/matchdays are
+  currently toggled on, until cleared via "✕ Show all trips"
 - Point-to-point route planning (click marker → "+ Add to route" → real
   driving route via OSRM, with distance/time); stops and the running
   distance/time summary live under "🚗 Plan Route" in the top control bar,
