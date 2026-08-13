@@ -22,7 +22,7 @@ norwich-scouting-map/
 │   └── spieltag-explorer.js   App logic (fetches data/teams.json + data/fixtures.json)
 ├── data/
 │   ├── teams.json             499 club/venue records, keyed by league → team code
-│   ├── fixtures.json          275 fixtures, keyed by league, with matchday numbers
+│   ├── fixtures.json          2610 fixtures, keyed by league, with matchday numbers
 │   ├── airports.json          ~60 major European airports (name, IATA, city, lat/lng)
 │   └── leagues.json           Competition logo URL per league code (see below)
 ├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
@@ -232,39 +232,76 @@ a latent bug, fixed while splitting out the data/CSS/JS:
 
 ## ⚠️ Known data gaps / confidence levels — read before extending
 
-Data confidence varies significantly by league and was gathered via web
-search, not a live feed (except the big 5, see below).
+Data confidence varies by league and was gathered via web search, not a
+licensed live feed (see "On accuracy vs. an official API" below).
+
+All 29 leagues were re-researched end-to-end on 2026-08-13 by 10 parallel
+research passes (one per country/region), each reusing the same official
+source already vetted for that league (see the per-league notes below) and
+extending coverage to **every upcoming matchday with an officially
+confirmed kickoff date+time** — not a fixed count. A league stops wherever
+its federation's own publishing horizon stops; nothing beyond a confirmed
+source was guessed. Several passes also caught and fixed outright errors in
+the previous MD1-only data (wrong dates, swapped home/away, stale-season
+data) — noted per league below.
 
 | League | Coverage | Confidence | Notes |
 |---|---|---|---|
-| Premier League | MD1–2 | High | MD2 added 2026-08-13, confirmed kickoff times |
-| La Liga, Bundesliga, Serie A, Ligue 1 | Live snapshot | High | Pulled from a sports-data tool internal to Claude.ai chat — **not available in Claude Code**, see below |
-| Championship (ENG), 2. Bundesliga (GER), Ligue 2 (FRA) | MD1 | High | Full 2026/27 roster + confirmed opening-round kickoff times from official/press sources |
-| LaLiga Hypermotion (ESP) | MD1 | Medium | Full 2026/27 roster confirmed; only 2 of 11 kickoff times were confirmed by the source found (Real Sociedad B–Castellón, Almería–Eldense) — the other 9 use **placeholder times** (typical Segunda weekend slots), dates are correct |
-| Serie B (ITA) | MD1 | Medium | Full 2026/27 roster + correct matchday date (Sat 22 Aug) confirmed; **no source gave individual kickoff times**, so all 10 matches use the same **placeholder time** (18:00 CEST) |
-| Primeira Liga, Eredivisie, Superliga (DEN) | MD 1–2/3 | High | Cross-verified against official calendars via press coverage |
-| Pro League (BEL) | MD1 (+1 MD2 game) | High | 18 clubs (league expanded from 16) |
-| Allsvenskan (SWE), Veikkausliiga (FIN) | Current round only | Medium | Calendar-year seasons already in progress; round numbers approximate |
-| Eliteserien (NOR) | Round 18 | Medium | 1 of 8 fixtures (Bodø/Glimt–Start) uses a **placeholder date/time** — home/away was inferred from a season ground-pattern, not confirmed directly |
-| League One (ENG), 3. Liga (GER), Eerste Divisie (NED), Scottish Premiership, Swiss Super League, Turkish Süper Lig, Croatian HNL | MD1 | High | Full 2026/27 roster + confirmed kickoff times from official/press sources |
-| Challenger Pro League (BEL) | MD1 | High | 15 clubs; one team (Club NXT) has a bye in MD1 (odd number of clubs), so it appears with no home fixture that round — expected, not a data gap |
-| Austrian Bundesliga | MD1 | Medium | Full roster + 4 of 6 kickoff times confirmed; 2 matches (Wolfsberger AC–Austria Wien, Austria Lustenau–SV Ried) have a confirmed time but the **date is assumed** (same weekend as the rest of MD1, not individually verified) |
-| Greek Super League | MD1 | Medium | Full roster + correct match dates (22–23 Aug) confirmed; **no source gave kickoff times**, so all 7 matches use the same **placeholder time** (20:00 EEST) |
-| Polish Ekstraklasa | MD1 | Medium | Full roster + all 9 pairings confirmed; only 2 kickoff times individually confirmed (Radomiak–Wieczysta, Pogoń–Legia) — the other 7 use a **placeholder time** (Sat 14:45 CEST), dates for those 7 are assumed |
-| Czech First League (Chance Liga) | MD1 | High | Full roster + 7 of 8 kickoff times confirmed; 1 match (Artis Brno–Mladá Boleslav) has confirmed date but **placeholder time** |
+| Premier League | MD1–5 (21 Aug–20 Sep) | High | premierleague.com; MD6+ (10 Oct onward) has no TV-selected kickoff times published yet |
+| Championship, League One (ENG) | MD1–46, full season (Aug 2026–May 2027) | High through ~MD25 (early Jan), Moderate after | EFL publishes the full season's default schedule immediately, unlike other leagues — later Saturday 15:00 slots remain subject to further TV rearrangement per EFL's rolling confirmation policy |
+| La Liga | MD1–4 (15 Aug–7 Sep) | High | laliga.com structured match data; **corrected several wrong MD1 fixtures** from the previous internal-tool snapshot (wrong pairings/dates) |
+| LaLiga Hypermotion | MD1–4 (14 Aug–7 Sep) | High | laliga.com; replaced the old mostly-placeholder MD1 times with real confirmed ones for all 11 fixtures |
+| Bundesliga | MD1–4 (28 Aug–20 Sep) | High | OpenLigaDB (official DFL/DFB mirror), cross-verified against bundesliga.com; MD5+ not yet time-confirmed |
+| 2. Bundesliga | MD1–6 (7 Aug–20 Sep) | High | Same sourcing; **corrected two kickoff times** (Magdeburg–Braunschweig, Cottbus–Hannover 96) that were off by 30 min in the old data |
+| 3. Liga | MD1–7 (7 Aug–20 Sep) | High | Same sourcing; MD6 is a real simultaneous-kickoff midweek round (all 19:00 CEST), not a placeholder |
+| Serie A | MD1–5, 48/50 fixtures (22 Aug–20 Sep) | High | legaseriea.it via Wikipedia's mirrored calendar tables, cross-checked against a legaseriea.it news article; 2 MD4 fixtures excluded (Lazio–Milan, Sassuolo–Juventus — kickoff still conditional on European scheduling) |
+| Serie B | MD1–5 (21 Aug–20 Sep) | High | Same sourcing; replaced the old one-flat-time-for-everyone placeholder with real per-match times |
+| Ligue 1 | MD1–4 (21 Aug–13 Sep) | High | ligue1.com TV-programming articles + official club sites |
+| Ligue 2 | MD1–8, 70/72 fixtures (8 Aug–10 Oct) | High for MD1–4/6/7, Medium-high for MD5/MD8 | LFP calendar + club sites; 2 fixtures (1 each in MD5/MD8) excluded — pairing known, exact day/time within the round unconfirmed |
+| Primeira Liga | MD1–4 (7 Aug–10 Sep) | High | ligaportugal.pt official calendar API (UTC-native) |
+| Eredivisie | MD1–12, 18, 33, 34 (7 Aug 2026–23 May 2027) | High | eredivisie.nl live fixture feed (the *rendered page* had a 1-hour display bug — feed data was used instead, verified against press); 1 postponed fixture (NEC–Excelsior) excluded, no new date yet |
+| Eerste Divisie | MD1–38, full season (7 Aug 2026–14 May 2027) | High, single-source | keukenkampioendivisie.nl's official schedule API — every match all season has a distinct real time, but from one source only |
+| Pro League (BEL) | MD1–7 (7 Aug–20 Sep) | High | proleague.be + voetbalkrant.com cross-check; **corrected several wrong kickoff times and a few home/away swaps** in the old MD1 data (Westerlo–Union SG, Charleroi–OH Leuven, and others) |
+| Challenger Pro League (BEL) | MD1–6 (14 Aug–20 Sep) | High | Same sourcing; **fixed two reversed home/away fixtures** (Seraing–Lokeren, Eupen–Jong Genk); 15 clubs, rotating bye each round is expected, not a gap |
+| Allsvenskan (SWE) | Rounds 17–23 (14 Aug–12 Oct) | High | allsvenskan.se, cross-checked against Svensk Elitfotboll |
+| Eliteserien (NOR) | Rounds 18–22 (14 Aug–20 Sep) | High | Official NFF/fotball.no database; the old placeholder Bodø/Glimt–Start fixture was found to have **already been played back in April** and was dropped rather than given a fake future date |
+| Superliga (DEN) | Rounds 3(makeup)–9 (14 Aug–20 Sep) | High | Live from superliga.dk (web-search summaries were discarded as stale); fixed a matchday mislabel (Randers–FCK was tagged round 3, actually round 4) |
+| Veikkausliiga (FIN) | Rounds 20–22, end of regular season (14–31 Aug) | High–Medium-high | Official fixtures listing; rounds 23+ (post-season split) not yet published |
+| Scottish Premiership | MD1, 3, 4 (31 Jul–30 Aug) | High | spfl.co.uk / club statements; **MD2's Falkirk–Hearts, Rangers–St Mirren, St Johnstone–Celtic excluded** — officially postponed for UEFA play-off involvement, new date TBC |
+| Swiss Super League | MD1, 4–10 (25 Jul–11 Oct) | Very high | Official SFL/blue Sport calendar PDF, which explicitly marks Rounds 1–10 as time-confirmed; one fixture (Thun–Servette, MD4) is blank in the official source and was excluded rather than guessed |
+| Austrian Bundesliga | MD1, 3–5 (31 Jul–1 Sep) | High | bundesliga.at team pages; **the previously-assumed MD1 dates for Wolfsberger AC–Austria Wien and Austria Lustenau–SV Ried were corrected** to the actual played date (2 Aug), confirmed across 5 independent sources |
+| Greek Super League | MD1 only (22–23 Aug) | High | seleo.gr / betarades.gr; replaced the old one-flat-time placeholder with real per-match times; MD2+ has no per-match schedule yet |
+| Turkish Süper Lig | MD1–3 (14–31 Aug) | High | sporx.com; MD1 unchanged from prior high-confidence data |
+| Polish Ekstraklasa | MD1, 4–7 (24 Jul–7 Sep) | High | ekstraklasa.org official terminarz; MD1 re-derived from final-score reports, **fixing a wrong date+time** for Wisła Kraków–GKS Katowice; 3 postponed fixtures excluded, no reschedule date yet |
+| Czech First League (Chance Liga) | MD1, 4–5 (25 Jul–23 Aug) | High | fotbal.cz; MD1's previously-uncertain Artis Brno–Mladá Boleslav game confirmed at 18:00 local |
+| Croatian HNL | MD1, 3–4 (31 Jul–23 Aug) | High | hns-cff.hr official raspored; MD2 intentionally skipped (already played before the research date) |
 
-**12 more leagues added 2026-08-13** (League One, 3. Liga, Eerste Divisie, Challenger Pro League, Scottish Premiership, Swiss Super League, Austrian Bundesliga, Greek Super League, Süper Lig, Ekstraklasa, Czech First League, Croatian HNL): same research method as the second-tier leagues above (web search, not the Claude.ai sports-data tool). Stadium coordinates are city-level from general knowledge, not individually re-verified per club.
+Stadium coordinates are city-level from general knowledge, not individually
+re-verified per club. The live current-season snapshot for the "big 5"
+leagues that was previously sourced from a Claude.ai-internal tool has been
+fully replaced above with open-web sourcing, so that dependency no longer
+applies to any league in this dataset.
 
-## Why most leagues only go 1–2 matchdays deep
+## Why matchday depth varies so much by league
 
-We tried extending every league to matchdays 1–5 in one pass (2026-08-13) and
-hit a hard limit: most federations/leagues release kickoff times in
-**stages**, weeks ahead of each round, not for the whole season at once —
-e.g. the DFL (Bundesliga) had only matchdays 1–4 time-confirmed at the time
-of writing, with the rest following later. Beyond that point there's
-nothing to fetch; it's not a research gap. The **weekly scheduled routine**
-(see below) is the actual answer to "extend this over time" — it picks up
-newly-confirmed matchdays automatically as each federation releases them,
+Coverage now genuinely reflects each league's own publishing horizon rather
+than a fixed cutoff — the differences are real, not a research gap:
+- **EFL (Championship, League One)** publishes the entire season's default
+  schedule on release day, so those two go all the way to May 2027.
+- **Most continental top flights** (Bundesliga, Serie A, Ligue 1, La Liga,
+  Primeira Liga) release kickoff times in **stages**, a few weeks at a
+  time — e.g. the DFL had only matchdays 1–4 time-confirmed for the
+  Bundesliga as of 2026-08-13, with the rest following later.
+- **Nordic leagues** run calendar-year seasons already in progress by
+  August, so coverage starts at the current round rather than MD1.
+- A handful of leagues (Eredivisie, Eerste Divisie) publish much further
+  ahead than their neighbors simply because their federation's own data
+  feed happens to carry season-long placeholders that resolve to real times
+  early.
+
+Beyond each league's confirmed horizon there's nothing to fetch — the
+**weekly scheduled routine** (see below) is the mechanism for picking up
+newly-confirmed matchdays as each federation releases them over time,
 rather than this being a one-time manual push.
 
 ## Automated weekly updates
@@ -278,13 +315,12 @@ result. It never invents placeholder dates/times — a league with nothing
 newly confirmed is simply left alone until next week. Managed at
 [claude.ai/code/routines](https://claude.ai/code/routines).
 
-## The live sports-data gap
+## On accuracy vs. an official API
 
-The current-season snapshots for the big 5 leagues were fetched using a
-sports-data tool that's internal to the Claude.ai chat environment and is
-not exposed via the Claude Code / API surface. To keep those leagues current
-from here, you'll need one of:
+Every fixture in this dataset comes from open-web research (official league
+sites where possible, reputable press otherwise) rather than a licensed
+sports-data feed — that's inherent to how this project is maintained, not a
+gap specific to any subset of leagues. For guaranteed-accurate, always-fresh
+data instead, you'd want one of:
 - A licensed sports-data API (Sportradar, API-Football, Opta, etc.)
 - A "Scoutastic" export/API if your organization can provide access
-- Continuing to fetch matchday data manually via Claude.ai chat and dropping
-  the resulting JSON into `data/`
