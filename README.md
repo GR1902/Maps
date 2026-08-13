@@ -64,14 +64,18 @@ to refresh it; `dist/` isn't tracked in git.
   per club by `data/teams.json`'s `logo` field — see below); falls back to
   the plain colored marker if a club has no crest on file or the image
   fails to load
-- Radius search (top-left panel): enter an address and a radius (25–300 km),
-  see every home fixture within it — across *all* 29 leagues and every
-  matchday currently loaded, independent of which leagues are toggled on in
-  the picker, since "what's near this address" is a different question from
-  "what am I currently browsing". Draws the search circle, drops a marker
-  per match, and each result supports "+ Add to route" like any other
-  marker. Geocoding via OpenStreetMap's free Nominatim API (same data
-  source as the map tiles and OSRM routing already used elsewhere)
+- Radius search (top-left panel): enter an address, or click "📍 Pick point
+  on map" and click anywhere on the map instead — either way, see every home
+  fixture within a radius (10–500 km) of that point, across *all* 29 leagues
+  and every matchday currently loaded, independent of which leagues are
+  toggled on in the picker, since "what's near this point" is a different
+  question from "what am I currently browsing". Scroll over the radius
+  dropdown to step through distances live (re-filters instantly against the
+  already-geocoded point — no repeated address lookups). Draws the search
+  circle, drops a marker per match, and each result supports "+ Add to
+  route" like any other marker. Geocoding (forward and reverse) via
+  OpenStreetMap's free Nominatim API (same data source as the map tiles and
+  OSRM routing already used elsewhere)
 - "Combinable trips" panel: for the selected league + matchday's home
   fixtures ("anchors"), finds realistic multi-stop trips — including other
   leagues/countries — where every leg is checked against actual driving time

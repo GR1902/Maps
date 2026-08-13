@@ -45,15 +45,21 @@
         <div id="radius-body">
           <input type="text" id="radius-address" placeholder="Address, city, postcode…" onkeydown="if(event.key==='Enter')runRadiusSearch()" />
           <div class="radius-row">
-            <select id="radius-km">
+            <select id="radius-km" title="Scroll to adjust">
+              <option value="10">10 km</option>
               <option value="25">25 km</option>
               <option value="50">50 km</option>
+              <option value="75">75 km</option>
               <option value="100" selected>100 km</option>
+              <option value="150">150 km</option>
               <option value="200">200 km</option>
               <option value="300">300 km</option>
+              <option value="400">400 km</option>
+              <option value="500">500 km</option>
             </select>
             <button class="route-btn" id="radius-search-btn" onclick="runRadiusSearch()">Search</button>
           </div>
+          <button class="route-btn" id="radius-pick-btn" onclick="toggleMapPick()" style="width:100%; margin-top:6px;">📍 Pick point on map</button>
           <div id="radius-status"></div>
           <div id="radius-results"></div>
         </div>

@@ -632,8 +632,23 @@ async function geocodeAddress(address){
   return { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon), label: results[0].display_name };
 }
 
+// Reverse geocoding for map-click picks — turns a lat/lng into a readable
+// label for the status line and the address box. Falls back to the raw
+// coordinates if Nominatim has nothing for that exact point (open water,
+// remote areas).
+async function reverseGeocode(lat, lng){
+  try{
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14`;
+    const res = await fetch(url);
+    const result = await res.json();
+    if(result && result.display_name) return result.display_name;
+  } catch(e){ /* fall through to coordinate label */ }
+  return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+}
+
 let radiusCircle = null;
 let radiusMarkers = [];
+let lastRadiusPoint = null; // {lat,lng,label} of the last successfully geocoded address
 
 function clearRadiusSearch(){
   if(radiusCircle){ map.removeLayer(radiusCircle); radiusCircle = null; }
@@ -642,29 +657,13 @@ function clearRadiusSearch(){
   document.getElementById('radius-results').innerHTML = '';
 }
 
-async function runRadiusSearch(){
-  const address = document.getElementById('radius-address').value.trim();
-  const radiusKm = parseInt(document.getElementById('radius-km').value, 10);
-  const status = document.getElementById('radius-status');
-  const btn = document.getElementById('radius-search-btn');
+// Pure filter + redraw for an already-geocoded point — no network call, so
+// this is what scroll-to-adjust re-runs on every tick. fitView is skipped
+// for scroll adjustments so the map doesn't jump around mid-gesture; the
+// circle/markers/list still update live.
+function renderRadiusResults(point, radiusKm, fitView){
   clearRadiusSearch();
-
-  if(!address){ status.textContent = 'Enter an address first.'; return; }
-
-  status.textContent = 'Looking up address…';
-  btn.disabled = true;
-  let point;
-  try{
-    point = await geocodeAddress(address);
-  } catch(e){
-    point = null;
-  }
-  btn.disabled = false;
-
-  if(!point){
-    status.textContent = 'Could not find that address. Try a more specific one (city, country).';
-    return;
-  }
+  const status = document.getElementById('radius-status');
 
   // Search across ALL leagues and ALL matchdays currently loaded — not just
   // the leagues/matchday toggled on — since "what's near this address" is
@@ -710,8 +709,87 @@ async function runRadiusSearch(){
     resultsList.appendChild(item);
   });
 
-  map.fitBounds(bounds, { padding: [50,50] });
+  if(fitView) map.fitBounds(bounds, { padding: [50,50] });
+  radiusCircle.bringToFront();
 }
+
+async function runRadiusSearch(){
+  const address = document.getElementById('radius-address').value.trim();
+  const radiusKm = parseInt(document.getElementById('radius-km').value, 10);
+  const status = document.getElementById('radius-status');
+  const btn = document.getElementById('radius-search-btn');
+  clearRadiusSearch();
+
+  if(!address){ status.textContent = 'Enter an address first.'; return; }
+
+  status.textContent = 'Looking up address…';
+  btn.disabled = true;
+  let point;
+  try{
+    point = await geocodeAddress(address);
+  } catch(e){
+    point = null;
+  }
+  btn.disabled = false;
+
+  if(!point){
+    status.textContent = 'Could not find that address. Try a more specific one (city, country).';
+    return;
+  }
+
+  lastRadiusPoint = point;
+  renderRadiusResults(point, radiusKm, true);
+}
+
+// Scroll over the radius dropdown to step through distances without
+// re-geocoding — Nominatim is rate-limited and the address doesn't change,
+// so only the local filter/redraw needs to re-run.
+const RADIUS_STEPS = [10, 25, 50, 75, 100, 150, 200, 300, 400, 500];
+document.getElementById('radius-km').addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const sel = e.currentTarget;
+  const current = parseInt(sel.value, 10);
+  let idx = RADIUS_STEPS.indexOf(current);
+  if(idx === -1) idx = RADIUS_STEPS.findIndex(v => v >= current);
+  idx = Math.max(0, Math.min(RADIUS_STEPS.length - 1, idx + (e.deltaY < 0 ? 1 : -1)));
+  sel.value = String(RADIUS_STEPS[idx]);
+  if(lastRadiusPoint) renderRadiusResults(lastRadiusPoint, RADIUS_STEPS[idx], false);
+}, { passive:false });
+
+// Pick-a-point-on-the-map mode: click the button, then click anywhere on
+// the map to use that spot as the radius search center instead of typing
+// an address. One-shot — picking a point (or clicking the button again)
+// turns it back off.
+let mapPickMode = false;
+
+function toggleMapPick(){
+  mapPickMode = !mapPickMode;
+  const btn = document.getElementById('radius-pick-btn');
+  const mapEl = document.getElementById('map');
+  btn.classList.toggle('active', mapPickMode);
+  btn.textContent = mapPickMode ? 'Click anywhere on the map…' : '📍 Pick point on map';
+  mapEl.classList.toggle('picking', mapPickMode);
+}
+
+map.on('click', async (e) => {
+  if(!mapPickMode) return;
+  mapPickMode = false;
+  const btn = document.getElementById('radius-pick-btn');
+  const mapEl = document.getElementById('map');
+  btn.classList.remove('active');
+  btn.textContent = '📍 Pick point on map';
+  mapEl.classList.remove('picking');
+
+  const { lat, lng } = e.latlng;
+  const status = document.getElementById('radius-status');
+  status.textContent = 'Looking up that location…';
+  const label = await reverseGeocode(lat, lng);
+  document.getElementById('radius-address').value = label;
+  const point = { lat, lng, label };
+  lastRadiusPoint = point;
+  const radiusKm = parseInt(document.getElementById('radius-km').value, 10);
+  renderRadiusResults(point, radiusKm, true);
+});
 
 // ===== Bootstrap: load data, then render =====
 async function loadData(){
