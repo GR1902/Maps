@@ -1258,5 +1258,627 @@
       "lat": 61.4977,
       "lng": 23.7859
     }
+  },
+  "championship": {
+    "BIR": {
+      "name": "Birmingham City",
+      "city": "Birmingham",
+      "lat": 52.4759,
+      "lng": -1.8683
+    },
+    "BLA": {
+      "name": "Blackburn Rovers",
+      "city": "Blackburn",
+      "lat": 53.7285,
+      "lng": -2.4891
+    },
+    "BOL": {
+      "name": "Bolton Wanderers",
+      "city": "Horwich",
+      "lat": 53.5787,
+      "lng": -2.535
+    },
+    "BRC": {
+      "name": "Bristol City",
+      "city": "Bristol",
+      "lat": 51.44,
+      "lng": -2.6203
+    },
+    "BUR": {
+      "name": "Burnley",
+      "city": "Burnley",
+      "lat": 53.789,
+      "lng": -2.2308
+    },
+    "CAR": {
+      "name": "Cardiff City",
+      "city": "Cardiff",
+      "lat": 51.4727,
+      "lng": -3.2033
+    },
+    "CHA": {
+      "name": "Charlton Athletic",
+      "city": "London",
+      "lat": 51.4861,
+      "lng": 0.0364
+    },
+    "DER": {
+      "name": "Derby County",
+      "city": "Derby",
+      "lat": 52.9148,
+      "lng": -1.4474
+    },
+    "LIN": {
+      "name": "Lincoln City",
+      "city": "Lincoln",
+      "lat": 53.2199,
+      "lng": -0.5461
+    },
+    "MID": {
+      "name": "Middlesbrough",
+      "city": "Middlesbrough",
+      "lat": 54.5782,
+      "lng": -1.2166
+    },
+    "MIL": {
+      "name": "Millwall",
+      "city": "London",
+      "lat": 51.486,
+      "lng": -0.0503
+    },
+    "NOR": {
+      "name": "Norwich City",
+      "city": "Norwich",
+      "lat": 52.6221,
+      "lng": 1.3092
+    },
+    "POR": {
+      "name": "Portsmouth",
+      "city": "Portsmouth",
+      "lat": 50.796,
+      "lng": -1.0641
+    },
+    "PNE": {
+      "name": "Preston North End",
+      "city": "Preston",
+      "lat": 53.7726,
+      "lng": -2.6883
+    },
+    "QPR": {
+      "name": "Queens Park Rangers",
+      "city": "London",
+      "lat": 51.5094,
+      "lng": -0.2323
+    },
+    "SHU": {
+      "name": "Sheffield United",
+      "city": "Sheffield",
+      "lat": 53.3701,
+      "lng": -1.4709
+    },
+    "SOU": {
+      "name": "Southampton",
+      "city": "Southampton",
+      "lat": 50.9058,
+      "lng": -1.391
+    },
+    "STK": {
+      "name": "Stoke City",
+      "city": "Stoke-on-Trent",
+      "lat": 52.9884,
+      "lng": -2.1751
+    },
+    "SWA": {
+      "name": "Swansea City",
+      "city": "Swansea",
+      "lat": 51.6422,
+      "lng": -3.9351
+    },
+    "WAT": {
+      "name": "Watford",
+      "city": "Watford",
+      "lat": 51.6497,
+      "lng": -0.4015
+    },
+    "WBA": {
+      "name": "West Bromwich Albion",
+      "city": "West Bromwich",
+      "lat": 52.5091,
+      "lng": -1.964
+    },
+    "WHU": {
+      "name": "West Ham United",
+      "city": "London",
+      "lat": 51.5386,
+      "lng": -0.0166
+    },
+    "WOL": {
+      "name": "Wolverhampton Wanderers",
+      "city": "Wolverhampton",
+      "lat": 52.5902,
+      "lng": -2.1301
+    },
+    "WRE": {
+      "name": "Wrexham",
+      "city": "Wrexham",
+      "lat": 53.0645,
+      "lng": -3.0017
+    }
+  },
+  "la_liga_2": {
+    "CEU": {
+      "name": "AD Ceuta FC",
+      "city": "Ceuta",
+      "lat": 35.8894,
+      "lng": -5.3213
+    },
+    "ALB": {
+      "name": "Albacete BP",
+      "city": "Albacete",
+      "lat": 38.9975,
+      "lng": -1.8712
+    },
+    "BUR": {
+      "name": "Burgos CF",
+      "city": "Burgos",
+      "lat": 42.3441,
+      "lng": -3.7275
+    },
+    "CAD": {
+      "name": "Cádiz CF",
+      "city": "Cádiz",
+      "lat": 36.493,
+      "lng": -6.2515
+    },
+    "CAS": {
+      "name": "CD Castellón",
+      "city": "Castellón de la Plana",
+      "lat": 39.9895,
+      "lng": -0.0392
+    },
+    "ELD": {
+      "name": "CD Eldense",
+      "city": "Elda",
+      "lat": 38.4778,
+      "lng": -0.7936
+    },
+    "LEG": {
+      "name": "CD Leganés",
+      "city": "Leganés",
+      "lat": 40.3389,
+      "lng": -3.7644
+    },
+    "TEN": {
+      "name": "CD Tenerife",
+      "city": "Santa Cruz de Tenerife",
+      "lat": 28.4682,
+      "lng": -16.2864
+    },
+    "SAB": {
+      "name": "CE Sabadell",
+      "city": "Sabadell",
+      "lat": 41.5427,
+      "lng": 2.1044
+    },
+    "CFO": {
+      "name": "Celta Fortuna",
+      "city": "Vigo",
+      "lat": 42.205,
+      "lng": -8.7233
+    },
+    "COR": {
+      "name": "Córdoba CF",
+      "city": "Córdoba",
+      "lat": 37.8656,
+      "lng": -4.755
+    },
+    "AND": {
+      "name": "FC Andorra",
+      "city": "Andorra la Vella",
+      "lat": 42.5075,
+      "lng": 1.5218
+    },
+    "GIR": {
+      "name": "Girona FC",
+      "city": "Girona",
+      "lat": 41.9631,
+      "lng": 2.8267
+    },
+    "GRA": {
+      "name": "Granada CF",
+      "city": "Granada",
+      "lat": 37.1528,
+      "lng": -3.5985
+    },
+    "RSB": {
+      "name": "Real Sociedad B",
+      "city": "San Sebastián",
+      "lat": 43.2969,
+      "lng": -2.0247
+    },
+    "MAL": {
+      "name": "RCD Mallorca",
+      "city": "Palma",
+      "lat": 39.5896,
+      "lng": 2.6304
+    },
+    "OVI": {
+      "name": "Real Oviedo",
+      "city": "Oviedo",
+      "lat": 43.3628,
+      "lng": -5.873
+    },
+    "SPG": {
+      "name": "Real Sporting",
+      "city": "Gijón",
+      "lat": 43.535,
+      "lng": -5.6389
+    },
+    "VLL": {
+      "name": "Real Valladolid CF",
+      "city": "Valladolid",
+      "lat": 41.6431,
+      "lng": -4.7495
+    },
+    "EIB": {
+      "name": "SD Eibar",
+      "city": "Eibar",
+      "lat": 43.1791,
+      "lng": -2.4728
+    },
+    "ALM": {
+      "name": "UD Almería",
+      "city": "Almería",
+      "lat": 36.8508,
+      "lng": -2.4056
+    },
+    "LPA": {
+      "name": "UD Las Palmas",
+      "city": "Las Palmas",
+      "lat": 28.0997,
+      "lng": -15.4568
+    }
+  },
+  "bundesliga_2": {
+    "HER": {
+      "name": "Hertha BSC",
+      "city": "Berlin",
+      "lat": 52.5147,
+      "lng": 13.2394
+    },
+    "BIE": {
+      "name": "Arminia Bielefeld",
+      "city": "Bielefeld",
+      "lat": 52.0286,
+      "lng": 8.5309
+    },
+    "BOC": {
+      "name": "VfL Bochum",
+      "city": "Bochum",
+      "lat": 51.4909,
+      "lng": 7.2361
+    },
+    "BRA": {
+      "name": "Eintracht Braunschweig",
+      "city": "Braunschweig",
+      "lat": 52.2777,
+      "lng": 10.5423
+    },
+    "COT": {
+      "name": "Energie Cottbus",
+      "city": "Cottbus",
+      "lat": 51.7414,
+      "lng": 14.305
+    },
+    "DAR": {
+      "name": "Darmstadt 98",
+      "city": "Darmstadt",
+      "lat": 49.8611,
+      "lng": 8.6706
+    },
+    "DRE": {
+      "name": "Dynamo Dresden",
+      "city": "Dresden",
+      "lat": 51.0398,
+      "lng": 13.7508
+    },
+    "FUR": {
+      "name": "Greuther Fürth",
+      "city": "Fürth",
+      "lat": 49.4867,
+      "lng": 10.9779
+    },
+    "H96": {
+      "name": "Hannover 96",
+      "city": "Hanover",
+      "lat": 52.3591,
+      "lng": 9.7328
+    },
+    "HEI": {
+      "name": "1. FC Heidenheim",
+      "city": "Heidenheim",
+      "lat": 48.6822,
+      "lng": 10.1614
+    },
+    "FCK": {
+      "name": "1. FC Kaiserslautern",
+      "city": "Kaiserslautern",
+      "lat": 49.4436,
+      "lng": 7.7786
+    },
+    "KSC": {
+      "name": "Karlsruher SC",
+      "city": "Karlsruhe",
+      "lat": 49.0234,
+      "lng": 8.4183
+    },
+    "KIE": {
+      "name": "Holstein Kiel",
+      "city": "Kiel",
+      "lat": 54.3453,
+      "lng": 10.133
+    },
+    "MAG": {
+      "name": "1. FC Magdeburg",
+      "city": "Magdeburg",
+      "lat": 52.1108,
+      "lng": 11.6398
+    },
+    "NUR": {
+      "name": "1. FC Nürnberg",
+      "city": "Nuremberg",
+      "lat": 49.4267,
+      "lng": 11.1256
+    },
+    "OSN": {
+      "name": "VfL Osnabrück",
+      "city": "Osnabrück",
+      "lat": 52.2925,
+      "lng": 8.077
+    },
+    "STP": {
+      "name": "FC St. Pauli",
+      "city": "Hamburg",
+      "lat": 53.5541,
+      "lng": 9.9678
+    },
+    "WOB": {
+      "name": "VfL Wolfsburg",
+      "city": "Wolfsburg",
+      "lat": 52.4319,
+      "lng": 10.8034
+    }
+  },
+  "serie_b": {
+    "ARE": {
+      "name": "Arezzo",
+      "city": "Arezzo",
+      "lat": 43.4738,
+      "lng": 11.8619
+    },
+    "ASC": {
+      "name": "Ascoli",
+      "city": "Ascoli Piceno",
+      "lat": 42.8494,
+      "lng": 13.5744
+    },
+    "AVE": {
+      "name": "Avellino",
+      "city": "Avellino",
+      "lat": 40.921,
+      "lng": 14.7799
+    },
+    "BEN": {
+      "name": "Benevento",
+      "city": "Benevento",
+      "lat": 41.135,
+      "lng": 14.7822
+    },
+    "CAR": {
+      "name": "Carrarese",
+      "city": "Carrara",
+      "lat": 44.0326,
+      "lng": 10.1069
+    },
+    "CAT": {
+      "name": "Catanzaro",
+      "city": "Catanzaro",
+      "lat": 38.9027,
+      "lng": 16.5975
+    },
+    "CES": {
+      "name": "Cesena",
+      "city": "Cesena",
+      "lat": 44.1391,
+      "lng": 12.2432
+    },
+    "CRE": {
+      "name": "Cremonese",
+      "city": "Cremona",
+      "lat": 45.133,
+      "lng": 10.0281
+    },
+    "EMP": {
+      "name": "Empoli",
+      "city": "Empoli",
+      "lat": 43.718,
+      "lng": 10.9491
+    },
+    "VER": {
+      "name": "Hellas Verona",
+      "city": "Verona",
+      "lat": 45.4352,
+      "lng": 10.9687
+    },
+    "JUV": {
+      "name": "Juve Stabia",
+      "city": "Castellammare di Stabia",
+      "lat": 40.7003,
+      "lng": 14.477
+    },
+    "MAN": {
+      "name": "Mantova",
+      "city": "Mantua",
+      "lat": 45.1481,
+      "lng": 10.7994
+    },
+    "MOD": {
+      "name": "Modena",
+      "city": "Modena",
+      "lat": 44.6382,
+      "lng": 10.9114
+    },
+    "PAD": {
+      "name": "Padova",
+      "city": "Padua",
+      "lat": 45.4009,
+      "lng": 11.8558
+    },
+    "PAL": {
+      "name": "Palermo",
+      "city": "Palermo",
+      "lat": 38.1758,
+      "lng": 13.3223
+    },
+    "PIS": {
+      "name": "Pisa",
+      "city": "Pisa",
+      "lat": 43.7168,
+      "lng": 10.3999
+    },
+    "SAM": {
+      "name": "Sampdoria",
+      "city": "Genoa",
+      "lat": 44.4144,
+      "lng": 8.9524
+    },
+    "SUD": {
+      "name": "Südtirol",
+      "city": "Bolzano",
+      "lat": 46.4919,
+      "lng": 11.3428
+    },
+    "VIC": {
+      "name": "Vicenza",
+      "city": "Vicenza",
+      "lat": 45.5453,
+      "lng": 11.5644
+    },
+    "ENT": {
+      "name": "Virtus Entella",
+      "city": "Chiavari",
+      "lat": 44.3168,
+      "lng": 9.3229
+    }
+  },
+  "ligue_2": {
+    "ANN": {
+      "name": "Annecy",
+      "city": "Annecy",
+      "lat": 45.9097,
+      "lng": 6.1286
+    },
+    "BOU": {
+      "name": "Boulogne",
+      "city": "Boulogne-sur-Mer",
+      "lat": 50.7264,
+      "lng": 1.6111
+    },
+    "CLE": {
+      "name": "Clermont",
+      "city": "Clermont-Ferrand",
+      "lat": 45.7936,
+      "lng": 3.1354
+    },
+    "DIJ": {
+      "name": "Dijon",
+      "city": "Dijon",
+      "lat": 47.3129,
+      "lng": 5.0398
+    },
+    "DUN": {
+      "name": "Dunkerque",
+      "city": "Dunkirk",
+      "lat": 51.0374,
+      "lng": 2.3773
+    },
+    "GRE": {
+      "name": "Grenoble",
+      "city": "Grenoble",
+      "lat": 45.1906,
+      "lng": 5.7099
+    },
+    "GUI": {
+      "name": "Guingamp",
+      "city": "Guingamp",
+      "lat": 48.5619,
+      "lng": -3.1517
+    },
+    "LAV": {
+      "name": "Laval",
+      "city": "Laval",
+      "lat": 48.0698,
+      "lng": -0.7906
+    },
+    "MET": {
+      "name": "Metz",
+      "city": "Longeville-lès-Metz",
+      "lat": 49.1098,
+      "lng": 6.1548
+    },
+    "MTP": {
+      "name": "Montpellier",
+      "city": "Montpellier",
+      "lat": 43.6225,
+      "lng": 3.8128
+    },
+    "NAN": {
+      "name": "Nancy",
+      "city": "Nancy",
+      "lat": 48.6908,
+      "lng": 6.2033
+    },
+    "FCN": {
+      "name": "Nantes",
+      "city": "Nantes",
+      "lat": 47.2559,
+      "lng": -1.5255
+    },
+    "PAU": {
+      "name": "Pau",
+      "city": "Pau",
+      "lat": 43.2951,
+      "lng": -0.355
+    },
+    "RED": {
+      "name": "Red Star",
+      "city": "Paris",
+      "lat": 48.9106,
+      "lng": 2.335
+    },
+    "REI": {
+      "name": "Reims",
+      "city": "Reims",
+      "lat": 49.2453,
+      "lng": 4.0347
+    },
+    "ROD": {
+      "name": "Rodez",
+      "city": "Rodez",
+      "lat": 44.3378,
+      "lng": 2.5486
+    },
+    "STE": {
+      "name": "Saint-Étienne",
+      "city": "Saint-Étienne",
+      "lat": 45.4608,
+      "lng": 4.3903
+    },
+    "SOC": {
+      "name": "Sochaux",
+      "city": "Montbéliard",
+      "lat": 47.5108,
+      "lng": 6.7994
+    }
   }
 }

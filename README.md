@@ -15,8 +15,8 @@ norwich-scouting-map/
 ├── js/
 │   └── spieltag-explorer.js   App logic (fetches data/teams.json + data/fixtures.json)
 ├── data/
-│   ├── teams.json             206 club/venue records, keyed by league → team code
-│   └── fixtures.json          129 fixtures, keyed by league, with matchday numbers
+│   ├── teams.json             308 club/venue records, keyed by league → team code
+│   └── fixtures.json          180 fixtures, keyed by league, with matchday numbers
 └── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
 ```
 
@@ -131,10 +131,15 @@ search, not a live feed (except the big 5, see below).
 | League | Coverage | Confidence | Notes |
 |---|---|---|---|
 | Premier League, La Liga, Bundesliga, Serie A, Ligue 1 | Live snapshot | High | Pulled from a sports-data tool internal to Claude.ai chat — **not available in Claude Code**, see below |
+| Championship (ENG), 2. Bundesliga (GER), Ligue 2 (FRA) | MD1 | High | Full 2026/27 roster + confirmed opening-round kickoff times from official/press sources |
+| LaLiga Hypermotion (ESP) | MD1 | Medium | Full 2026/27 roster confirmed; only 2 of 11 kickoff times were confirmed by the source found (Real Sociedad B–Castellón, Almería–Eldense) — the other 9 use **placeholder times** (typical Segunda weekend slots), dates are correct |
+| Serie B (ITA) | MD1 | Medium | Full 2026/27 roster + correct matchday date (Sat 22 Aug) confirmed; **no source gave individual kickoff times**, so all 10 matches use the same **placeholder time** (18:00 CEST) |
 | Primeira Liga, Eredivisie, Superliga (DEN) | MD 1–2/3 | High | Cross-verified against official calendars via press coverage |
 | Pro League (BEL) | MD1 (+1 MD2 game) | High | 18 clubs (league expanded from 16) |
 | Allsvenskan (SWE), Veikkausliiga (FIN) | Current round only | Medium | Calendar-year seasons already in progress; round numbers approximate |
 | Eliteserien (NOR) | Round 18 | Medium | 1 of 8 fixtures (Bodø/Glimt–Start) uses a **placeholder date/time** — home/away was inferred from a season ground-pattern, not confirmed directly |
+
+**Second-tier leagues added 2026-08-13** (Championship, LaLiga Hypermotion, 2. Bundesliga, Serie B, Ligue 2): rosters and MD1 fixtures researched via web search (Wikipedia, official league sites, sports press), not the Claude.ai sports-data tool. Stadium coordinates are from general knowledge, not individually re-verified per club — flag any that look off.
 
 ## The live sports-data gap
 

@@ -2,9 +2,22 @@
 let TEAMS = {};
 let FIXTURES = {};
 
-const LEAGUE_COLOR = { epl:"#1c3f95", la_liga:"#c8102e", bundesliga:"#2b2b2b", serie_a:"#008c45", ligue_1:"#0055a4", primeira_liga:"#046a38", eredivisie:"#ff8c00", pro_league:"#f7c631", allsvenskan:"#005293", eliteserien:"#a3123a", superliga:"#c8102e", veikkausliiga:"#003580" };
+const LEAGUE_COLOR = {
+  epl:"#1c3f95", championship:"#7b2d8e",
+  la_liga:"#c8102e", la_liga_2:"#e07b13",
+  bundesliga:"#2b2b2b", bundesliga_2:"#0c8a8a",
+  serie_a:"#008c45", serie_b:"#a8763e",
+  ligue_1:"#0055a4", ligue_2:"#c23b6f",
+  primeira_liga:"#046a38", eredivisie:"#ff8c00", pro_league:"#f7c631",
+  allsvenskan:"#005293", eliteserien:"#a3123a", superliga:"#c8102e", veikkausliiga:"#003580"
+};
 const COUNTRY_TAG = {
-  epl:"ENG", la_liga:"ESP", bundesliga:"GER", serie_a:"ITA", ligue_1:"FRA", primeira_liga:"POR",
+  epl:"ENG", championship:"ENG",
+  la_liga:"ESP", la_liga_2:"ESP",
+  bundesliga:"GER", bundesliga_2:"GER",
+  serie_a:"ITA", serie_b:"ITA",
+  ligue_1:"FRA", ligue_2:"FRA",
+  primeira_liga:"POR",
   eredivisie:"NED", pro_league:"BEL", allsvenskan:"SWE", eliteserien:"NOR", superliga:"DEN", veikkausliiga:"FIN"
 };
 
