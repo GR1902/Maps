@@ -407,6 +407,10 @@ function toggleLeague(code, checked){
   if(checked) selectedLeagues.add(code); else selectedLeagues.delete(code);
   updateLeaguePickerLabel();
   renderAll();
+  // The League picker stays reachable while the Calendar overlay is open
+  // (it lives in the header, not #body) — keep the grid in sync instead of
+  // leaving it showing the pre-change league selection.
+  if(calendarOpen) renderCalendar();
 }
 
 function updateLeaguePickerLabel(){
@@ -1555,6 +1559,7 @@ function resetAllFilters(){
   document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
 
   renderAll();
+  if(calendarOpen) renderCalendar();
 }
 
 // ===== Calendar view =====
