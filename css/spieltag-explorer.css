@@ -139,6 +139,8 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .add-stop-btn:hover, .start-stop-btn:hover, .watch-btn:hover, .suggest-trip-btn:hover{ background:var(--surface); }
 .add-stop-btn{ background:var(--green-dark); border-color:var(--green-dark); color:#fff; }
 .add-stop-btn:hover{ background:#004d26; }
+.add-stop-btn.added{ background:var(--paper); border-color:var(--red); color:var(--red); }
+.add-stop-btn.added:hover{ background:var(--surface); }
 .start-stop-btn{ background:var(--ink); border-color:var(--ink); color:#fff; }
 .start-stop-btn:hover{ background:#000; }
 
@@ -270,6 +272,7 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .mini-btn .icon{ width:12px; height:12px; }
 #watchlist-dropzone{ border-bottom:1px solid var(--line); transition:background 0.12s; }
 #watchlist-dropzone.drag-over{ background:var(--surface); box-shadow:inset 0 0 0 2px var(--green); }
+#watchlist-summary{ padding:6px 16px 10px 16px; font-size:0.7rem; color:var(--green-dark); font-weight:600; display:none; }
 #watchlist-hint{ display:none; }
 #watchlist-dropzone.empty #watchlist-hint{ display:block; padding:14px 16px; }
 .watch-row{
@@ -387,9 +390,15 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 }
 #combos-nav button:hover{ background:var(--surface); }
 #combos-position{ min-width:36px; text-align:center; }
+#combos-mode-toggle{
+  width:auto; height:auto; padding:4px 8px; margin-left:auto; font-size:0.66rem;
+}
+#combos-mode-toggle.active{ background:var(--green-dark); border-color:var(--green-dark); color:#fff; }
 
-/* Combinable Trips is a swipeable/scrollable horizontal carousel, one card
-   at a time, rather than a long vertical list. */
+/* Combinable Trips defaults to a swipeable carousel — one card at a time —
+   but #combos-mode-toggle can flip #combos-list into a free-scrolling view
+   with several narrower cards visible side by side instead (see
+   toggleCombosScrollMode). */
 #combos-list{
   display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory;
   padding:12px 16px; scrollbar-width:none; -webkit-overflow-scrolling:touch;
@@ -402,6 +411,8 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   cursor:pointer;
 }
 .combo-card:hover{ box-shadow:var(--shadow-md); }
+#combos-list.scroll-mode{ scroll-snap-type:none; }
+#combos-list.scroll-mode .combo-card{ flex:0 0 230px; scroll-snap-align:none; }
 .combo-card .combo-title{ font-size:0.74rem; font-weight:700; color:var(--ink); margin-bottom:6px; display:flex; align-items:center; gap:5px; }
 .combo-card .combo-title .icon{ width:13px; height:13px; color:var(--green-dark); }
 .combo-card .combo-game{ font-size:0.75rem; padding:3px 0; }

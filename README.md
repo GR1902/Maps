@@ -149,9 +149,12 @@ to refresh it; `dist/` isn't tracked in git.
   whenever the single longest chain for a given anchor happened to pad
   itself with a foreign leg, since only one (the longest) candidate chain
   is ever kept per anchor. Shown as
-  a swipeable/scrollable carousel — one trip card at a time, with a
-  position readout ("2 / 7") and ‹ › buttons — instead of a long vertical
-  list; **clicking a trip card also loads it as your active route** (see
+  a swipeable/scrollable carousel — one trip card at a time by default,
+  with a position readout ("2 / 7") and ‹ › buttons — instead of a long
+  vertical list; a "Scroll view" toggle next to the position readout flips
+  it into several narrower cards visible side by side instead, for
+  comparing trips at a glance rather than one at a time ("Swipe view" to
+  flip back); **clicking a trip card also loads it as your active route** (see
   route planning below), so the map immediately shows the real driving
   line, not just a bounding-box zoom. A "🔀 Suggest trip" button on any
   single fixture (list row, radius result, marker popup, or Calendar row)
@@ -165,7 +168,10 @@ to refresh it; `dist/` isn't tracked in git.
   clusters, not one long multi-week itinerary. Either kind of focus clears
   via "✕ Show all trips"
 - Point-to-point route planning (click marker → "+ Add to route" → real
-  driving route via OSRM, with distance/time); stops and the running
+  driving route via OSRM, with distance/time). The button itself toggles:
+  once a fixture's on the route, the same button reads "✓ Remove from
+  route" (and turns red-bordered) — click it again to take that stop back
+  off without having to find it in the route panel; stops and the running
   distance/time summary live under "🚗 Plan Route" in the top control bar,
   same dropdown pattern as the league picker and radius search. Stops are
   always ordered chronologically by kickoff time — the only sensible order
@@ -181,7 +187,15 @@ to refresh it; `dist/` isn't tracked in git.
   planner: this is for marking games you want to see, not for building a
   drivable itinerary. Add a fixture by clicking its ☆ (fixture list, radius
   results, or marker popup) or by dragging it into the panel; drag rows
-  within the panel to reorder — order = priority, shown as a rank number.
+  within the panel to reorder — order = priority, shown as a rank number,
+  **and, once there are 2+ games, also the order driving time/distance is
+  computed against**: a driving-time/distance line appears between each
+  consecutive pair (fetched from OSRM, same as route planning's per-leg
+  breakdown), plus a total ("≈ X km · Y hr Z min total driving") once
+  everything's settled — unlike the route planner, which always forces
+  chronological order by kickoff time, My Plan keeps whatever manual order
+  you last dragged it into, and re-fetches the distances for that exact
+  order every time you reorder, add, or remove a game.
   **Multiple named plans**: the dropdown at the top of the panel switches
   between plans (e.g. one per scout/person), with buttons to rename, create,
   or delete a plan (the last remaining plan can't be deleted — rename it

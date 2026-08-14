@@ -130,6 +130,7 @@
       </div>
       <div id="watchlist-dropzone">
         <div id="watchlist-list"></div>
+        <div id="watchlist-summary"></div>
         <div id="watchlist-hint" class="empty-note">Drag a fixture here, or click ☆ on any game, to plan it. Drag rows below to set priority.</div>
       </div>
       <div id="fixtures-container"></div>
@@ -168,6 +169,7 @@
         <button type="button" onclick="scrollCombos(-1)" aria-label="Previous trip">‹</button>
         <span id="combos-position"></span>
         <button type="button" onclick="scrollCombos(1)" aria-label="Next trip">›</button>
+        <button type="button" id="combos-mode-toggle" class="mini-btn" onclick="toggleCombosScrollMode()" data-tooltip="Swipe: one trip card at a time. Scroll: see several side by side.">Scroll view</button>
       </div>
       <div id="combos-list"></div>
     </div>

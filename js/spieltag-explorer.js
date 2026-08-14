@@ -58,6 +58,7 @@ function addToWatchlist(item){
   savePlans();
   renderWatchlist();
   refreshWatchStars();
+  computeWatchlistLegs();
 }
 function removeFromWatchlist(key){
   const plan = activePlan();
@@ -65,6 +66,7 @@ function removeFromWatchlist(key){
   savePlans();
   renderWatchlist();
   refreshWatchStars();
+  computeWatchlistLegs();
 }
 function toggleWatch(item){
   if(isWatched(item.key)) removeFromWatchlist(item.key);
@@ -91,6 +93,7 @@ function switchPlan(id){
   savePlans();
   renderWatchlist();
   refreshWatchStars();
+  computeWatchlistLegs();
 }
 
 function renamePlan(){
@@ -115,6 +118,7 @@ function newPlan(){
   savePlans();
   renderWatchlist();
   refreshWatchStars();
+  computeWatchlistLegs();
 }
 
 function deletePlan(){
@@ -126,21 +130,64 @@ function deletePlan(){
   savePlans();
   renderWatchlist();
   refreshWatchStars();
+  computeWatchlistLegs();
 }
 
 let watchDragIndex = null;
+// Per-leg {time,distance} between consecutive My Plan rows in their
+// CURRENT (possibly manually drag-reordered) order — unlike Plan Route,
+// which always forces chronological order, My Plan's order is whatever
+// the user dragged it into, so distances are computed against that.
+let watchlistLegs = null;
+let watchlistLegsComputeId = 0;
+
+async function computeWatchlistLegs(){
+  const items = activePlan().items;
+  const computeId = ++watchlistLegsComputeId;
+  if(items.length < 2){
+    watchlistLegs = null;
+    renderWatchlist();
+    return;
+  }
+  try{
+    const matrix = await fetchDurationMatrix(items.map(w => ({ lat:w.lat, lng:w.lng })));
+    if(computeId !== watchlistLegsComputeId) return; // a newer change has since superseded this one
+    watchlistLegs = matrix ? items.slice(1).map((_, i) => ({
+      time: matrix.durations[i][i+1],
+      distance: matrix.distances[i][i+1]
+    })) : null;
+  } catch(e){
+    watchlistLegs = null;
+  }
+  renderWatchlist();
+}
 
 function renderWatchlist(){
   renderPlanToolbar();
   const items = activePlan().items;
   const list = document.getElementById('watchlist-list');
+  const summaryEl = document.getElementById('watchlist-summary');
   const dropzone = document.getElementById('watchlist-dropzone');
   const countEl = document.getElementById('watchlist-count');
   countEl.textContent = `(${items.length})`;
   dropzone.classList.toggle('empty', items.length === 0);
   list.innerHTML = '';
 
+  // Per-leg drive time/distance between consecutive rows in their CURRENT
+  // order — only trusted when it matches this exact number of items;
+  // stale otherwise (e.g. mid-drag, or a fetch still in flight), in which
+  // case legs are simply omitted until computeWatchlistLegs() catches up.
+  const legsValid = watchlistLegs && watchlistLegs.length === items.length - 1;
+
   items.forEach((w, idx) => {
+    if(idx > 0 && legsValid){
+      const leg = watchlistLegs[idx - 1];
+      const legDiv = document.createElement('div');
+      legDiv.className = 'route-leg';
+      legDiv.textContent = `${fmtHM(leg.time)} · ${(leg.distance/1000).toFixed(0)} km`;
+      list.appendChild(legDiv);
+    }
+
     const row = document.createElement('div');
     row.className = 'watch-row';
     row.draggable = true;
@@ -155,14 +202,19 @@ function renderWatchlist(){
     row.querySelector('.wbody').onclick = () => { map.setView([w.lat, w.lng], 10); };
     row.querySelector('.wremove').onclick = () => removeFromWatchlist(w.key);
 
-    // Drag-to-reorder within the list = set priority.
+    // Drag-to-reorder within the list = set priority (and, now, the order
+    // distances are computed against).
     row.addEventListener('dragstart', (e) => {
       watchDragIndex = idx;
       row.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', w.key); // needed for some browsers to allow the drag
     });
-    row.addEventListener('dragend', () => { row.classList.remove('dragging'); savePlans(); });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      savePlans();
+      computeWatchlistLegs(); // order has settled — (re)fetch for the final order
+    });
     row.addEventListener('dragover', (e) => {
       e.preventDefault();
       if(watchDragIndex === null || watchDragIndex === idx) return;
@@ -170,11 +222,22 @@ function renderWatchlist(){
       const [moved] = arr.splice(watchDragIndex, 1);
       arr.splice(idx, 0, moved);
       watchDragIndex = idx;
+      watchlistLegs = null; // stale mid-drag — computeWatchlistLegs() on dragend refreshes it
       renderWatchlist();
     });
 
     list.appendChild(row);
   });
+
+  if(legsValid && items.length >= 2){
+    const totalTime = watchlistLegs.reduce((s,l) => s + l.time, 0);
+    const totalKm = watchlistLegs.reduce((s,l) => s + l.distance, 0) / 1000;
+    summaryEl.style.display = 'block';
+    summaryEl.textContent = `≈ ${fmtHM(totalTime)} · ${totalKm.toFixed(0)} km total driving`;
+  } else {
+    summaryEl.style.display = 'none';
+    summaryEl.textContent = '';
+  }
 }
 
 // Drop target for dragging a fixture in from the side list or radius
@@ -638,7 +701,7 @@ function wireVenuePopupButtons(marker){
   const games = marker._venueGames;
   const g = games[marker._venueIndex];
   const stopBtn = document.querySelector(`.add-stop-btn[data-stop="${CSS.escape(g.stopKey)}"]`);
-  if(stopBtn) stopBtn.onclick = () => { addStop(g.stopKey, g.h, g.f.start); marker.closePopup(); };
+  if(stopBtn) updateStopButtonState(stopBtn, g.stopKey, g.h, g.f.start, () => marker.closePopup());
   const watchBtn = document.querySelector(`.watch-btn[data-key="${CSS.escape(g.watchKey)}"]`);
   if(watchBtn){
     watchBtn.textContent = isWatched(g.watchKey) ? '★ Planned' : '☆ Plan';
@@ -848,6 +911,22 @@ function updateCombosView(){
 
 // ----- Swipeable trip carousel -----
 const COMBO_CARD_GAP = 10; // must match the CSS `gap` on #combos-list
+
+// Default is "swipe" — one card at a time, snapped — for a focused look at
+// each trip. #combos-mode-toggle flips it into a free-scrolling view with
+// several narrower cards visible side by side, for comparing trips at a
+// glance instead. Not persisted — resets to swipe on reload, like the
+// other display-only toggles in this panel.
+let combosScrollMode = false;
+
+function toggleCombosScrollMode(){
+  combosScrollMode = !combosScrollMode;
+  document.getElementById('combos-list').classList.toggle('scroll-mode', combosScrollMode);
+  const btn = document.getElementById('combos-mode-toggle');
+  btn.classList.toggle('active', combosScrollMode);
+  btn.textContent = combosScrollMode ? 'Swipe view' : 'Scroll view';
+  updateCombosPositionUI();
+}
 
 function updateCombosPositionUI(){
   const list = document.getElementById('combos-list');
@@ -1192,10 +1271,26 @@ let routeStops = []; // array of {key, team}
 let routeStart = null; // { name, lat, lng } | null
 let routingControl = null;
 
+// Shared toggle behavior for every "+ Add to route" button: reflects
+// whether this stop is already on the route, and lets clicking it again
+// remove the stop instead of only ever being able to add one. Re-applied
+// every time a popup opens (and, for venue popups, every page-change)
+// since routeStops can have changed since the button's HTML was built.
+function updateStopButtonState(btn, stopKey, teamData, fixtureStart, afterClick){
+  const inRoute = routeStops.some(s => s.key === stopKey);
+  btn.textContent = inRoute ? '✓ Remove from route' : '+ Add to route';
+  btn.classList.toggle('added', inRoute);
+  btn.onclick = () => {
+    if(inRoute) removeStop(stopKey);
+    else addStop(stopKey, teamData, fixtureStart);
+    if(afterClick) afterClick();
+  };
+}
+
 function bindStopButton(marker, stopKey, teamData, fixtureStart){
   marker.on('popupopen', () => {
     const btn = document.querySelector(`.add-stop-btn[data-stop="${CSS.escape(stopKey)}"]`);
-    if(btn) btn.onclick = () => { addStop(stopKey, teamData, fixtureStart); marker.closePopup(); };
+    if(btn) updateStopButtonState(btn, stopKey, teamData, fixtureStart, () => marker.closePopup());
   });
 }
 
@@ -1916,6 +2011,7 @@ async function loadData(){
 
   buildLeaguePanel();
   renderWatchlist();
+  computeWatchlistLegs(); // covers a returning user's plan already having 2+ saved games
   renderAll();
 }
 
