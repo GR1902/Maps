@@ -177,10 +177,13 @@ to refresh it; `dist/` isn't tracked in git.
   currently *selected* leagues, bounded by a **From/To date range** (a
   ‹month year› header navigates month-to-month independently of that
   range; days outside the range render but aren't clickable). Each day
-  with fixtures shows a count badge, and **hovering it previews that day's
-  matches** (time + matchup, up to 6) in a tooltip so you can read what's
-  on without clicking first; clicking opens the full list below the grid
-  — this doubles as search-by-date, since setting the range **is** the
+  with fixtures shows a count badge and, directly in the tile, up to 3
+  abbreviated matchups (e.g. "Arsenal–Coventry", "+2 more" if there are
+  more) so you can read what's on at a glance without hovering or
+  clicking — tiles size to fit this (no longer a fixed square).
+  **Hovering a day still previews the full list** (time + matchup, up to
+  6) in a tooltip; clicking opens the full list below the grid — this
+  doubles as search-by-date, since setting the range **is** the
   filter. A day is auto-selected when you open the Calendar or change
   month (today if it has games, else the first day that does), so the
   list below the grid is never empty by default. There's a "Today"

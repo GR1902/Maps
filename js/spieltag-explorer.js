@@ -1598,6 +1598,22 @@ function buildDayTooltip(dayFixtures){
     .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+// Short pairings shown directly inside a day cell (first name word each,
+// e.g. "Arsenal–Coventry") now that the tiles are big enough for it — the
+// full names + kickoff times are still one hover (buildDayTooltip) or
+// click (renderCalendarDayDetail) away, so truncation/rare ambiguity
+// between similarly-named clubs (e.g. both Manchester sides) is an
+// acceptable tradeoff for an at-a-glance preview, not the final word.
+function buildDayCellMatches(dayFixtures){
+  const sorted = dayFixtures.slice().sort((a,b) => a.start - b.start);
+  const firstWord = name => name.split(' ')[0];
+  const shown = sorted.slice(0, 3)
+    .map(g => `<div class="cal-match-line">${firstWord(g.home.name)}–${firstWord(g.awayName)}</div>`)
+    .join('');
+  const more = sorted.length > 3 ? `<div class="cal-match-more">+${sorted.length - 3} more</div>` : '';
+  return `<div class="cal-matches">${shown}${more}</div>`;
+}
+
 function renderCalendar(){
   const grid = document.getElementById('calendar-grid');
   const detail = document.getElementById('calendar-day-detail');
@@ -1664,10 +1680,14 @@ function renderCalendar(){
     if(key === calendarSelectedDate) classes.push('cal-selected');
     classes.push(hasGames ? 'cal-has-games' : 'cal-empty');
     const tooltip = hasGames ? `data-tooltip="${buildDayTooltip(dayFixtures)}"` : '';
+    const matchesHtml = hasGames ? buildDayCellMatches(dayFixtures) : '';
     cells += `
       <div class="${classes.join(' ')}" ${hasGames ? `onclick="calendarSelectDay('${key}')"` : ''} ${tooltip}>
-        <span class="cal-daynum">${d}</span>
-        ${hasGames ? `<span class="cal-badge">${dayFixtures.length}</span>` : ''}
+        <div class="cal-cell-top">
+          <span class="cal-daynum">${d}</span>
+          ${hasGames ? `<span class="cal-badge">${dayFixtures.length}</span>` : ''}
+        </div>
+        ${matchesHtml}
       </div>
     `;
   }
