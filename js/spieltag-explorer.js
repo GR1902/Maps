@@ -452,22 +452,35 @@ function renderAll(){
     }
   });
 
-  // Muted grey markers for every league NOT selected, for geographic context
+  // Muted grey markers for every league NOT selected, for geographic context —
+  // ONE marker per club, not per fixture. Several leagues carry full-season
+  // data (e.g. Championship/League One: 46 matchdays), so grouping by
+  // fixture would stack dozens of overlapping markers on the same stadium;
+  // group by home team instead and show its next fixture in this data
+  // window (plus a "+N more" note if it has others).
   Object.keys(FIXTURES).forEach(otherLeague => {
     if(selectedLeagues.has(otherLeague)) return;
     const otherTeams = TEAMS[otherLeague];
+    const byTeam = new Map();
     FIXTURES[otherLeague].forEach(f => {
-      const h = otherTeams[f.home];
-      const a = otherTeams[f.away];
-      if(!h) return;
-      const stopKey = `${otherLeague}::${f.home}`;
+      if(!otherTeams[f.home]) return;
+      if(!byTeam.has(f.home)) byTeam.set(f.home, []);
+      byTeam.get(f.home).push(f);
+    });
+    byTeam.forEach((teamFixtures, code) => {
+      const h = otherTeams[code];
+      teamFixtures.sort((x,y) => new Date(x.start) - new Date(y.start));
+      const next = teamFixtures[0];
+      const a = otherTeams[next.away];
+      const stopKey = `${otherLeague}::${code}`;
       const marker = L.marker([h.lat, h.lng], { icon: makeMutedIcon() });
+      const more = teamFixtures.length > 1 ? ` <span style="opacity:0.7;">(+${teamFixtures.length - 1} more this window)</span>` : '';
       marker.bindPopup(`
-        <div class="popup-club">${h.name} vs ${a ? a.name : f.away}</div>
-        <div class="popup-meta">${h.city} · ${fmtDate(f.start)} · ${COUNTRY_TAG[otherLeague]}</div>
+        <div class="popup-club">${h.name} vs ${a ? a.name : next.away}</div>
+        <div class="popup-meta">${h.city} · ${fmtDate(next.start)} · ${COUNTRY_TAG[otherLeague] || h.country || ''}${more}</div>
         <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
       `);
-      bindStopButton(marker, stopKey, h, f.start);
+      bindStopButton(marker, stopKey, h, next.start);
       marker.addTo(map);
       currentMarkers.push(marker);
     });
@@ -842,7 +855,7 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
       legLabels.push(`${fmtHM(info.driveSec)} · ${info.driveKm.toFixed(0)} km · ${slackMin} min to spare`);
     }
     const gamesHtml = games.map((g,i) => {
-      const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}`);
+      const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}::${g.start.getTime()}`);
       const legNote = i > 0 ? `<br><span style="color:#00A650; font-size:0.62rem;">${legLabels[i-1]}</span>` : '';
       return `
       <div class="combo-game" style="${isAnchor ? 'font-weight:700;' : ''}">${i+1}. ${g.home.name} <span style="color:#6b6455;">(${g.country})</span> – ${g.awayName}${isAnchor ? ' ★' : ''}<br>
@@ -907,13 +920,19 @@ async function renderCombosMulti(selections, focusLabel = null){
   // leagues (Pro League + Challenger Pro League, both BEL) never needs
   // the cross-border toggle just to combine THOSE two — the countries
   // already selected are never "cross-border" by definition.
+  // Keyed by league+team+kickoff instant, NOT just league+team — a club
+  // with many home fixtures in the search window (e.g. full-season
+  // Championship/League One data) must only have the ONE actually-selected
+  // fixture treated as an anchor, not every home game it plays that whole
+  // window; a coarser key would falsely "protect" all of them from the
+  // weekday/country filters and the pool cap below.
   const anchorSet = new Set();
   const anchorTimes = [];
   const allowedCountries = new Set();
   withFixtures.forEach(s => {
     const teams = TEAMS[s.league];
     s.fixtures.forEach(f => {
-      anchorSet.add(`${s.league}::${f.home}`);
+      anchorSet.add(`${s.league}::${f.home}::${new Date(f.start).getTime()}`);
       anchorTimes.push(new Date(f.start).getTime());
       const h = teams && teams[f.home];
       const c = COUNTRY_TAG[s.league] || (h && h.country);
@@ -930,20 +949,26 @@ async function renderCombosMulti(selections, focusLabel = null){
   // the selected anchors — anchors are always kept regardless of either
   // filter, since they're the games the trip is built around, not a
   // candidate to exclude.
+  const poolAnchorKey = g => `${g.league}::${g.homeCode}::${g.start.getTime()}`;
   let pool = buildGamePool().filter(g => {
     const t = g.start.getTime();
     if(t < minAnchor - windowMs || t > maxAnchor + windowMs) return false;
-    const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}`);
+    const isAnchor = anchorSet.has(poolAnchorKey(g));
     if(!selectedTripDays.has(g.start.getDay()) && !isAnchor) return false;
     if(!includeCrossBorder && !allowedCountries.has(g.country) && !isAnchor) return false;
     return true;
   });
+  // Anchors must never be dropped by the cap below — they're the games the
+  // whole search is built around (e.g. every game in "Suggest trips for My
+  // Plan", possibly spread across months) — only trim the non-anchor
+  // candidates, nearest-to-midpoint first, to fill whatever budget remains.
   if(pool.length > MAX_ROUTING_POOL){
     const mid = (minAnchor + maxAnchor) / 2;
-    pool = pool.slice()
-      .sort((a,b) => Math.abs(a.start-mid) - Math.abs(b.start-mid))
-      .slice(0, MAX_ROUTING_POOL)
-      .sort((a,b) => a.start - b.start);
+    const anchors = pool.filter(g => anchorSet.has(poolAnchorKey(g)));
+    const others = pool.filter(g => !anchorSet.has(poolAnchorKey(g)));
+    const budget = Math.max(0, MAX_ROUTING_POOL - anchors.length);
+    others.sort((a,b) => Math.abs(a.start-mid) - Math.abs(b.start-mid));
+    pool = anchors.concat(others.slice(0, budget)).sort((a,b) => a.start - b.start);
   }
 
   const n = pool.length;
@@ -1034,7 +1059,7 @@ async function renderCombosMulti(selections, focusLabel = null){
   const seen = new Set();
   let trips = [];
   for(let a=0;a<n;a++){
-    if(!anchorSet.has(`${pool[a].league}::${pool[a].homeCode}`)) continue;
+    if(!anchorSet.has(poolAnchorKey(pool[a]))) continue;
     const chain = [a];
     for(let cur=a; bwdPrev[cur] !== -1; ){ cur = bwdPrev[cur]; chain.unshift(cur); }
     const anchorPos = chain.length - 1;
