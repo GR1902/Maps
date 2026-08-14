@@ -244,6 +244,23 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   position:sticky; top:0; display:flex; align-items:center; gap:7px;
 }
 #side h2 .icon{ width:14px; height:14px; }
+
+/* Collapsible sections — My Plan and Combinable Trips (see
+   toggleSidePanelSection) collapse a header+body pair; each league's
+   fixture block (see toggleLeagueBlock) collapses independently since
+   blocks are rebuilt per-render, not just hidden in place. */
+.section-chevron{
+  display:inline-block; font-size:0.7em; line-height:1; transition:transform 0.15s;
+  flex-shrink:0;
+}
+#side h2.section-head{ cursor:pointer; user-select:none; }
+#side h2.section-head.collapsed .section-chevron{ transform:rotate(-90deg); }
+.section-body.collapsed{ display:none; }
+.league-collapse-toggle{
+  display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width:0;
+}
+.league-block.collapsed .league-collapse-toggle .section-chevron{ transform:rotate(-90deg); }
+.league-block.collapsed .fixture-list-inner{ display:none; }
 .fixture-item{
   padding:10px 16px; border-bottom:1px solid var(--line); font-size:0.78rem; cursor:pointer;
   display:flex; align-items:flex-start; transition:background 0.1s;

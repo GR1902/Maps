@@ -505,6 +505,28 @@ function changeLeagueMatchday(league, md){
   renderAll();
 }
 
+// ===== Collapsible side-panel sections =====
+// "My Plan" and "Combinable Trips" are simple header+body pairs — toggling
+// just adds/removes a class on the body (see .section-body.collapsed CSS)
+// and flips the header's chevron via the same class on the header itself.
+function toggleSidePanelSection(bodyId, headerEl){
+  const body = document.getElementById(bodyId);
+  const collapsed = body.classList.toggle('collapsed');
+  headerEl.classList.toggle('collapsed', collapsed);
+}
+
+// Each league's fixture block is rebuilt from scratch on every renderAll(),
+// so its collapsed/expanded state has to be tracked separately (by league
+// code) and re-applied when the block is (re)built, rather than living
+// only on the DOM node like toggleSidePanelSection above.
+let collapsedLeagueBlocks = new Set();
+function toggleLeagueBlock(league){
+  if(collapsedLeagueBlocks.has(league)) collapsedLeagueBlocks.delete(league);
+  else collapsedLeagueBlocks.add(league);
+  const block = document.querySelector(`.league-block[data-league="${CSS.escape(league)}"]`);
+  if(block) block.classList.toggle('collapsed', collapsedLeagueBlocks.has(league));
+}
+
 function renderAll(){
   currentMarkers.forEach(m => map.removeLayer(m));
   currentMarkers = [];
@@ -593,11 +615,15 @@ function renderAll(){
     // Fixtures block for this league, with its own matchday picker
     const mds = [...new Set(FIXTURES[league].map(f => f.matchday))].sort((a,b)=>a-b);
     const block = document.createElement('div');
-    block.className = 'league-block';
+    block.className = 'league-block' + (collapsedLeagueBlocks.has(league) ? ' collapsed' : '');
+    block.dataset.league = league;
     block.innerHTML = `
       <h2>
-        ${LEAGUE_LOGO[league] ? `<img class="league-logo-block" src="${LEAGUE_LOGO[league]}" alt="" onerror="this.remove()">` : ''}
-        <span class="league-name">${LEAGUE_LABELS[league]}</span>
+        <span class="league-collapse-toggle" onclick="toggleLeagueBlock('${league}')">
+          <span class="section-chevron">▾</span>
+          ${LEAGUE_LOGO[league] ? `<img class="league-logo-block" src="${LEAGUE_LOGO[league]}" alt="" onerror="this.remove()">` : ''}
+          <span class="league-name">${LEAGUE_LABELS[league]}</span>
+        </span>
         <select class="md-select">${mds.map(md => `<option value="${md}" ${md===selectedMd?'selected':''}>Matchday ${md}</option>`).join('')}</select>
         <span class="count">(${fixtures.length})</span>
       </h2>
@@ -877,7 +903,7 @@ function suggestTripsFor(league, homeCode, start, label){
 function suggestTripsForPlan(){
   const items = activePlan().items;
   if(items.length === 0){
-    document.getElementById('combos-heading').textContent = 'Combinable Trips';
+    document.getElementById('combos-heading-text').textContent = 'Combinable Trips';
     alert('My Plan is empty — mark a few games with ☆ first.');
     return;
   }
@@ -1025,7 +1051,7 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
 async function renderCombosMulti(selections, focusLabel = null){
   const requestId = ++combosRequestId;
   const combosList = document.getElementById('combos-list');
-  const heading = document.getElementById('combos-heading');
+  const heading = document.getElementById('combos-heading-text');
   const focusBar = document.getElementById('combos-focus-bar');
   const posEl = document.getElementById('combos-position');
   lastCombos = null;
