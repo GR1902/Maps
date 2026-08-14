@@ -1628,17 +1628,19 @@ function buildDayTooltip(dayFixtures){
     .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// Short pairings shown directly inside a day cell (first name word each,
-// e.g. "Arsenal–Coventry") now that the tiles are big enough for it — the
-// full names + kickoff times are still one hover (buildDayTooltip) or
-// click (renderCalendarDayDetail) away, so truncation/rare ambiguity
+// Short pairings shown directly inside a day cell (kickoff time + first
+// name word each, e.g. "20:00 Arsenal–Coventry") now that the tiles are
+// big enough for it — the full names are still one hover (buildDayTooltip)
+// or click (renderCalendarDayDetail) away, so truncation/rare ambiguity
 // between similarly-named clubs (e.g. both Manchester sides) is an
-// acceptable tradeoff for an at-a-glance preview, not the final word.
+// acceptable tradeoff for an at-a-glance preview, not the final word. Each
+// line gets a chip styled with its league's color as a left accent, so a
+// day with multiple selected leagues stays easy to scan at a glance.
 function buildDayCellMatches(dayFixtures){
   const sorted = dayFixtures.slice().sort((a,b) => a.start - b.start);
   const firstWord = name => name.split(' ')[0];
   const shown = sorted.slice(0, 3)
-    .map(g => `<div class="cal-match-line">${firstWord(g.home.name)}–${firstWord(g.awayName)}</div>`)
+    .map(g => `<div class="cal-match-line" style="border-left-color:${LEAGUE_COLOR[g.league] || '#999'}"><span class="cal-match-time">${fmtTimeOnly(g.start)}</span> ${firstWord(g.home.name)}–${firstWord(g.awayName)}</div>`)
     .join('');
   const more = sorted.length > 3 ? `<div class="cal-match-more">+${sorted.length - 3} more</div>` : '';
   return `<div class="cal-matches">${shown}${more}</div>`;

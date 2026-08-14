@@ -201,12 +201,15 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   background:var(--green-dark); border-radius:8px; padding:1px 6px; min-width:15px; text-align:center;
 }
 .cal-cell.cal-selected .cal-badge{ background:var(--gold); color:var(--green-dark); }
-.cal-matches{ margin-top:5px; display:flex; flex-direction:column; gap:2px; overflow:hidden; }
+.cal-matches{ margin-top:6px; display:flex; flex-direction:column; gap:3px; overflow:hidden; }
 .cal-match-line{
-  font-size:0.62rem; line-height:1.35; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-size:0.62rem; line-height:1.5; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  background:var(--surface); border-left:3px solid var(--line); border-radius:4px; padding:1px 6px;
 }
-.cal-cell.cal-selected .cal-match-line{ color:#fff; }
-.cal-match-more{ font-size:0.6rem; color:var(--text-muted); }
+.cal-match-time{ font-weight:700; color:var(--text-muted); }
+.cal-cell.cal-selected .cal-match-line{ color:#fff; background:rgba(255,255,255,0.14); }
+.cal-cell.cal-selected .cal-match-time{ color:rgba(255,255,255,0.75); }
+.cal-match-more{ font-size:0.6rem; color:var(--text-muted); padding-left:6px; }
 .cal-cell.cal-selected .cal-match-more{ color:rgba(255,255,255,0.8); }
 #calendar-day-detail{
   padding:8px 24px 24px 24px; max-width:1400px; margin:0 auto; width:100%;
