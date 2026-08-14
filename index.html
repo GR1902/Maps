@@ -112,7 +112,9 @@
         <div id="calendar-day-detail"></div>
       </div>
     </div>
-    <button id="side-toggle-btn" type="button" onclick="toggleSidePanel()" aria-label="Hide side panel" data-tooltip="Hide the side panel to see more of the map">›</button>
+    <button id="side-toggle-btn" type="button" onclick="toggleSidePanel()" aria-label="Hide side panel" data-tooltip="Hide the side panel to see more of the map">
+      <svg class="side-toggle-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
     <div id="side">
       <h2 id="watchlist-heading" class="section-head" onclick="toggleSidePanelSection('watchlist-body', this)">
         <svg class="section-chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>★ <span id="plan-name-display">My Plan</span> <span class="count" id="watchlist-count">(0)</span>

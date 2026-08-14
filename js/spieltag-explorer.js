@@ -1305,7 +1305,7 @@ function toggleSidePanel(){
   const side = document.getElementById('side');
   const btn = document.getElementById('side-toggle-btn');
   const collapsed = side.classList.toggle('panel-collapsed');
-  btn.textContent = collapsed ? '‹' : '›';
+  btn.classList.toggle('collapsed', collapsed);
   btn.setAttribute('aria-label', collapsed ? 'Show side panel' : 'Hide side panel');
   setTimeout(() => map.invalidateSize(), 150);
 }
