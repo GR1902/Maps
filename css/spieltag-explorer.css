@@ -176,7 +176,7 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   border:1px solid var(--line); background:var(--paper); color:var(--ink);
 }
 #calendar-body{ flex:1; overflow-y:auto; }
-#calendar-grid{ padding:16px 24px 6px 24px; max-width:1100px; margin:0 auto; width:100%; }
+#calendar-grid{ padding:16px 24px 6px 24px; width:100%; }
 .cal-weekday-row{
   display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:8px;
   font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em;
@@ -184,8 +184,8 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 }
 .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
 .cal-cell{
-  position:relative; min-height:118px; border-radius:10px; border:1px solid var(--line);
-  background:var(--paper); display:flex; flex-direction:column; padding:6px 7px;
+  position:relative; min-height:150px; border-radius:10px; border:1px solid var(--line);
+  background:var(--paper); display:flex; flex-direction:column; padding:8px 10px;
 }
 .cal-cell.cal-pad{ border-color:transparent; background:transparent; min-height:0; }
 .cal-cell.cal-empty .cal-daynum{ color:var(--text-muted); }
@@ -209,7 +209,7 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .cal-match-more{ font-size:0.6rem; color:var(--text-muted); }
 .cal-cell.cal-selected .cal-match-more{ color:rgba(255,255,255,0.8); }
 #calendar-day-detail{
-  padding:8px 24px 24px 24px; max-width:1100px; margin:0 auto; width:100%;
+  padding:8px 24px 24px 24px; max-width:1400px; margin:0 auto; width:100%;
   border-top:1px solid var(--line); margin-top:14px;
 }
 .calendar-day-header{
