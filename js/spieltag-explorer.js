@@ -620,7 +620,7 @@ function renderAll(){
     block.innerHTML = `
       <h2>
         <span class="league-collapse-toggle" onclick="toggleLeagueBlock('${league}')">
-          <span class="section-chevron">▾</span>
+          <svg class="section-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
           ${LEAGUE_LOGO[league] ? `<img class="league-logo-block" src="${LEAGUE_LOGO[league]}" alt="" onerror="this.remove()">` : ''}
           <span class="league-name">${LEAGUE_LABELS[league]}</span>
         </span>

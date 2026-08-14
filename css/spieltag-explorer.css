@@ -264,8 +264,7 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
    fixture block (see toggleLeagueBlock) collapses independently since
    blocks are rebuilt per-render, not just hidden in place. */
 .section-chevron{
-  display:inline-block; font-size:1.15rem; font-weight:700; line-height:1; transition:transform 0.15s;
-  flex-shrink:0;
+  display:inline-block; transition:transform 0.15s; flex-shrink:0;
 }
 #side h2.section-head{ cursor:pointer; user-select:none; }
 #side h2.section-head.collapsed .section-chevron{ transform:rotate(-90deg); }
