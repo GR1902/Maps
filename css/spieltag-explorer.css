@@ -309,6 +309,14 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .cal-cell[data-tooltip]::after{
   white-space:pre; text-align:left; line-height:1.6;
 }
+/* The weekday-filter label sits near the sidebar's left edge — a centered
+   bubble would clip off-screen, so anchor it flush-left and let it wrap
+   instead of forcing one long unreadable line. */
+#trip-days-label{ cursor:help; border-bottom:1px dotted var(--text-muted); }
+#trip-days-label[data-tooltip]::after{
+  white-space:normal; max-width:190px; text-align:left; line-height:1.4;
+  left:0; transform:none;
+}
 
 #cross-border-toggle-row{
   display:flex; align-items:center; gap:7px; padding:8px 16px; background:var(--surface);
