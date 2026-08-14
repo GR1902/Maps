@@ -76,7 +76,11 @@
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4"/><path d="M21 12a9 9 0 0 1-15.3 6.4"/><path d="M18.5 3v4.5H14"/><path d="M5.5 21v-4.5H10"/></svg>
       Reset filters
     </button>
-    <span id="snapshot-note">All 29 leagues: matchdays with officially confirmed kickoff times, via official/press sources</span>
+    <button id="calendar-toggle-btn" type="button" onclick="toggleCalendarView()">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+      Calendar
+    </button>
+    <span id="snapshot-note">All 32 leagues: matchdays with officially confirmed kickoff times, via official/press sources</span>
   </div>
   <div id="body">
     <div id="map-wrap">
@@ -85,6 +89,20 @@
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M9 21H5a2 2 0 0 1-2-2v-4"/><path d="M15 21h4a2 2 0 0 0 2-2v-4"/></svg>
         Fullscreen
       </button>
+    </div>
+    <div id="calendar-view">
+      <div id="calendar-header">
+        <button id="calendar-back-btn" type="button" onclick="toggleCalendarView()">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          Back to map
+        </button>
+        <div id="calendar-controls">
+          <label for="calendar-date">From</label>
+          <input type="date" id="calendar-date" onchange="renderCalendar()">
+          <button type="button" class="mini-btn" onclick="calendarJumpToday()">Today</button>
+        </div>
+      </div>
+      <div id="calendar-body"></div>
     </div>
     <div id="side">
       <h2 id="watchlist-heading">★ <span id="plan-name-display">My Plan</span> <span class="count" id="watchlist-count">(0)</span></h2>
@@ -98,6 +116,9 @@
         <button class="mini-btn" onclick="deletePlan()" title="Delete this plan">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4.5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V7"/><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg>
         </button>
+        <button class="mini-btn" onclick="suggestTripsForPlan()" title="Suggest trips built around every game in My Plan">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/></svg>
+        </button>
       </div>
       <div id="watchlist-dropzone">
         <div id="watchlist-list"></div>
@@ -110,8 +131,20 @@
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3.5 3 14.5 0 18"/><path d="M12 3c-3 3.5-3 14.5 0 18"/></svg>
         Include cross-border trips
       </label>
+      <div id="trip-days-row">
+        <span id="trip-days-label">Days</span>
+        <div id="trip-days-buttons">
+          <button type="button" class="day-btn active" data-day="1" onclick="toggleTripDay(1)">Mo</button>
+          <button type="button" class="day-btn active" data-day="2" onclick="toggleTripDay(2)">Tu</button>
+          <button type="button" class="day-btn active" data-day="3" onclick="toggleTripDay(3)">We</button>
+          <button type="button" class="day-btn active" data-day="4" onclick="toggleTripDay(4)">Th</button>
+          <button type="button" class="day-btn active" data-day="5" onclick="toggleTripDay(5)">Fr</button>
+          <button type="button" class="day-btn active" data-day="6" onclick="toggleTripDay(6)">Sa</button>
+          <button type="button" class="day-btn active" data-day="0" onclick="toggleTripDay(0)">Su</button>
+        </div>
+      </div>
       <div id="combos-focus-bar" style="display:none;">
-        Showing suggestions for one game only.
+        Showing suggestions for a specific selection.
         <button type="button" onclick="clearFocusedTrip()">✕ Show all trips</button>
       </div>
       <div id="combos-nav">

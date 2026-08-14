@@ -9,6 +9,8 @@ let LEAGUE_LOGO = {}; // league code -> competition logo URL, loaded from data/l
 // index.html for the icons baked into the static markup.
 const ICONS = {
   flag: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h13l-3 4 3 4H5"/></svg>`,
+  route: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="6" r="2.2" fill="currentColor" stroke="none"/><circle cx="19" cy="18" r="2.2" fill="currentColor" stroke="none"/><path d="M6.8 7.5C10 11 8 13 12 13s2-2 5.2 1.5" stroke-dasharray="2.2 2.6"/></svg>`,
+  calendar: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>`,
   sparkle: `<svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/></svg>`,
   globe: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3.5 3 14.5 0 18"/><path d="M12 3c-3 3.5-3 14.5 0 18"/></svg>`,
   plane: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L11 13"/><path d="M21 3l-7 18-4-8-8-4 19-6z"/></svg>`,
@@ -223,8 +225,17 @@ const LEAGUE_COLOR = {
   allsvenskan:"#005293", eliteserien:"#a3123a", superliga:"#c8102e", veikkausliiga:"#003580",
   scottish_prem:"#1a5c38", swiss_super_league:"#b03a2e", austrian_bundesliga:"#2f6f6f",
   super_league_greece:"#003087", super_lig:"#e30a17", ekstraklasa:"#996515",
-  czech_first_league:"#11457e", croatian_hnl:"#c65102"
+  czech_first_league:"#11457e", croatian_hnl:"#c65102",
+  champions_league:"#0b1f4e", europa_league:"#ff6a13", conference_league:"#00a19a"
 };
+// UEFA club competitions deliberately have NO entry here — unlike a
+// domestic league, a single competition spans many countries, so there's
+// no one COUNTRY_TAG to give it. Their clubs carry a "country" field
+// directly on the team record instead (data/teams.json) — see
+// buildGamePool(). (A code->country lookup keyed only by team code was
+// tried and rejected: codes are only unique WITHIN a league, e.g. "PAR"
+// is Parma in serie_a but Partizan in conference_league, so a global
+// lookup would silently pick the wrong one.)
 const COUNTRY_TAG = {
   epl:"ENG", championship:"ENG", league_one:"ENG",
   la_liga:"ESP", la_liga_2:"ESP",
@@ -255,7 +266,9 @@ const LEAGUE_LABELS = {
   scottish_prem: "Premiership (SCO)", swiss_super_league: "Super League (SUI)",
   austrian_bundesliga: "Bundesliga (AUT)", super_league_greece: "Super League (GRE)",
   super_lig: "Süper Lig (TUR)", ekstraklasa: "Ekstraklasa (POL)",
-  czech_first_league: "Chance Liga (CZE)", croatian_hnl: "HNL (CRO)"
+  czech_first_league: "Chance Liga (CZE)", croatian_hnl: "HNL (CRO)",
+  champions_league: "UEFA Champions League", europa_league: "UEFA Europa League",
+  conference_league: "UEFA Conference League"
 };
 
 // ===== Map setup =====
@@ -454,7 +467,7 @@ function renderAll(){
         <div class="popup-meta">${h.city} · ${fmtDate(f.start)} · ${COUNTRY_TAG[otherLeague]}</div>
         <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
       `);
-      bindStopButton(marker, stopKey, h);
+      bindStopButton(marker, stopKey, h, f.start);
       marker.addTo(map);
       currentMarkers.push(marker);
     });
@@ -463,6 +476,13 @@ function renderAll(){
   const fixturesContainer = document.getElementById('fixtures-container');
   fixturesContainer.innerHTML = '';
   const anchorSelections = [];
+  // Fixtures at the same venue across different selected leagues — e.g. a
+  // club with both a domestic fixture and a UEFA competition fixture in
+  // the same window — get ONE marker with a pageable popup instead of two
+  // overlapping ones, keyed by rounded lat/lng (~100m precision).
+  const venueGroups = new Map();
+  const venueMarkers = new Map();
+  function venueKey(lat, lng){ return `${lat.toFixed(3)},${lng.toFixed(3)}`; }
 
   orderedSelected.forEach(league => {
     const teams = TEAMS[league];
@@ -515,18 +535,10 @@ function renderAll(){
       const watchKey = watchKeyFor(league, f.home, f.matchday);
       const watchItem = { key: watchKey, league, homeCode: f.home, homeName: h.name, awayName: a ? a.name : f.away, city: h.city, start: f.start, lat: h.lat, lng: h.lng };
       const gameLabel = `${h.name} vs ${a ? a.name : f.away}`;
-      const marker = L.marker([h.lat, h.lng], { icon: makeIcon(color, h.logo) });
-      marker.bindTooltip(h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
-      marker.bindPopup(`
-        <div class="popup-club">${gameLabel}</div>
-        <div class="popup-meta">${h.city} · ${fmtDate(f.start)}</div>
-        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">${ICONS.sparkle} Suggest trip</button></div>
-      `);
-      bindStopButton(marker, stopKey, h);
-      bindWatchButton(marker, watchItem);
-      bindSuggestButton(marker, watchKey, league, f.home, f.start, gameLabel);
-      marker.addTo(map);
-      currentMarkers.push(marker);
+
+      const vKey = venueKey(h.lat, h.lng);
+      if(!venueGroups.has(vKey)) venueGroups.set(vKey, []);
+      venueGroups.get(vKey).push({ league, f, h, a, color, stopKey, watchKey, watchItem, gameLabel });
       bounds.push([h.lat, h.lng]);
 
       const item = document.createElement('div');
@@ -539,7 +551,16 @@ function renderAll(){
         </div>
         <span class="suggest-btn" title="Suggest a trip around this game">${ICONS.sparkle}</span>
       `;
-      item.querySelector('.fbody').onclick = () => { map.setView([h.lat, h.lng], 9); marker.openPopup(); };
+      item.querySelector('.fbody').onclick = () => {
+        map.setView([h.lat, h.lng], 9);
+        const marker = venueMarkers.get(vKey);
+        if(marker){
+          marker._venueIndex = marker._venueGames.findIndex(g => g.watchKey === watchKey);
+          if(marker._venueIndex < 0) marker._venueIndex = 0;
+          marker.getPopup().setContent(buildVenuePopupHtml(marker._venueGames, marker._venueIndex));
+          marker.openPopup();
+        }
+      };
       makeWatchable(item, watchItem, item.querySelector('.watch-star'));
       item.querySelector('.suggest-btn').onclick = (e) => { e.stopPropagation(); suggestTripsFor(league, f.home, f.start, gameLabel); };
       listDiv.appendChild(item);
@@ -548,10 +569,74 @@ function renderAll(){
     anchorSelections.push({ league, matchday: selectedMd, fixtures });
   });
 
+  venueGroups.forEach((games, vKey) => {
+    const [lat, lng] = vKey.split(',').map(Number);
+    const primary = games[0];
+    const marker = L.marker([lat, lng], { icon: makeIcon(primary.color, primary.h.logo) });
+    marker.bindTooltip(primary.h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
+    marker._venueGames = games;
+    marker._venueIndex = 0;
+    marker.bindPopup(buildVenuePopupHtml(games, 0));
+    bindVenuePopupHandlers(marker);
+    marker.addTo(map);
+    currentMarkers.push(marker);
+    venueMarkers.set(vKey, marker);
+  });
+
   if(bounds.length) map.fitBounds(bounds, { padding:[40,40] });
 
   lastAnchorSelections = anchorSelections;
   updateCombosView();
+}
+
+// A venue "group" is 1+ fixtures sharing the same home venue this window
+// (almost always 1 — the >1 case is a club playing both a domestic and a
+// UEFA competition fixture at once). Builds the popup for whichever game
+// is currently paged to; single-game groups render identically to before.
+function buildVenuePopupHtml(games, idx){
+  const g = games[idx];
+  const pager = games.length > 1 ? `
+    <div class="popup-pager">
+      <button type="button" class="popup-pager-btn" data-dir="-1">‹</button>
+      <span>${idx+1} / ${games.length} · ${LEAGUE_LABELS[g.league] || g.league}</span>
+      <button type="button" class="popup-pager-btn" data-dir="1">›</button>
+    </div>
+  ` : '';
+  return `
+    ${pager}
+    <div class="popup-club">${g.gameLabel}</div>
+    <div class="popup-meta">${g.h.city} · ${fmtDate(g.f.start)}</div>
+    <div><button class="add-stop-btn" data-stop="${g.stopKey}">+ Add to route</button><button class="watch-btn" data-key="${g.watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${g.watchKey}">${ICONS.sparkle} Suggest trip</button></div>
+  `;
+}
+
+function bindVenuePopupHandlers(marker){
+  marker.on('popupopen', () => wireVenuePopupButtons(marker));
+}
+
+// Wires the action buttons for whichever game a venue marker's popup is
+// currently showing. Called on popupopen AND after every page-change,
+// since setContent() updates the DOM without re-firing 'popupopen'.
+function wireVenuePopupButtons(marker){
+  const games = marker._venueGames;
+  const g = games[marker._venueIndex];
+  const stopBtn = document.querySelector(`.add-stop-btn[data-stop="${CSS.escape(g.stopKey)}"]`);
+  if(stopBtn) stopBtn.onclick = () => { addStop(g.stopKey, g.h, g.f.start); marker.closePopup(); };
+  const watchBtn = document.querySelector(`.watch-btn[data-key="${CSS.escape(g.watchKey)}"]`);
+  if(watchBtn){
+    watchBtn.textContent = isWatched(g.watchKey) ? '★ Planned' : '☆ Plan';
+    watchBtn.onclick = () => { toggleWatch(g.watchItem); watchBtn.textContent = isWatched(g.watchKey) ? '★ Planned' : '☆ Plan'; };
+  }
+  const suggestBtn = document.querySelector(`.suggest-trip-btn[data-key="${CSS.escape(g.watchKey)}"]`);
+  if(suggestBtn) suggestBtn.onclick = () => { suggestTripsFor(g.league, g.f.home, g.f.start, g.gameLabel); marker.closePopup(); };
+  document.querySelectorAll('.popup-pager-btn').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      marker._venueIndex = (marker._venueIndex + parseInt(btn.dataset.dir, 10) + games.length) % games.length;
+      marker.getPopup().setContent(buildVenuePopupHtml(games, marker._venueIndex));
+      wireVenuePopupButtons(marker);
+    };
+  });
 }
 
 // ===== Cross-league trip clustering (drive-time feasibility) =====
@@ -561,9 +646,34 @@ function renderAll(){
 // line distance) between the two stadiums.
 const POST_MATCH_BUFFER_MIN = 120; // assume full-time ~2h after kickoff
 const PRE_MATCH_BUFFER_MIN = 15;   // want to arrive at least 15 min early
-const MAX_TRIP_SPAN_H = 72;        // covers a full Fri-to-Mon matchday window
+// A plain "N days" span is ambiguous — which weekdays that covers depends
+// on where the anchor happens to fall, and isn't something you can target
+// (e.g. "I can only travel Fri-Sun"). So the user-facing control is which
+// weekdays are eligible at all (see selectedTripDays/toggleTripDay below);
+// this stays a fixed, generous internal safety net against chaining
+// together games that are technically drive-feasible but weeks apart.
+const MAX_TRIP_SPAN_H = 9 * 24;
 const MAX_LEG_KM = 600;            // don't offer a single hop longer than this, even if time allows it
 const MAX_ROUTING_POOL = 80;       // cap on points sent to the OSRM table API per render
+
+// Which weekdays (JS Date#getDay(): 0=Sun..6=Sat) are eligible to be
+// chained into a trip. All on by default (unrestricted); the anchor
+// fixture itself is always included regardless of this filter — it's the
+// game the trip is built around, not a candidate to exclude.
+let selectedTripDays = new Set([0,1,2,3,4,5,6]);
+
+function toggleTripDay(day){
+  const btn = document.querySelector(`.day-btn[data-day="${day}"]`);
+  if(selectedTripDays.has(day)){
+    if(selectedTripDays.size === 1) return; // keep at least one day selected
+    selectedTripDays.delete(day);
+    btn.classList.remove('active');
+  } else {
+    selectedTripDays.add(day);
+    btn.classList.add('active');
+  }
+  updateCombosView();
+}
 
 function buildGamePool(){
   const pool = [];
@@ -574,7 +684,7 @@ function buildGamePool(){
       const a = teams[f.away];
       if(!h) return;
       pool.push({
-        league, country: COUNTRY_TAG[league], homeCode: f.home, matchday: f.matchday,
+        league, country: COUNTRY_TAG[league] || h.country || 'EUR', homeCode: f.home, matchday: f.matchday,
         home: h, awayName: a ? a.name : f.away,
         start: new Date(f.start)
       });
@@ -611,30 +721,56 @@ function toggleIncludeCrossBorder(checked){
   if(lastCombos) renderComboCards(lastCombos);
 }
 
-// ----- "Suggest a trip for this game" focus mode -----
+// ----- "Suggest a trip for this game(s)" focus mode -----
 // Normal browsing anchors combos on every fixture of every selected
 // league's current matchday (set by renderAll below). Picking a single
-// game via its 🔀 button instead pins the anchor to just that one fixture,
-// independent of whatever leagues/matchdays are toggled on, until cleared.
-let focusedFixture = null; // { league, home, start, label } | null
+// game via its 🔀 button, or a whole watchlist plan via "Suggest trips for
+// My Plan", instead pins the anchor(s) to specific fixtures, independent
+// of whatever leagues/matchdays are toggled on, until cleared. A trip is
+// still only ever built within the configurable trip-length window per
+// anchor (see tripSpanDays) — a plan spanning weeks produces several
+// separate short trip clusters, not one long multi-week itinerary.
+let focusedFixtures = []; // [{ league, home, start, label }, ...] — empty = no focus
 let lastAnchorSelections = []; // the normal (non-focused) anchor set, from the last renderAll()
 
 function suggestTripsFor(league, homeCode, start, label){
-  focusedFixture = { league, home: homeCode, start, label };
+  focusedFixtures = [{ league, home: homeCode, start, label }];
   updateCombosView();
 }
 
+// Anchors Combinable Trips on every game currently in the active "My Plan"
+// watchlist, so it suggests further realistic games around your whole
+// marked plan rather than just one game at a time.
+function suggestTripsForPlan(){
+  const items = activePlan().items;
+  if(items.length === 0){
+    document.getElementById('combos-heading').textContent = 'Combinable Trips';
+    alert('My Plan is empty — mark a few games with ☆ first.');
+    return;
+  }
+  focusedFixtures = items.map(w => ({
+    league: w.league, home: w.homeCode, start: w.start, label: `${w.homeName} vs ${w.awayName}`
+  }));
+  updateCombosView();
+  document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
+}
+
 function clearFocusedTrip(){
-  focusedFixture = null;
+  focusedFixtures = [];
   updateCombosView();
 }
 
 function updateCombosView(){
-  if(focusedFixture){
-    renderCombosMulti(
-      [{ league: focusedFixture.league, matchday: null, fixtures: [{ home: focusedFixture.home, start: focusedFixture.start }] }],
-      focusedFixture.label
-    );
+  if(focusedFixtures.length){
+    const byLeague = {};
+    focusedFixtures.forEach(f => {
+      (byLeague[f.league] || (byLeague[f.league] = [])).push({ home: f.home, start: f.start });
+    });
+    const selections = Object.keys(byLeague).map(league => ({ league, matchday: null, fixtures: byLeague[league] }));
+    const label = focusedFixtures.length === 1
+      ? focusedFixtures[0].label
+      : `${focusedFixtures.length} selected games`;
+    renderCombosMulti(selections, label);
   } else {
     renderCombosMulti(lastAnchorSelections);
   }
@@ -714,10 +850,12 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
       <div class="combo-title">${crossBorder ? ICONS.globe + ' Cross-border trip' : 'Trip'} ${cIdx+1} · ${games.length} games</div>
       ${gamesHtml}
       <div class="combo-stats">≈ ${fmtHM(totalDriveSec)} · ${totalKm.toFixed(0)} km total driving · ${countries.join(' → ')}</div>
+      <div class="combo-load-hint">${ICONS.route} Click to load as your route</div>
     `;
     card.onclick = () => {
       const bnds = games.map(g => [g.home.lat, g.home.lng]);
       map.fitBounds(bnds, { padding:[60,60] });
+      loadRouteFromGames(games);
     };
     combosList.appendChild(card);
   });
@@ -770,10 +908,15 @@ async function renderCombosMulti(selections, focusLabel = null){
   const windowMs = MAX_TRIP_SPAN_H * 3600 * 1000;
 
   // Pre-filter the full cross-league pool to fixtures that could plausibly
-  // chain to an anchor fixture, so the routing request stays small.
+  // chain to an anchor fixture, so the routing request stays small. Also
+  // drop any non-anchor fixture on a weekday the user hasn't enabled —
+  // anchors are always kept regardless, since they're the games the trip
+  // is built around, not a candidate to filter out.
   let pool = buildGamePool().filter(g => {
     const t = g.start.getTime();
-    return t >= minAnchor - windowMs && t <= maxAnchor + windowMs;
+    if(t < minAnchor - windowMs || t > maxAnchor + windowMs) return false;
+    if(!selectedTripDays.has(g.start.getDay()) && !anchorSet.has(`${g.league}::${g.homeCode}`)) return false;
+    return true;
   });
   if(pool.length > MAX_ROUTING_POOL){
     const mid = (minAnchor + maxAnchor) / 2;
@@ -851,7 +994,7 @@ async function renderCombosMulti(selections, focusLabel = null){
   // hops from drifting across many days (e.g. Wed -> Fri -> Sun -> Mon, each
   // hop within the cap but the whole "trip" spanning almost a week). Trim
   // each candidate down to the longest window containing the anchor whose
-  // *total* span (first game to last) still fits within MAX_TRIP_SPAN_H.
+  // *total* span (first game to last) still fits within the trip length.
   function trimToSpan(chain, anchorPos){
     const capMs = MAX_TRIP_SPAN_H * 3600 * 1000;
     const times = chain.map(i => pool[i].start.getTime());
@@ -916,10 +1059,10 @@ let routeStops = []; // array of {key, team}
 let routeStart = null; // { name, lat, lng } | null
 let routingControl = null;
 
-function bindStopButton(marker, stopKey, teamData){
+function bindStopButton(marker, stopKey, teamData, fixtureStart){
   marker.on('popupopen', () => {
     const btn = document.querySelector(`.add-stop-btn[data-stop="${CSS.escape(stopKey)}"]`);
-    if(btn) btn.onclick = () => { addStop(stopKey, teamData); marker.closePopup(); };
+    if(btn) btn.onclick = () => { addStop(stopKey, teamData, fixtureStart); marker.closePopup(); };
   });
 }
 
@@ -963,9 +1106,23 @@ function bindSuggestButton(marker, key, league, homeCode, start, label){
   });
 }
 
-function addStop(key, team){
+// Stops are ordered by kickoff time — with fixed kickoff times, that's the
+// only order you can actually attend them in. Stops with no specific
+// fixture (e.g. a club added as a plain waypoint) sort after every timed
+// stop, keeping their relative insertion order among themselves.
+function sortRouteStopsChronologically(){
+  routeStops.sort((a,b) => {
+    if(a.start && b.start) return new Date(a.start) - new Date(b.start);
+    if(a.start) return -1;
+    if(b.start) return 1;
+    return 0;
+  });
+}
+
+function addStop(key, team, start){
   if(routeStops.some(s => s.key === key)) return;
-  routeStops.push({ key, team });
+  routeStops.push({ key, team, start: start || null });
+  sortRouteStopsChronologically();
   renderStops();
   computeRoute();
 }
@@ -983,6 +1140,25 @@ function clearRoute(){
   computeRoute();
 }
 
+// Replaces the whole route with a set of games in one shot — used when
+// loading a Combinable Trips suggestion. `games` entries need
+// {league, homeCode, home:{name,city,lat,lng}, start}; already
+// chronologically ordered by the trip-building algorithm, but sorted again
+// here for safety since this is a public entry point.
+function loadRouteFromGames(games){
+  routeStart = null;
+  routeStops = games.map(g => ({
+    key: `${g.league}::${g.homeCode}`,
+    team: g.home,
+    start: g.start instanceof Date ? g.start.toISOString() : g.start
+  }));
+  sortRouteStopsChronologically();
+  renderStops();
+  computeRoute();
+  document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
+  document.getElementById('route-panel').classList.add('open');
+}
+
 function renderStops(){
   const container = document.getElementById('route-stops');
   const clearBtn = document.getElementById('clear-route-btn');
@@ -995,28 +1171,49 @@ function renderStops(){
   }
   hint.style.display = 'none';
   clearBtn.disabled = false;
-  const startHtml = routeStart ? `
-    <div class="route-stop route-start">
-      <span class="num start-flag">${ICONS.flag}</span>
-      <span class="name">${routeStart.name}</span>
-      <span class="rm" onclick="clearRouteStart()">×</span>
-    </div>
-  ` : '';
-  const stopsHtml = routeStops.map((s,i) => `
-    <div class="route-stop">
-      <span class="num">${i+1}</span>
-      <span class="name">${s.team.name}</span>
-      <span class="rm" onclick="removeStop('${s.key.replace(/'/g,"\\'")}')">×</span>
-    </div>
-  `).join('');
-  container.innerHTML = startHtml + stopsHtml;
+
+  const rows = [];
+  if(routeStart){
+    rows.push(`
+      <div class="route-stop route-start">
+        <span class="num start-flag">${ICONS.flag}</span>
+        <span class="name">${routeStart.name}</span>
+        <span class="rm" onclick="clearRouteStart()">×</span>
+      </div>
+    `);
+  }
+  routeStops.forEach((s,i) => {
+    rows.push(`
+      <div class="route-stop">
+        <span class="num">${i+1}</span>
+        <span class="name">${s.team.name}</span>
+        <span class="rm" onclick="removeStop('${s.key.replace(/'/g,"\\'")}')">×</span>
+      </div>
+    `);
+  });
+
+  const legsValid = routeLegs && routeLegs.length === rows.length - 1;
+  let html = rows[0];
+  for(let i=1;i<rows.length;i++){
+    if(legsValid){
+      const leg = routeLegs[i-1];
+      html += `<div class="route-leg">${fmtHM(leg.time)} · ${(leg.distance/1000).toFixed(0)} km</div>`;
+    }
+    html += rows[i];
+  }
+  container.innerHTML = html;
 }
 
-function computeRoute(){
+let routeLegs = null; // per-leg {time,distance}, matching the current points order, or null
+let routeComputeId = 0;
+
+async function computeRoute(){
   const summary = document.getElementById('route-summary');
   if(routingControl){ map.removeControl(routingControl); routingControl = null; }
   const points = [...(routeStart ? [routeStart] : []), ...routeStops.map(s => s.team)];
-  if(points.length < 2){ summary.style.display='none'; summary.textContent=''; return; }
+  routeLegs = null;
+  const computeId = ++routeComputeId;
+  if(points.length < 2){ summary.style.display='none'; summary.textContent=''; renderStops(); return; }
   const waypoints = points.map(p => L.latLng(p.lat, p.lng));
   routingControl = L.Routing.control({
     waypoints: waypoints,
@@ -1040,6 +1237,21 @@ function computeRoute(){
     summary.style.display='block';
     summary.textContent = 'Could not calculate a route (a ferry crossing may be required).';
   });
+
+  // Per-leg time/distance, fetched the same way as Combinable Trips (a
+  // separate OSRM table lookup) since Leaflet Routing Machine's route
+  // object doesn't expose a reliable per-leg breakdown.
+  try{
+    const matrix = await fetchDurationMatrix(points.map(p => ({ lat:p.lat, lng:p.lng })));
+    if(computeId !== routeComputeId) return; // a newer route has since superseded this one
+    if(matrix){
+      routeLegs = points.slice(1).map((_, i) => ({
+        time: matrix.durations[i][i+1],
+        distance: matrix.distances[i][i+1]
+      }));
+      renderStops();
+    }
+  } catch(e){ /* leg breakdown is best-effort */ }
 }
 
 // ===== Radius search =====
@@ -1137,7 +1349,7 @@ function renderRadiusResults(point, radiusKm, fitView){
       <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
       <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">${ICONS.sparkle} Suggest trip</button></div>
     `);
-    bindStopButton(marker, stopKey, g.home);
+    bindStopButton(marker, stopKey, g.home, g.start.toISOString());
     bindWatchButton(marker, watchItem);
     bindSuggestButton(marker, watchKey, g.league, g.homeCode, g.start.toISOString(), gameLabel);
     marker.addTo(map);
@@ -1284,7 +1496,9 @@ function resetAllFilters(){
   includeCrossBorder = false;
   const cbToggle = document.getElementById('cross-border-toggle');
   if(cbToggle) cbToggle.checked = false;
-  focusedFixture = null;
+  selectedTripDays = new Set([0,1,2,3,4,5,6]);
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.add('active'));
+  focusedFixtures = [];
 
   if(mapPickMode) toggleMapPick();
   clearRadiusSearch();
@@ -1296,6 +1510,113 @@ function resetAllFilters(){
   document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
 
   renderAll();
+}
+
+// ===== Calendar view =====
+// A full-screen agenda over #body (map + side panel), listing every
+// fixture for the currently selected leagues from a chosen date onward,
+// grouped by day — doubles as "search by date" since picking a date IS
+// the filter. Deliberately an in-app overlay rather than a real second
+// page/URL, so it shares all in-memory state (loaded data, league
+// selection, plan) instead of duplicating it; the header/controls bar
+// stays visible and usable while it's open.
+let calendarOpen = false;
+const CALENDAR_MAX_ROWS = 200; // keep the DOM light even with many full-season leagues selected
+
+function toggleCalendarView(){
+  calendarOpen = !calendarOpen;
+  document.getElementById('calendar-view').classList.toggle('open', calendarOpen);
+  document.getElementById('calendar-toggle-btn').classList.toggle('active', calendarOpen);
+  if(calendarOpen){
+    const dateInput = document.getElementById('calendar-date');
+    if(!dateInput.value) dateInput.value = new Date().toISOString().slice(0,10);
+    renderCalendar();
+  }
+}
+
+function calendarJumpToday(){
+  document.getElementById('calendar-date').value = new Date().toISOString().slice(0,10);
+  renderCalendar();
+}
+
+function fmtTimeOnly(date){
+  return date.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+}
+
+function renderCalendar(){
+  const body = document.getElementById('calendar-body');
+  const dateVal = document.getElementById('calendar-date').value;
+  const fromDate = dateVal ? new Date(dateVal + 'T00:00:00') : new Date();
+
+  const leagues = Object.keys(LEAGUE_LABELS).filter(c => selectedLeagues.has(c));
+  if(leagues.length === 0){
+    body.innerHTML = `<div class="empty-note">Select at least one league (top left) to see its fixtures here.</div>`;
+    return;
+  }
+
+  let games = [];
+  leagues.forEach(league => {
+    const teams = TEAMS[league];
+    (FIXTURES[league] || []).forEach(f => {
+      const start = new Date(f.start);
+      if(start < fromDate) return;
+      const h = teams[f.home];
+      if(!h) return;
+      const a = teams[f.away];
+      games.push({ league, home: h, homeCode: f.home, awayName: a ? a.name : f.away, start, matchday: f.matchday });
+    });
+  });
+  games.sort((x,y) => x.start - y.start);
+
+  if(games.length === 0){
+    body.innerHTML = `<div class="empty-note">No fixtures found for the selected leagues from this date onward.</div>`;
+    return;
+  }
+
+  const truncated = games.length > CALENDAR_MAX_ROWS;
+  games = games.slice(0, CALENDAR_MAX_ROWS);
+
+  let html = '';
+  let currentDay = null;
+  games.forEach(g => {
+    const dayKey = g.start.toDateString();
+    if(dayKey !== currentDay){
+      currentDay = dayKey;
+      const dayLabel = g.start.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+      html += `<div class="calendar-day-header">${dayLabel}</div>`;
+    }
+    const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
+    html += `
+      <div class="calendar-row" data-key="${watchKey}">
+        <span class="watch-star" data-key="${watchKey}">☆</span>
+        ${resultLogoHtml(g.home.logo, LEAGUE_COLOR[g.league])}
+        <div class="crbody">
+          <div class="crteams">${g.home.name} – ${g.awayName}</div>
+          <div class="crmeta">${fmtTimeOnly(g.start)} · ${g.home.city} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+        </div>
+      </div>
+    `;
+  });
+  if(truncated){
+    html += `<div class="empty-note">Showing the first ${CALENDAR_MAX_ROWS} fixtures — narrow the league selection or pick a later date to see more.</div>`;
+  }
+  body.innerHTML = html;
+
+  games.forEach(g => {
+    const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
+    const row = body.querySelector(`.calendar-row[data-key="${CSS.escape(watchKey)}"]`);
+    if(!row) return;
+    const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
+    makeWatchable(row, watchItem, row.querySelector('.watch-star'));
+    row.querySelector('.crbody').onclick = () => {
+      selectedLeagues.add(g.league);
+      leagueMatchday[g.league] = g.matchday;
+      buildLeaguePanel();
+      renderAll();
+      toggleCalendarView();
+      setTimeout(() => { map.setView([g.home.lat, g.home.lng], 10); }, 150);
+    };
+  });
 }
 
 // ===== Bootstrap: load data, then render =====
@@ -1310,6 +1631,7 @@ async function loadData(){
   FIXTURES = await fixturesRes.json();
   AIRPORTS = await airportsRes.json();
   LEAGUE_LOGO = await leaguesRes.json();
+
   buildLeaguePanel();
   renderWatchlist();
   renderAll();

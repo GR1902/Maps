@@ -21,8 +21,8 @@ norwich-scouting-map/
 ├── js/
 │   └── spieltag-explorer.js   App logic (fetches data/teams.json + data/fixtures.json)
 ├── data/
-│   ├── teams.json             499 club/venue records, keyed by league → team code
-│   ├── fixtures.json          2610 fixtures, keyed by league, with matchday numbers
+│   ├── teams.json             583 club/venue records, keyed by league → team code
+│   ├── fixtures.json          2624 fixtures, keyed by league, with matchday numbers
 │   ├── airports.json          ~60 major European airports (name, IATA, city, lat/lng)
 │   └── leagues.json           Competition logo URL per league code (see below)
 ├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
@@ -63,9 +63,14 @@ required. It's a snapshot — re-run the build script after changing
 to refresh it; `dist/` isn't tracked in git.
 
 ## Features
-- League picker (multi-select checkbox panel, 29 leagues across 16
-  countries) — each selected league gets its own matchday dropdown, since
-  leagues don't share a common calendar or matchday numbering
+- League picker (multi-select checkbox panel, 32 leagues: 29 domestic
+  leagues across 16 countries plus the 3 UEFA club competitions — Champions
+  League, Europa League, Conference League) — each selected league gets its
+  own matchday dropdown, since leagues don't share a common calendar or
+  matchday numbering. A club playing in two selected competitions at once
+  (e.g. a domestic fixture and a Champions League fixture the same window)
+  gets a single marker with a pageable "1 / 2 ‹ ›" popup instead of two
+  overlapping ones — see "UEFA club competitions" below
 - Shows every selected league's home fixtures highlighted (own color per
   league); other clubs of the same league in a pale shade; unselected
   leagues' clubs in muted grey
@@ -92,7 +97,7 @@ to refresh it; `dist/` isn't tracked in git.
 - Radius search ("📍 Radius Search" in the top control bar, opens as a
   dropdown like the league picker): enter an address, or click "📍 Pick point
   on map" and click anywhere on the map instead — either way, see every home
-  fixture within a radius of that point, across *all* 29 leagues and every
+  fixture within a radius of that point, across *all* 32 leagues and every
   matchday currently loaded, independent of which leagues are toggled on in
   the picker, since "what's near this point" is a different question from
   "what am I currently browsing". The radius is a continuous slider (5–500
@@ -111,21 +116,38 @@ to refresh it; `dist/` isn't tracked in git.
   fixtures ("anchors"), finds realistic multi-stop trips — where every leg
   is checked against actual driving time (see below), not just distance.
   Sorted most-effective-first: the most games, and among trips with the
-  same number of games, the fewest total driving km. By default only
+  same number of games, the fewest total driving km. A "Days" bar (Mo–Su)
+  controls which weekdays are eligible to be chained into a trip at all —
+  e.g. turn off Mon–Thu to only ever see Fri/Sat/Sun trips; the anchor
+  game(s) are always kept regardless of this filter, since they're what
+  the trip is built around, not a candidate to exclude. By default only
   same-country trips are shown; a "🌍 Include cross-border trips" toggle
   above the list opts in to also seeing trips that reach into a
   neighboring country's leagues, re-filtering instantly from the
   already-computed trips (no re-fetch from the routing service). Shown as
   a swipeable/scrollable carousel — one trip card at a time, with a
   position readout ("2 / 7") and ‹ › buttons — instead of a long vertical
-  list. A "🔀 Suggest trip" button on any single fixture (list row, radius
-  result, or marker popup) pins the panel to trip suggestions built around
-  just that one game, independent of whatever leagues/matchdays are
-  currently toggled on, until cleared via "✕ Show all trips"
+  list; **clicking a trip card also loads it as your active route** (see
+  route planning below), so the map immediately shows the real driving
+  line, not just a bounding-box zoom. A "🔀 Suggest trip" button on any
+  single fixture (list row, radius result, marker popup, or Calendar row)
+  pins the panel to trip suggestions built around just that one game,
+  independent of whatever leagues/matchdays are currently toggled on. A
+  "🔀 Suggest trips for My Plan" button in the watchlist toolbar does the
+  same but anchored on *every* game currently in your active My Plan at
+  once — useful once you've starred several games — though a trip is still
+  only ever built within the currently-enabled weekday window per anchor,
+  so a plan spanning several weeks produces multiple separate short trip
+  clusters, not one long multi-week itinerary. Either kind of focus clears
+  via "✕ Show all trips"
 - Point-to-point route planning (click marker → "+ Add to route" → real
   driving route via OSRM, with distance/time); stops and the running
   distance/time summary live under "🚗 Plan Route" in the top control bar,
-  same dropdown pattern as the league picker and radius search. Optionally
+  same dropdown pattern as the league picker and radius search. Stops are
+  always ordered chronologically by kickoff time — the only sensible order
+  when games have fixed start times — and each leg between consecutive
+  stops shows its own driving time/distance (fetched the same way as
+  Combinable Trips' per-leg breakdown), not just the trip total. Optionally
   set a 🏁 start point — from an airport's popup or the radius search's
   "Use as route start" — so the route is driven from that origin (e.g. the
   airport you're flying into) instead of starting at the first added
@@ -142,6 +164,19 @@ to refresh it; `dist/` isn't tracked in git.
   instead). Everything's persisted in the browser's `localStorage`, so it
   survives reloads (but is local to one browser/device — there's no account
   or sync between devices)
+- "📅 Calendar" (top control bar): a full-screen agenda over the map area —
+  header/controls bar stays visible and usable — listing every fixture for
+  the currently *selected* leagues from a chosen date onward, grouped by
+  day. Doubles as search-by-date, since picking a date **is** the filter;
+  there's a "Today" shortcut too. Each row has the same ☆ star as
+  everywhere else to add it to My Plan, and clicking a row jumps back to
+  the map, switches that league to the right matchday, and centers on the
+  fixture. Deliberately an in-app overlay rather than a real second
+  page/URL, so it shares all in-memory state (loaded data, league
+  selection, plan) instead of duplicating it. Capped at 200 rows so a wide
+  date range across several full-season leagues (see League depth below)
+  stays fast to render — narrow the league selection or move the date
+  forward to see further out
 
 ### How "Combinable Trips" works
 
@@ -163,10 +198,17 @@ full-time and reach the next stadium with time to spare before kickoff.
   currently selected league + matchday (the "★" marked entries); the other
   legs can come from any league or country, on any matchday, as long as the
   timing and distance work.
-- A trip's total span (first game to last) is capped at 72h
-  (`MAX_TRIP_SPAN_H`, a Friday-to-Monday matchday window) so legs don't
-  chain into an unrealistic multi-day itinerary just because each
-  individual hop was technically feasible.
+- Only games on a weekday enabled in the "Days" bar (Mo–Su, all on by
+  default) are eligible to be chained in — anchors are always kept
+  regardless. A fixed, generous 9-day span cap (`MAX_TRIP_SPAN_H`) is a
+  separate internal safety net on top of that, so legs don't chain into an
+  unrealistic multi-week itinerary just because each individual hop was
+  technically drive-feasible; it's not user-facing since the weekday
+  picker is the actual semantic control (an earlier version exposed a
+  plain "N days" slider instead, but that turned out to be ambiguous —
+  which weekdays "3 days" covers depends on where the anchor happens to
+  fall, so it wasn't something you could actually target, e.g. "only ever
+  suggest weekend trips").
 - Legs where OSRM can't find a road route at all (e.g. islands reachable
   only by ferry) are treated as infeasible and excluded.
 
@@ -176,10 +218,44 @@ point route panel, so the same "not for heavy production use" caveat
 applies (see console warning). If it's ever unavailable, the panel shows an
 error instead of silently falling back to straight-line guesses.
 
+## UEFA club competitions
+
+Champions League, Europa League, and Conference League are league codes
+`champions_league`, `europa_league`, `conference_league` like any other —
+added 2026-08-13, currently covering only the **play-off round** (the last
+qualifying round before the League Phase), since that's what UEFA had
+actually scheduled at the time. Officially announced League Phase MD1
+windows (no fixtures yet — participants aren't decided until the play-off
+round finishes): Champions League 8–10 Sep 2026, Europa League 16–17 Sep
+2026, Conference League 15 Oct 2026. The **weekly scheduled routine** (see
+below) picks these up automatically once UEFA publishes them — no separate
+routine was needed, since it already re-checks every league it finds in
+`data/fixtures.json` generically.
+
+A club that's also in one of the 29 domestic leagues (about 55 of the 84
+play-off clubs are, e.g. Celtic, Ajax, Benfica, Rangers) keeps the **exact
+same team code, name, city, and stadium coordinates** in its competition
+entry — deliberately not a fresh, duplicate record — specifically so that
+when the same club has both a domestic fixture and a UEFA fixture visible
+at once, the app's marker-merging (grouped by venue coordinate — see
+`renderAll()`'s `venueGroups` in `js/spieltag-explorer.js`) puts them on
+**one marker with a pageable "1 / 2 ‹ ›" popup** instead of two markers
+sitting on top of each other. Genuinely new clubs (the other ~29) get a
+fresh entry the normal way (city-level lat/lng, Wikipedia crest where
+found). Each competition team record also carries an explicit `"country"`
+field — unlike a domestic league, a single UEFA competition spans dozens of
+countries, so there's no one `COUNTRY_TAG` to give the whole league (used
+for the Combinable Trips cross-border check and the country badge in trip
+cards). This is deliberately *not* a global code→country lookup: team
+codes are only unique **within** a league, not across all 32 (e.g. `"PAR"`
+is Parma in `serie_a` but Partizan in `conference_league`), so a global
+lookup would silently resolve to the wrong club's country for any colliding
+code.
+
 ## Data structure
 
 **`teams.json`** — nested by league, keyed by short team code. `logo` is
-optional (present for ~490/499 clubs):
+optional (present for ~490/583 clubs):
 ```json
 { "primeira_liga": {
     "POR": { "name": "FC Porto", "city": "Porto", "lat": 41.16177, "lng": -8.583591,
@@ -275,6 +351,9 @@ data) — noted per league below.
 | Polish Ekstraklasa | MD1, 4–7 (24 Jul–7 Sep) | High | ekstraklasa.org official terminarz; MD1 re-derived from final-score reports, **fixing a wrong date+time** for Wisła Kraków–GKS Katowice; 3 postponed fixtures excluded, no reschedule date yet |
 | Czech First League (Chance Liga) | MD1, 4–5 (25 Jul–23 Aug) | High | fotbal.cz; MD1's previously-uncertain Artis Brno–Mladá Boleslav game confirmed at 18:00 local |
 | Croatian HNL | MD1, 3–4 (31 Jul–23 Aug) | High | hns-cff.hr official raspored; MD2 intentionally skipped (already played before the research date) |
+| UEFA Champions League | Play-off round, MD1, 7 ties/14 legs (18–26 Aug) | High | Wikipedia's mirror of uefa.com's fixture calendar, cross-validated by independently converting each kickoff's two given timezones to UTC and confirming they agreed |
+| UEFA Europa League | Play-off round pairings/dates only, no fixtures yet (draw 20/27 Aug) | Pairings/dates High, times none | Same sourcing; **no kickoff times published anywhere yet** as of 2026-08-13, so no fixture entries exist — one tie's opponent was still undetermined (a prior round was live at research time) |
+| UEFA Conference League | Play-off round pairings/dates only, no fixtures yet (draw 20/27 Aug) | Pairings/dates High, times none | Same situation as Europa League — teams are in `teams.json` for when times land, no fixtures yet; one tie's opponent also undetermined |
 
 Stadium coordinates are city-level from general knowledge, not individually
 re-verified per club. The live current-season snapshot for the "big 5"
