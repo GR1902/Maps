@@ -96,13 +96,21 @@
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           Back to map
         </button>
-        <div id="calendar-controls">
-          <label for="calendar-date">From</label>
-          <input type="date" id="calendar-date" onchange="renderCalendar()">
+        <div id="calendar-month-nav">
+          <button type="button" onclick="calendarShiftMonth(-1)" aria-label="Previous month">‹</button>
+          <span id="calendar-month-label"></span>
+          <button type="button" onclick="calendarShiftMonth(1)" aria-label="Next month">›</button>
+        </div>
+        <div id="calendar-range">
+          <label>From <input type="date" id="calendar-date-from" onchange="renderCalendar()"></label>
+          <label>To <input type="date" id="calendar-date-to" onchange="renderCalendar()"></label>
           <button type="button" class="mini-btn" onclick="calendarJumpToday()">Today</button>
         </div>
       </div>
-      <div id="calendar-body"></div>
+      <div id="calendar-body">
+        <div id="calendar-grid"></div>
+        <div id="calendar-day-detail"></div>
+      </div>
     </div>
     <div id="side">
       <h2 id="watchlist-heading">★ <span id="plan-name-display">My Plan</span> <span class="count" id="watchlist-count">(0)</span></h2>

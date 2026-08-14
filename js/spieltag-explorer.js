@@ -549,7 +549,7 @@ function renderAll(){
           <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
           <div class="meta">${h.city} · ${fmtDate(f.start)}</div>
         </div>
-        <span class="suggest-btn" title="Suggest a trip around this game">${ICONS.sparkle}</span>
+        <span class="suggest-btn" data-tooltip="Suggest a trip around this game">${ICONS.sparkle}</span>
       `;
       item.querySelector('.fbody').onclick = () => {
         map.setView([h.lat, h.lng], 9);
@@ -1385,7 +1385,7 @@ function renderRadiusResults(point, radiusKm, fitView){
         <div class="rteams">${g.home.name} – ${g.awayName}</div>
         <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
       </div>
-      <span class="suggest-btn" title="Suggest a trip around this game">${ICONS.sparkle}</span>
+      <span class="suggest-btn" data-tooltip="Suggest a trip around this game">${ICONS.sparkle}</span>
     `;
     item.querySelector('.rbody').onclick = () => { map.setView([g.home.lat, g.home.lng], 10); marker.openPopup(); };
     makeWatchable(item, watchItem, item.querySelector('.watch-star'));
@@ -1533,29 +1533,47 @@ function resetAllFilters(){
 }
 
 // ===== Calendar view =====
-// A full-screen agenda over #body (map + side panel), listing every
-// fixture for the currently selected leagues from a chosen date onward,
-// grouped by day — doubles as "search by date" since picking a date IS
-// the filter. Deliberately an in-app overlay rather than a real second
-// page/URL, so it shares all in-memory state (loaded data, league
-// selection, plan) instead of duplicating it; the header/controls bar
-// stays visible and usable while it's open.
+// A full-screen month grid over #body (map + side panel) for the
+// currently selected leagues, bounded by a From/To date range — doubles
+// as "search by date" since picking the range IS the filter. Clicking a
+// day with games shows that day's fixtures below the grid. Deliberately
+// an in-app overlay rather than a real second page/URL, so it shares all
+// in-memory state (loaded data, league selection, plan) instead of
+// duplicating it; the header/controls bar stays visible and usable while
+// it's open.
 let calendarOpen = false;
-const CALENDAR_MAX_ROWS = 200; // keep the DOM light even with many full-season leagues selected
+let calendarViewDate = new Date(); // which month is displayed (day-of-month ignored)
+let calendarSelectedDate = null;   // 'YYYY-MM-DD' of the day shown in the detail pane, or null
 
 function toggleCalendarView(){
   calendarOpen = !calendarOpen;
   document.getElementById('calendar-view').classList.toggle('open', calendarOpen);
   document.getElementById('calendar-toggle-btn').classList.toggle('active', calendarOpen);
   if(calendarOpen){
-    const dateInput = document.getElementById('calendar-date');
-    if(!dateInput.value) dateInput.value = new Date().toISOString().slice(0,10);
-    renderCalendar();
+    const fromInput = document.getElementById('calendar-date-from');
+    if(!fromInput.value) calendarJumpToday();
+    else renderCalendar();
   }
 }
 
 function calendarJumpToday(){
-  document.getElementById('calendar-date').value = new Date().toISOString().slice(0,10);
+  const today = new Date();
+  document.getElementById('calendar-date-from').value = localDateKey(today);
+  const to = new Date(today);
+  to.setDate(to.getDate() + 30);
+  document.getElementById('calendar-date-to').value = localDateKey(to);
+  calendarViewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  calendarSelectedDate = null;
+  renderCalendar();
+}
+
+function calendarShiftMonth(delta){
+  calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + delta, 1);
+  renderCalendar();
+}
+
+function calendarSelectDay(key){
+  calendarSelectedDate = key;
   renderCalendar();
 }
 
@@ -1563,48 +1581,96 @@ function fmtTimeOnly(date){
   return date.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
 }
 
+// Local (not UTC) calendar-day key, so grouping matches what the user
+// actually sees displayed elsewhere (fmtDate etc. also render local time).
+function localDateKey(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 function renderCalendar(){
-  const body = document.getElementById('calendar-body');
-  const dateVal = document.getElementById('calendar-date').value;
-  const fromDate = dateVal ? new Date(dateVal + 'T00:00:00') : new Date();
+  const grid = document.getElementById('calendar-grid');
+  const detail = document.getElementById('calendar-day-detail');
+  const year = calendarViewDate.getFullYear(), month = calendarViewDate.getMonth();
+  document.getElementById('calendar-month-label').textContent =
+    calendarViewDate.toLocaleDateString('en-GB', { month:'long', year:'numeric' });
 
   const leagues = Object.keys(LEAGUE_LABELS).filter(c => selectedLeagues.has(c));
   if(leagues.length === 0){
-    body.innerHTML = `<div class="empty-note">Select at least one league (top left) to see its fixtures here.</div>`;
+    grid.innerHTML = `<div class="empty-note">Select at least one league (top left) to see its fixtures here.</div>`;
+    detail.innerHTML = '';
     return;
   }
 
-  let games = [];
+  const fromVal = document.getElementById('calendar-date-from').value;
+  const toVal = document.getElementById('calendar-date-to').value;
+  const fromDate = fromVal ? new Date(fromVal + 'T00:00:00') : null;
+  const toDate = toVal ? new Date(toVal + 'T23:59:59') : null;
+
+  // Fixtures for the displayed month only, grouped by local day.
+  const byDay = {};
   leagues.forEach(league => {
     const teams = TEAMS[league];
     (FIXTURES[league] || []).forEach(f => {
       const start = new Date(f.start);
-      if(start < fromDate) return;
+      if(start.getFullYear() !== year || start.getMonth() !== month) return;
       const h = teams[f.home];
       if(!h) return;
       const a = teams[f.away];
-      games.push({ league, home: h, homeCode: f.home, awayName: a ? a.name : f.away, start, matchday: f.matchday });
+      const key = localDateKey(start);
+      (byDay[key] = byDay[key] || []).push({ league, home:h, homeCode:f.home, awayName: a ? a.name : f.away, start, matchday:f.matchday });
     });
   });
-  games.sort((x,y) => x.start - y.start);
 
-  if(games.length === 0){
-    body.innerHTML = `<div class="empty-note">No fixtures found for the selected leagues from this date onward.</div>`;
-    return;
+  const firstOfMonth = new Date(year, month, 1);
+  const startOffset = (firstOfMonth.getDay() + 6) % 7; // 0=Mon..6=Sun
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const todayKey = localDateKey(new Date());
+
+  let cells = '';
+  for(let i=0;i<startOffset;i++) cells += `<div class="cal-cell cal-pad"></div>`;
+  for(let d=1; d<=daysInMonth; d++){
+    const cellDate = new Date(year, month, d);
+    const key = localDateKey(cellDate);
+    const dayFixtures = byDay[key] || [];
+    const inRange = (!fromDate || cellDate >= fromDate) && (!toDate || cellDate <= toDate);
+    const hasGames = dayFixtures.length > 0 && inRange;
+    const classes = ['cal-cell'];
+    if(key === todayKey) classes.push('cal-today');
+    if(key === calendarSelectedDate) classes.push('cal-selected');
+    classes.push(hasGames ? 'cal-has-games' : 'cal-empty');
+    cells += `
+      <div class="${classes.join(' ')}" ${hasGames ? `onclick="calendarSelectDay('${key}')"` : ''}>
+        <span class="cal-daynum">${d}</span>
+        ${hasGames ? `<span class="cal-badge">${dayFixtures.length}</span>` : ''}
+      </div>
+    `;
   }
+  const trailing = (7 - ((startOffset + daysInMonth) % 7)) % 7;
+  for(let i=0;i<trailing;i++) cells += `<div class="cal-cell cal-pad"></div>`;
 
-  const truncated = games.length > CALENDAR_MAX_ROWS;
-  games = games.slice(0, CALENDAR_MAX_ROWS);
+  grid.innerHTML = `
+    <div class="cal-weekday-row">
+      <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+    </div>
+    <div class="cal-grid">${cells}</div>
+  `;
 
-  let html = '';
-  let currentDay = null;
+  if(calendarSelectedDate && byDay[calendarSelectedDate]){
+    renderCalendarDayDetail(calendarSelectedDate, byDay[calendarSelectedDate]);
+  } else {
+    calendarSelectedDate = null;
+    detail.innerHTML = `<div class="empty-note">Click a day with games (green outline, badge shows the count) to see its fixtures here.</div>`;
+  }
+}
+
+function renderCalendarDayDetail(key, dayFixtures){
+  const detail = document.getElementById('calendar-day-detail');
+  const [y, m, d] = key.split('-').map(Number);
+  const dayLabel = new Date(y, m - 1, d).toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  const games = dayFixtures.slice().sort((a,b) => a.start - b.start);
+
+  let html = `<div class="calendar-day-header">${dayLabel}</div>`;
   games.forEach(g => {
-    const dayKey = g.start.toDateString();
-    if(dayKey !== currentDay){
-      currentDay = dayKey;
-      const dayLabel = g.start.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
-      html += `<div class="calendar-day-header">${dayLabel}</div>`;
-    }
     const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
     html += `
       <div class="calendar-row" data-key="${watchKey}">
@@ -1617,14 +1683,11 @@ function renderCalendar(){
       </div>
     `;
   });
-  if(truncated){
-    html += `<div class="empty-note">Showing the first ${CALENDAR_MAX_ROWS} fixtures — narrow the league selection or pick a later date to see more.</div>`;
-  }
-  body.innerHTML = html;
+  detail.innerHTML = html;
 
   games.forEach(g => {
     const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
-    const row = body.querySelector(`.calendar-row[data-key="${CSS.escape(watchKey)}"]`);
+    const row = detail.querySelector(`.calendar-row[data-key="${CSS.escape(watchKey)}"]`);
     if(!row) return;
     const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
     makeWatchable(row, watchItem, row.querySelector('.watch-star'));

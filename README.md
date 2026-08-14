@@ -172,19 +172,20 @@ to refresh it; `dist/` isn't tracked in git.
   instead). Everything's persisted in the browser's `localStorage`, so it
   survives reloads (but is local to one browser/device — there's no account
   or sync between devices)
-- "📅 Calendar" (top control bar): a full-screen agenda over the map area —
-  header/controls bar stays visible and usable — listing every fixture for
-  the currently *selected* leagues from a chosen date onward, grouped by
-  day. Doubles as search-by-date, since picking a date **is** the filter;
-  there's a "Today" shortcut too. Each row has the same ☆ star as
-  everywhere else to add it to My Plan, and clicking a row jumps back to
-  the map, switches that league to the right matchday, and centers on the
-  fixture. Deliberately an in-app overlay rather than a real second
+- "📅 Calendar" (top control bar): a full-screen **month view** over the
+  map area — header/controls bar stays visible and usable — for the
+  currently *selected* leagues, bounded by a **From/To date range** (a
+  ‹month year› header navigates month-to-month independently of that
+  range; days outside the range render but aren't clickable). Each day
+  with fixtures shows a count badge and opens that day's fixture list
+  below the grid on click — this doubles as search-by-date, since setting
+  the range **is** the filter. There's a "Today" shortcut (resets to the
+  current month and a 30-day range). Each row in the day list has the same
+  ☆ star as everywhere else to add it to My Plan, and clicking a row jumps
+  back to the map, switches that league to the right matchday, and centers
+  on the fixture. Deliberately an in-app overlay rather than a real second
   page/URL, so it shares all in-memory state (loaded data, league
-  selection, plan) instead of duplicating it. Capped at 200 rows so a wide
-  date range across several full-season leagues (see League depth below)
-  stays fast to render — narrow the league selection or move the date
-  forward to see further out
+  selection, plan) instead of duplicating it
 
 ### How "Combinable Trips" works
 
