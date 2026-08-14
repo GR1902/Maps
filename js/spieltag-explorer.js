@@ -1640,10 +1640,34 @@ function buildDayCellMatches(dayFixtures){
   const sorted = dayFixtures.slice().sort((a,b) => a.start - b.start);
   const firstWord = name => name.split(' ')[0];
   const shown = sorted.slice(0, 3)
-    .map(g => `<div class="cal-match-line" style="border-left-color:${LEAGUE_COLOR[g.league] || '#999'}"><span class="cal-match-time">${fmtTimeOnly(g.start)}</span> ${firstWord(g.home.name)}–${firstWord(g.awayName)}</div>`)
+    .map(g => `<div class="cal-match-line" style="border-left-color:${LEAGUE_COLOR[g.league] || '#999'}" oncontextmenu="jumpToFixtureFromCalendarCell(event, '${g.league}', '${g.homeCode}', ${g.matchday})"><span class="cal-match-time">${fmtTimeOnly(g.start)}</span> ${firstWord(g.home.name)}–${firstWord(g.awayName)}</div>`)
     .join('');
   const more = sorted.length > 3 ? `<div class="cal-match-more">+${sorted.length - 3} more</div>` : '';
   return `<div class="cal-matches">${shown}${more}</div>`;
+}
+
+// Switches to a fixture's league/matchday, closes the Calendar, and centers
+// the map on its venue — the single "open this game on the map" action
+// used both by the day-detail list (left-click) and, as a shortcut straight
+// from the month grid, by right-clicking a match chip (see
+// jumpToFixtureFromCalendarCell / buildDayCellMatches).
+function jumpToFixtureOnMap(league, matchday, lat, lng){
+  selectedLeagues.add(league);
+  leagueMatchday[league] = matchday;
+  buildLeaguePanel();
+  renderAll();
+  toggleCalendarView();
+  setTimeout(() => { map.setView([lat, lng], 10); }, 150);
+}
+
+// Right-click on a match chip in the month grid: jump straight to the map
+// without first left-clicking the day to open its detail list below.
+function jumpToFixtureFromCalendarCell(event, league, homeCode, matchday){
+  event.preventDefault();
+  event.stopPropagation(); // don't also trigger the day cell's own onclick (calendarSelectDay)
+  const h = TEAMS[league] && TEAMS[league][homeCode];
+  if(!h) return;
+  jumpToFixtureOnMap(league, matchday, h.lat, h.lng);
 }
 
 function renderCalendar(){
@@ -1769,14 +1793,7 @@ function renderCalendarDayDetail(key, dayFixtures){
     if(!row) return;
     const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
     makeWatchable(row, watchItem, row.querySelector('.watch-star'));
-    row.querySelector('.crbody').onclick = () => {
-      selectedLeagues.add(g.league);
-      leagueMatchday[g.league] = g.matchday;
-      buildLeaguePanel();
-      renderAll();
-      toggleCalendarView();
-      setTimeout(() => { map.setView([g.home.lat, g.home.lng], 10); }, 150);
-    };
+    row.querySelector('.crbody').onclick = () => jumpToFixtureOnMap(g.league, g.matchday, g.home.lat, g.home.lng);
   });
 }
 

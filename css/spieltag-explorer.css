@@ -205,6 +205,7 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .cal-match-line{
   font-size:0.62rem; line-height:1.5; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   background:var(--surface); border-left:3px solid var(--line); border-radius:4px; padding:1px 6px;
+  cursor:context-menu; /* hints that right-click does something (jump to map) */
 }
 .cal-match-time{ font-weight:700; color:var(--text-muted); }
 .cal-cell.cal-selected .cal-match-line{ color:#fff; background:rgba(255,255,255,0.14); }
