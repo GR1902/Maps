@@ -63,6 +63,12 @@ required. It's a snapshot — re-run the build script after changing
 to refresh it; `dist/` isn't tracked in git.
 
 ## Features
+- The side panel is collapsible on two levels: each section (My Plan, a
+  league's fixture list, Combinable Trips) collapses independently via its
+  header's chevron, and the panel itself can be tucked away entirely — the
+  narrow ‹ › tab on the map/panel border — so the map can use the full
+  width. Neither is persisted across reloads or touched by "Reset filters";
+  they're layout, not a filter
 - League picker (multi-select checkbox panel, 32 leagues: 29 domestic
   leagues across 16 countries plus the 3 UEFA club competitions — Champions
   League, Europa League, Conference League) — each selected league gets its

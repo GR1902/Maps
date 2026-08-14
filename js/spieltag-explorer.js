@@ -1294,6 +1294,22 @@ document.addEventListener('fullscreenchange', () => {
 });
 window.addEventListener('resize', () => map.invalidateSize());
 
+// Whole side-panel collapse — independent of, and combinable with, the
+// per-section collapses (My Plan / league blocks / Combinable Trips can
+// each be open or closed regardless of whether the panel itself is
+// shown). Shrinks #side to zero width so #map-wrap's flex fills the
+// freed space, then invalidates the map's size so Leaflet redraws into
+// the newly available area (mirrors the same fullscreenchange pattern
+// above — Leaflet doesn't notice its container resized on its own).
+function toggleSidePanel(){
+  const side = document.getElementById('side');
+  const btn = document.getElementById('side-toggle-btn');
+  const collapsed = side.classList.toggle('panel-collapsed');
+  btn.textContent = collapsed ? '‹' : '›';
+  btn.setAttribute('aria-label', collapsed ? 'Show side panel' : 'Hide side panel');
+  setTimeout(() => map.invalidateSize(), 150);
+}
+
 // ===== Point-to-point route planning =====
 // stopKey format: "league::teamCode" so any club, from any league, can be a stop.
 let routeStops = []; // array of {key, team}
