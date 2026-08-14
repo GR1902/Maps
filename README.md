@@ -121,10 +121,18 @@ to refresh it; `dist/` isn't tracked in git.
   e.g. turn off Mon–Thu to only ever see Fri/Sat/Sun trips; the anchor
   game(s) are always kept regardless of this filter, since they're what
   the trip is built around, not a candidate to exclude. By default only
-  same-country trips are shown; a "🌍 Include cross-border trips" toggle
-  above the list opts in to also seeing trips that reach into a
-  neighboring country's leagues, re-filtering instantly from the
-  already-computed trips (no re-fetch from the routing service). Shown as
+  same-country trips are shown — "same-country" meaning the countries of
+  your *currently selected* anchor leagues, so e.g. selecting two
+  same-country leagues (Pro League + Challenger Pro League, both Belgium)
+  never needs the toggle just to combine those two; a "🌍 Include
+  cross-border trips" toggle above the list opts in to also letting legs
+  reach into a country outside that set. This restricts the candidate pool
+  itself before the routing request, not just which already-computed
+  trips are displayed (toggling it re-runs the OSRM lookup) — a
+  display-only filter turned out to hide valid same-country trips too
+  whenever the single longest chain for a given anchor happened to pad
+  itself with a foreign leg, since only one (the longest) candidate chain
+  is ever kept per anchor. Shown as
   a swipeable/scrollable carousel — one trip card at a time, with a
   position readout ("2 / 7") and ‹ › buttons — instead of a long vertical
   list; **clicking a trip card also loads it as your active route** (see

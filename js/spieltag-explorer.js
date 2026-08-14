@@ -708,17 +708,21 @@ async function fetchDurationMatrix(points){
 }
 
 let combosRequestId = 0;
-// Default is same-country trips only; the toggle opts in to also seeing
-// trips that reach into a neighboring country.
+// Default is same-country trips only; the toggle opts in to also letting
+// legs reach into a neighboring country. This restricts the CANDIDATE POOL
+// itself (see renderCombosMulti), not just which already-computed trips
+// are displayed — the DAG longest-chain algorithm only ever keeps ONE
+// (the longest) candidate chain per anchor, so a purely-domestic chain
+// can lose out to a longer chain that happens to pad itself with a
+// foreign leg, hiding an otherwise-valid same-country trip entirely if
+// this were just a display-level filter. So toggling this re-runs the
+// routing request rather than instantly re-filtering cached results.
 let includeCrossBorder = false;
-// Cached inputs for the last successfully computed set of trips, so the
-// cross-border toggle can re-filter and re-render instantly without
-// redoing the OSRM routing request.
-let lastCombos = null;
+let lastCombos = null; // cached inputs, kept only for reference/debugging
 
 function toggleIncludeCrossBorder(checked){
   includeCrossBorder = checked;
-  if(lastCombos) renderComboCards(lastCombos);
+  updateCombosView();
 }
 
 // ----- "Suggest a trip for this game(s)" focus mode -----
@@ -806,24 +810,25 @@ function scrollCombos(dir){
   }, { passive:true });
 })();
 
-// Builds the combo-card elements for an already-computed trips list.
+// Builds the combo-card elements for an already-computed trips list. The
+// same-country restriction is applied upstream, in the candidate pool
+// itself (see renderCombosMulti) — by the time trips are computed, every
+// leg already respects the current includeCrossBorder setting, so no
+// further filtering happens here.
 function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
   const combosList = document.getElementById('combos-list');
-  const filtered = includeCrossBorder
-    ? trips
-    : trips.filter(idxs => new Set(idxs.map(i => pool[i].country)).size === 1);
 
-  if(filtered.length === 0){
+  if(trips.length === 0){
     combosList.innerHTML = includeCrossBorder
       ? `<div class="empty-note">No realistic combinations found around ${summaryLabel} — driving between venues doesn't leave enough time between full-time and the next kickoff (2h post-match + 15 min arrival buffer built in).</div>`
-      : `<div class="empty-note">No same-country combinations found around ${summaryLabel}. Turn on "Include cross-border trips" to see trips that reach into a neighboring country too.</div>`;
+      : `<div class="empty-note">No same-country combinations found around ${summaryLabel}. Turn on "Include cross-border trips" to widen the search into neighboring countries too.</div>`;
     combosList.scrollLeft = 0;
     updateCombosPositionUI();
     return;
   }
 
   combosList.innerHTML = '';
-  filtered.slice(0, 10).forEach((idxs, cIdx) => {
+  trips.slice(0, 10).forEach((idxs, cIdx) => {
     const games = idxs.map(i => pool[i]);
     const countries = [...new Set(games.map(g => g.country))];
     const crossBorder = countries.length > 1;
@@ -896,12 +901,23 @@ async function renderCombosMulti(selections, focusLabel = null){
 
   // Anchor set: the fixtures actually shown for every selected league +
   // its chosen matchday. Every trip must include at least one of these.
+  // allowedCountries: the country of every anchor's own league/club —
+  // when cross-border trips aren't enabled, only legs from one of these
+  // countries can be chained in, so e.g. selecting two same-country
+  // leagues (Pro League + Challenger Pro League, both BEL) never needs
+  // the cross-border toggle just to combine THOSE two — the countries
+  // already selected are never "cross-border" by definition.
   const anchorSet = new Set();
   const anchorTimes = [];
+  const allowedCountries = new Set();
   withFixtures.forEach(s => {
+    const teams = TEAMS[s.league];
     s.fixtures.forEach(f => {
       anchorSet.add(`${s.league}::${f.home}`);
       anchorTimes.push(new Date(f.start).getTime());
+      const h = teams && teams[f.home];
+      const c = COUNTRY_TAG[s.league] || (h && h.country);
+      if(c) allowedCountries.add(c);
     });
   });
   const minAnchor = Math.min(...anchorTimes), maxAnchor = Math.max(...anchorTimes);
@@ -909,13 +925,17 @@ async function renderCombosMulti(selections, focusLabel = null){
 
   // Pre-filter the full cross-league pool to fixtures that could plausibly
   // chain to an anchor fixture, so the routing request stays small. Also
-  // drop any non-anchor fixture on a weekday the user hasn't enabled —
-  // anchors are always kept regardless, since they're the games the trip
-  // is built around, not a candidate to filter out.
+  // drop any non-anchor fixture on a weekday the user hasn't enabled, or
+  // (unless cross-border trips are on) from a country not already among
+  // the selected anchors — anchors are always kept regardless of either
+  // filter, since they're the games the trip is built around, not a
+  // candidate to exclude.
   let pool = buildGamePool().filter(g => {
     const t = g.start.getTime();
     if(t < minAnchor - windowMs || t > maxAnchor + windowMs) return false;
-    if(!selectedTripDays.has(g.start.getDay()) && !anchorSet.has(`${g.league}::${g.homeCode}`)) return false;
+    const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}`);
+    if(!selectedTripDays.has(g.start.getDay()) && !isAnchor) return false;
+    if(!includeCrossBorder && !allowedCountries.has(g.country) && !isAnchor) return false;
     return true;
   });
   if(pool.length > MAX_ROUTING_POOL){
