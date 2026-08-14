@@ -294,6 +294,11 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   box-shadow:var(--shadow-md); z-index:200;
 }
 [data-tooltip]:hover::after{ opacity:1; visibility:visible; }
+/* Calendar day cells get a multi-line match-list preview instead of a
+   single-line label. */
+.cal-cell[data-tooltip]::after{
+  white-space:pre; text-align:left; line-height:1.6;
+}
 
 #cross-border-toggle-row{
   display:flex; align-items:center; gap:7px; padding:8px 16px; background:var(--surface);

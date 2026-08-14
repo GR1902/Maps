@@ -177,10 +177,15 @@ to refresh it; `dist/` isn't tracked in git.
   currently *selected* leagues, bounded by a **From/To date range** (a
   ‹month year› header navigates month-to-month independently of that
   range; days outside the range render but aren't clickable). Each day
-  with fixtures shows a count badge and opens that day's fixture list
-  below the grid on click — this doubles as search-by-date, since setting
-  the range **is** the filter. There's a "Today" shortcut (resets to the
-  current month and a 30-day range). Each row in the day list has the same
+  with fixtures shows a count badge, and **hovering it previews that day's
+  matches** (time + matchup, up to 6) in a tooltip so you can read what's
+  on without clicking first; clicking opens the full list below the grid
+  — this doubles as search-by-date, since setting the range **is** the
+  filter. A day is auto-selected when you open the Calendar or change
+  month (today if it has games, else the first day that does), so the
+  list below the grid is never empty by default. There's a "Today"
+  shortcut (resets to the current month and a 30-day range). Each row in
+  the day list has the same
   ☆ star as everywhere else to add it to My Plan, and clicking a row jumps
   back to the map, switches that league to the right matchday, and centers
   on the fixture. Deliberately an in-app overlay rather than a real second

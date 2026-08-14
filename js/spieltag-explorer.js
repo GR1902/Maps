@@ -1587,6 +1587,17 @@ function localDateKey(d){
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
+// Multi-line match-list preview for a day cell's hover tooltip — lets you
+// read what's on without having to click the day first. Capped so a busy
+// day (many leagues selected) doesn't produce an unreadably long bubble.
+function buildDayTooltip(dayFixtures){
+  const sorted = dayFixtures.slice().sort((a,b) => a.start - b.start);
+  const lines = sorted.slice(0, 6).map(g => `${fmtTimeOnly(g.start)}  ${g.home.name} – ${g.awayName}`);
+  if(sorted.length > 6) lines.push(`+${sorted.length - 6} more`);
+  return lines.join('\n')
+    .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function renderCalendar(){
   const grid = document.getElementById('calendar-grid');
   const detail = document.getElementById('calendar-day-detail');
@@ -1626,20 +1637,35 @@ function renderCalendar(){
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const todayKey = localDateKey(new Date());
 
+  // Days this month that actually have games within the From/To range, in
+  // date order — used both to build the grid and to auto-pick a sensible
+  // default day below, so the detail pane shows real fixtures right away
+  // instead of an empty "click a day" prompt.
+  const inRangeGameDays = [];
+  for(let d=1; d<=daysInMonth; d++){
+    const cellDate = new Date(year, month, d);
+    const key = localDateKey(cellDate);
+    const inRange = (!fromDate || cellDate >= fromDate) && (!toDate || cellDate <= toDate);
+    if((byDay[key] || []).length > 0 && inRange) inRangeGameDays.push(key);
+  }
+  if(!calendarSelectedDate || inRangeGameDays.indexOf(calendarSelectedDate) === -1){
+    calendarSelectedDate = inRangeGameDays.includes(todayKey) ? todayKey : (inRangeGameDays[0] || null);
+  }
+
   let cells = '';
   for(let i=0;i<startOffset;i++) cells += `<div class="cal-cell cal-pad"></div>`;
   for(let d=1; d<=daysInMonth; d++){
     const cellDate = new Date(year, month, d);
     const key = localDateKey(cellDate);
     const dayFixtures = byDay[key] || [];
-    const inRange = (!fromDate || cellDate >= fromDate) && (!toDate || cellDate <= toDate);
-    const hasGames = dayFixtures.length > 0 && inRange;
+    const hasGames = inRangeGameDays.includes(key);
     const classes = ['cal-cell'];
     if(key === todayKey) classes.push('cal-today');
     if(key === calendarSelectedDate) classes.push('cal-selected');
     classes.push(hasGames ? 'cal-has-games' : 'cal-empty');
+    const tooltip = hasGames ? `data-tooltip="${buildDayTooltip(dayFixtures)}"` : '';
     cells += `
-      <div class="${classes.join(' ')}" ${hasGames ? `onclick="calendarSelectDay('${key}')"` : ''}>
+      <div class="${classes.join(' ')}" ${hasGames ? `onclick="calendarSelectDay('${key}')"` : ''} ${tooltip}>
         <span class="cal-daynum">${d}</span>
         ${hasGames ? `<span class="cal-badge">${dayFixtures.length}</span>` : ''}
       </div>
