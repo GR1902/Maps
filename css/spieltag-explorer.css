@@ -322,6 +322,17 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   left:0; transform:none;
 }
 
+#combos-date-row{
+  display:flex; align-items:center; gap:8px; padding:8px 16px; background:var(--surface);
+  border-bottom:1px solid var(--line); font-size:0.72rem; color:var(--text-muted); flex-wrap:wrap;
+}
+#combos-date-row label{ display:flex; align-items:center; gap:5px; }
+#combos-date-row input[type="date"]{
+  font-family:inherit; font-size:0.7rem; padding:4px 6px; border-radius:6px;
+  border:1px solid var(--line); background:var(--paper); color:var(--ink);
+}
+#combos-date-row .mini-btn{ margin-left:auto; }
+
 #cross-border-toggle-row{
   display:flex; align-items:center; gap:7px; padding:8px 16px; background:var(--surface);
   border-bottom:1px solid var(--line);
@@ -351,6 +362,21 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 }
 #combos-focus-bar button:hover{ background:var(--surface); }
 #combos-focus-bar .icon{ width:12px; height:12px; }
+#combos-excluded-bar{
+  display:flex; align-items:center; justify-content:space-between; gap:8px; padding:6px 16px;
+  background:var(--surface-strong); border-bottom:1px solid var(--line); font-size:0.68rem; color:var(--text-muted);
+}
+#combos-excluded-bar button{
+  font-family:inherit; font-size:0.64rem; font-weight:600; padding:3px 8px; border-radius:6px;
+  border:1px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer;
+}
+#combos-excluded-bar button:hover{ background:var(--surface); }
+.combo-game{ position:relative; }
+.combo-game-remove{
+  position:absolute; top:2px; right:0; cursor:pointer; color:var(--text-muted); font-weight:700;
+  font-size:0.78rem; padding:0 3px; line-height:1; user-select:none;
+}
+.combo-game-remove:hover{ color:var(--red); }
 #combos-nav{
   display:flex; align-items:center; justify-content:center; gap:12px; padding:8px 16px 0 16px;
   font-size:0.72rem; font-weight:600; color:var(--text-muted);

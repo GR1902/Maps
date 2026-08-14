@@ -134,6 +134,11 @@
       </div>
       <div id="fixtures-container"></div>
       <h2 id="combos-heading">Combinable Trips</h2>
+      <div id="combos-date-row">
+        <label>From <input type="date" id="combos-date-from" onchange="onCombosDateChange()"></label>
+        <label>To <input type="date" id="combos-date-to" onchange="onCombosDateChange()"></label>
+        <button type="button" class="mini-btn" onclick="autoFillCombosDates()" data-tooltip="Set the range to match your currently selected matchdays">Auto</button>
+      </div>
       <label id="cross-border-toggle-row">
         <input type="checkbox" id="cross-border-toggle" onchange="toggleIncludeCrossBorder(this.checked)">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3.5 3 14.5 0 18"/><path d="M12 3c-3 3.5-3 14.5 0 18"/></svg>
@@ -154,6 +159,10 @@
       <div id="combos-focus-bar" style="display:none;">
         Showing suggestions for a specific selection.
         <button type="button" onclick="clearFocusedTrip()">✕ Show all trips</button>
+      </div>
+      <div id="combos-excluded-bar" style="display:none;">
+        <span id="combos-excluded-count"></span>
+        <button type="button" onclick="clearExcludedFixtures()">Clear</button>
       </div>
       <div id="combos-nav">
         <button type="button" onclick="scrollCombos(-1)" aria-label="Previous trip">‹</button>

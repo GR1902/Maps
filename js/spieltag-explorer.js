@@ -668,10 +668,15 @@ const PRE_MATCH_BUFFER_MIN = 15;   // want to arrive at least 15 min early
 // (e.g. "I can only travel Fri-Sun"). So the user-facing control is which
 // weekdays are eligible at all (see selectedTripDays/toggleTripDay below);
 // this stays a fixed, generous internal safety net against chaining
-// together games that are technically drive-feasible but weeks apart.
+// together games that are technically drive-feasible but weeks apart — it
+// caps how long a single TRIP can span (trimToSpan below), not which
+// candidate fixtures enter the pool. Which dates the pool itself draws
+// from is now the user-facing combos-date-from/to range (see
+// autoFillCombosDates / renderCombosMulti) instead of a hidden window.
 const MAX_TRIP_SPAN_H = 9 * 24;
 const MAX_LEG_KM = 600;            // don't offer a single hop longer than this, even if time allows it
 const MAX_ROUTING_POOL = 80;       // cap on points sent to the OSRM table API per render
+const COMBOS_DATE_AUTO_PAD_DAYS = 2; // how far the "Auto" range extends past the anchors' own date span
 
 // Which weekdays (JS Date#getDay(): 0=Sun..6=Sat) are eligible to be
 // chained into a trip. All on by default (unrestricted); the anchor
@@ -689,6 +694,50 @@ function toggleTripDay(day){
     selectedTripDays.add(day);
     btn.classList.add('active');
   }
+  updateCombosView();
+}
+
+// ----- Combinable Trips date range -----
+// Which calendar dates the candidate pool is allowed to draw connecting
+// legs from. Left empty, it's auto-filled (see below) from the actual
+// date span of whatever's currently anchored — recognizing e.g. that two
+// leagues' selected matchdays already fall on the same weekend, rather
+// than always assuming a fixed multi-day window regardless of what's
+// actually selected. Once the user edits it directly, their range sticks
+// until they hit "Auto" again or Reset filters.
+let lastAnchorTimeSpan = null; // { min, max } in ms, set by the most recent renderCombosMulti
+
+function computeAutoDateRange(minMs, maxMs){
+  const pad = COMBOS_DATE_AUTO_PAD_DAYS * 24 * 3600 * 1000;
+  return { from: localDateKey(new Date(minMs - pad)), to: localDateKey(new Date(maxMs + pad)) };
+}
+
+function autoFillCombosDates(){
+  if(!lastAnchorTimeSpan) return;
+  const { from, to } = computeAutoDateRange(lastAnchorTimeSpan.min, lastAnchorTimeSpan.max);
+  document.getElementById('combos-date-from').value = from;
+  document.getElementById('combos-date-to').value = to;
+  updateCombosView();
+}
+
+function onCombosDateChange(){
+  updateCombosView();
+}
+
+// ----- Excluding specific fixtures from Combinable Trips -----
+// A fixture excluded here is dropped from the candidate pool entirely
+// (including if it's an anchor) — it stops being offered anywhere in
+// Combinable Trips until cleared, without affecting the fixture list, map,
+// or My Plan. Keyed the same way as anchors (league+team+kickoff instant).
+let excludedFixtures = new Set();
+
+function excludeFixtureFromCombos(league, homeCode, timestamp){
+  excludedFixtures.add(`${league}::${homeCode}::${timestamp}`);
+  updateCombosView();
+}
+
+function clearExcludedFixtures(){
+  excludedFixtures.clear();
   updateCombosView();
 }
 
@@ -862,7 +911,7 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
       const isAnchor = anchorSet.has(`${g.league}::${g.homeCode}::${g.start.getTime()}`);
       const legNote = i > 0 ? `<br><span style="color:#00A650; font-size:0.62rem;">${legLabels[i-1]}</span>` : '';
       return `
-      <div class="combo-game" style="${isAnchor ? 'font-weight:700;' : ''}">${i+1}. ${g.home.name} <span style="color:#6b6455;">(${g.country})</span> – ${g.awayName}${isAnchor ? ' ★' : ''}<br>
+      <div class="combo-game" style="${isAnchor ? 'font-weight:700;' : ''}"><span class="combo-game-remove" title="Exclude this game from Combinable Trips" onclick="event.stopPropagation(); excludeFixtureFromCombos('${g.league}','${g.homeCode}',${g.start.getTime()})">×</span>${i+1}. ${g.home.name} <span style="color:#6b6455;">(${g.country})</span> – ${g.awayName}${isAnchor ? ' ★' : ''}<br>
       <span style="color:#6b6455; font-size:0.66rem;">${g.home.city} · ${fmtDate(g.start.toISOString())}</span>${legNote}</div>
     `;
     }).join('');
@@ -898,6 +947,12 @@ async function renderCombosMulti(selections, focusLabel = null){
   lastCombos = null;
   if(posEl) posEl.textContent = '';
   if(focusBar) focusBar.style.display = focusLabel ? 'flex' : 'none';
+  const excludedBar = document.getElementById('combos-excluded-bar');
+  if(excludedBar){
+    excludedBar.style.display = excludedFixtures.size ? 'flex' : 'none';
+    document.getElementById('combos-excluded-count').textContent =
+      `${excludedFixtures.size} game${excludedFixtures.size === 1 ? '' : 's'} excluded from trips`;
+  }
 
   const withFixtures = selections.filter(s => s.fixtures.length > 0);
   const summaryLabel = focusLabel || selections.map(s => `${LEAGUE_LABELS[s.league]} MD${s.matchday}`).join(' · ');
@@ -944,7 +999,31 @@ async function renderCombosMulti(selections, focusLabel = null){
     });
   });
   const minAnchor = Math.min(...anchorTimes), maxAnchor = Math.max(...anchorTimes);
-  const windowMs = MAX_TRIP_SPAN_H * 3600 * 1000;
+  lastAnchorTimeSpan = { min: minAnchor, max: maxAnchor };
+
+  // Which calendar dates the pool may draw connecting legs from — user-
+  // controlled (see autoFillCombosDates), auto-filled from the anchors'
+  // own date span the first time / whenever both fields are empty (e.g.
+  // right after Reset filters), so a fresh view always starts from
+  // "whatever's actually selected" rather than a blind multi-day window.
+  const fromInput = document.getElementById('combos-date-from');
+  const toInput = document.getElementById('combos-date-to');
+  const existingFrom = fromInput.value ? new Date(fromInput.value + 'T00:00:00') : null;
+  const existingTo = toInput.value ? new Date(toInput.value + 'T23:59:59') : null;
+  // Re-derive the range whenever it's empty, or when it doesn't even
+  // overlap the current anchors' own date span — e.g. switching to a
+  // different league/matchday whose dates fall outside whatever range was
+  // left over from before. A range that still overlaps is left alone,
+  // since that's the user deliberately narrowing/widening on purpose.
+  const staleRange = (existingFrom && existingFrom.getTime() > maxAnchor) ||
+                      (existingTo && existingTo.getTime() < minAnchor);
+  if((!existingFrom && !existingTo) || staleRange){
+    const auto = computeAutoDateRange(minAnchor, maxAnchor);
+    fromInput.value = auto.from;
+    toInput.value = auto.to;
+  }
+  const rangeFrom = fromInput.value ? new Date(fromInput.value + 'T00:00:00') : null;
+  const rangeTo = toInput.value ? new Date(toInput.value + 'T23:59:59') : null;
 
   // Pre-filter the full cross-league pool to fixtures that could plausibly
   // chain to an anchor fixture, so the routing request stays small. Also
@@ -952,12 +1031,17 @@ async function renderCombosMulti(selections, focusLabel = null){
   // (unless cross-border trips are on) from a country not already among
   // the selected anchors — anchors are always kept regardless of either
   // filter, since they're the games the trip is built around, not a
-  // candidate to exclude.
+  // candidate to exclude. Explicitly excluded fixtures (see
+  // excludeFixtureFromCombos) are dropped regardless of anchor status —
+  // that's the point of excluding one.
   const poolAnchorKey = g => `${g.league}::${g.homeCode}::${g.start.getTime()}`;
   let pool = buildGamePool().filter(g => {
-    const t = g.start.getTime();
-    if(t < minAnchor - windowMs || t > maxAnchor + windowMs) return false;
+    if(excludedFixtures.has(poolAnchorKey(g))) return false;
     const isAnchor = anchorSet.has(poolAnchorKey(g));
+    if(!isAnchor){
+      if(rangeFrom && g.start < rangeFrom) return false;
+      if(rangeTo && g.start > rangeTo) return false;
+    }
     if(!selectedTripDays.has(g.start.getDay()) && !isAnchor) return false;
     if(!includeCrossBorder && !allowedCountries.has(g.country) && !isAnchor) return false;
     return true;
@@ -977,7 +1061,7 @@ async function renderCombosMulti(selections, focusLabel = null){
 
   const n = pool.length;
   if(n < 2){
-    combosList.innerHTML = `<div class="empty-note">Not enough nearby fixtures in this data window to form a trip.</div>`;
+    combosList.innerHTML = `<div class="empty-note">Not enough fixtures in this date range to form a trip — try widening From/To above, or selecting more leagues.</div>`;
     return;
   }
 
@@ -1548,6 +1632,9 @@ function resetAllFilters(){
   selectedTripDays = new Set([0,1,2,3,4,5,6]);
   document.querySelectorAll('.day-btn').forEach(b => b.classList.add('active'));
   focusedFixtures = [];
+  document.getElementById('combos-date-from').value = '';
+  document.getElementById('combos-date-to').value = '';
+  excludedFixtures.clear();
 
   if(mapPickMode) toggleMapPick();
   clearRadiusSearch();

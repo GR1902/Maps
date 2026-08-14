@@ -116,8 +116,24 @@ to refresh it; `dist/` isn't tracked in git.
   fixtures ("anchors"), finds realistic multi-stop trips — where every leg
   is checked against actual driving time (see below), not just distance.
   Sorted most-effective-first: the most games, and among trips with the
-  same number of games, the fewest total driving km. A "Days" bar (Mo–Su)
-  controls which weekdays are eligible to be chained into a trip at all —
+  same number of games, the fewest total driving km. A visible **From/To
+  date range** controls which calendar dates the candidate pool is allowed
+  to draw connecting legs from — auto-filled from the actual date span of
+  the currently selected anchors (padded a couple of days either side) any
+  time it's empty or no longer overlaps the anchors at all (e.g. after
+  switching to a league whose matchday falls on completely different
+  dates), so it recognizes when a fresh default is needed instead of
+  silently reusing an unrelated leftover range; edit it directly (or hit
+  "Auto" to snap back to the anchors' own span) to keep old or unwanted
+  matchdays from a densely-scheduled league (e.g. Championship/League One,
+  full season loaded) from flowing in uninvited. The anchors themselves are
+  always kept regardless of the range, same as the weekday/country filters
+  below. Each game shown on a trip card also has a small "×" to exclude
+  just that one fixture from Combinable Trips entirely (works even on an
+  anchor) — an "N game(s) excluded — Clear" bar appears above the carousel
+  once anything's excluded, and "Reset filters" clears it too. A "Days" bar
+  (Mo–Su) controls which weekdays are eligible to be chained into a trip at
+  all —
   e.g. turn off Mon–Thu to only ever see Fri/Sat/Sun trips; the anchor
   game(s) are always kept regardless of this filter, since they're what
   the trip is built around, not a candidate to exclude. By default only
