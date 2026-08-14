@@ -1646,18 +1646,35 @@ function buildDayCellMatches(dayFixtures){
   return `<div class="cal-matches">${shown}${more}</div>`;
 }
 
-// Switches to a fixture's league/matchday, closes the Calendar, and centers
-// the map on its venue — the single "open this game on the map" action
-// used both by the day-detail list (left-click) and, as a shortcut straight
-// from the month grid, by right-clicking a match chip (see
-// jumpToFixtureFromCalendarCell / buildDayCellMatches).
-function jumpToFixtureOnMap(league, matchday, lat, lng){
+// Switches to a fixture's league/matchday, closes the Calendar, and runs a
+// 200 km radius search centered on its venue — the single "open this game
+// on the map" action used both by the day-detail list (left-click) and, as
+// a shortcut straight from the month grid, by right-clicking a match chip
+// (see jumpToFixtureFromCalendarCell / buildDayCellMatches). Reusing the
+// radius search (rather than a plain setView) gives the jump the same
+// zoom-to-fit + circle + nearby-fixtures list you'd get from searching
+// that spot manually.
+function jumpToFixtureOnMap(league, matchday, lat, lng, label){
   selectedLeagues.add(league);
   leagueMatchday[league] = matchday;
   buildLeaguePanel();
   renderAll();
   toggleCalendarView();
-  setTimeout(() => { map.setView([lat, lng], 10); }, 150);
+  setTimeout(() => {
+    const point = { lat, lng, label: label || `${lat.toFixed(4)}, ${lng.toFixed(4)}` };
+    lastRadiusPoint = point;
+    document.getElementById('radius-address').value = point.label;
+    setRadiusSlider(200, false);
+    // fitView:false — renderRadiusResults's own fit only covers the nearest
+    // 60 *results*, which for a dense area can be much tighter than the
+    // actual 200 km circle. Fit to the circle's real bounds instead so the
+    // whole radius is always visible, not just wherever the closest games
+    // happen to cluster.
+    renderRadiusResults(point, 200, false);
+    if(radiusCircle) map.fitBounds(radiusCircle.getBounds(), { padding:[20,20] });
+    document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
+    document.getElementById('radius-panel').classList.add('open');
+  }, 150);
 }
 
 // Right-click on a match chip in the month grid: jump straight to the map
@@ -1667,7 +1684,7 @@ function jumpToFixtureFromCalendarCell(event, league, homeCode, matchday){
   event.stopPropagation(); // don't also trigger the day cell's own onclick (calendarSelectDay)
   const h = TEAMS[league] && TEAMS[league][homeCode];
   if(!h) return;
-  jumpToFixtureOnMap(league, matchday, h.lat, h.lng);
+  jumpToFixtureOnMap(league, matchday, h.lat, h.lng, `${h.name}, ${h.city}`);
 }
 
 function renderCalendar(){
@@ -1793,7 +1810,7 @@ function renderCalendarDayDetail(key, dayFixtures){
     if(!row) return;
     const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
     makeWatchable(row, watchItem, row.querySelector('.watch-star'));
-    row.querySelector('.crbody').onclick = () => jumpToFixtureOnMap(g.league, g.matchday, g.home.lat, g.home.lng);
+    row.querySelector('.crbody').onclick = () => jumpToFixtureOnMap(g.league, g.matchday, g.home.lat, g.home.lng, `${g.home.name}, ${g.home.city}`);
   });
 }
 
