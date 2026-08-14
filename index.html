@@ -166,10 +166,12 @@
         <button type="button" onclick="clearExcludedFixtures()">Clear</button>
       </div>
       <div id="combos-nav">
-        <button type="button" onclick="scrollCombos(-1)" aria-label="Previous trip">‹</button>
-        <span id="combos-position"></span>
-        <button type="button" onclick="scrollCombos(1)" aria-label="Next trip">›</button>
-        <button type="button" id="combos-mode-toggle" class="mini-btn" onclick="toggleCombosScrollMode()" data-tooltip="Swipe: one trip card at a time. Scroll: see several side by side.">Scroll view</button>
+        <div id="combos-swipe-controls">
+          <button type="button" onclick="scrollCombos(-1)" aria-label="Previous trip">‹</button>
+          <span id="combos-position"></span>
+          <button type="button" onclick="scrollCombos(1)" aria-label="Next trip">›</button>
+        </div>
+        <button type="button" id="combos-mode-toggle" class="mini-btn" onclick="toggleCombosScrollMode()" data-tooltip="Swipe: one trip card at a time. Scroll: see them stacked in a list.">Scroll view</button>
       </div>
       <div id="combos-list"></div>
     </div>

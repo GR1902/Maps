@@ -381,29 +381,29 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 }
 .combo-game-remove:hover{ color:var(--red); }
 #combos-nav{
-  display:flex; align-items:center; justify-content:center; gap:12px; padding:8px 16px 0 16px;
-  font-size:0.72rem; font-weight:600; color:var(--text-muted);
+  display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 16px 0 16px;
+  font-size:0.72rem; font-weight:600; color:var(--text-muted); flex-wrap:wrap;
 }
+#combos-swipe-controls{ display:flex; align-items:center; gap:12px; margin:0 auto; }
 #combos-nav button{
   width:24px; height:24px; border-radius:6px; border:1px solid var(--line); background:var(--paper);
   color:var(--ink); cursor:pointer; font-size:0.85rem; line-height:1; padding:0; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
 }
 #combos-nav button:hover{ background:var(--surface); }
 #combos-position{ min-width:36px; text-align:center; }
-#combos-mode-toggle{
-  width:auto; height:auto; padding:4px 8px; margin-left:auto; font-size:0.66rem;
+#combos-nav button#combos-mode-toggle{
+  width:auto; height:auto; padding:4px 8px; font-size:0.66rem; flex-shrink:0; white-space:nowrap;
 }
 #combos-mode-toggle.active{ background:var(--green-dark); border-color:var(--green-dark); color:#fff; }
 /* No single "current card" in scroll mode (it's a plain stacked list), so
    the swipe-specific ‹ pos › controls are hidden — only the mode toggle
    itself stays visible. */
-#combos-nav.scroll-mode button:not(#combos-mode-toggle),
-#combos-nav.scroll-mode #combos-position{ display:none; }
+#combos-nav.scroll-mode #combos-swipe-controls{ display:none; }
 
 /* Combinable Trips defaults to a swipeable carousel — one card at a time —
-   but #combos-mode-toggle can flip #combos-list into a free-scrolling view
-   with several narrower cards visible side by side instead (see
-   toggleCombosScrollMode). */
+   but #combos-mode-toggle can flip #combos-list into a plain vertically
+   stacked list instead (see toggleCombosScrollMode). */
 #combos-list{
   display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory;
   padding:12px 16px; scrollbar-width:none; -webkit-overflow-scrolling:touch;
