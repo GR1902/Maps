@@ -394,6 +394,11 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   width:auto; height:auto; padding:4px 8px; margin-left:auto; font-size:0.66rem;
 }
 #combos-mode-toggle.active{ background:var(--green-dark); border-color:var(--green-dark); color:#fff; }
+/* No single "current card" in scroll mode (it's a plain stacked list), so
+   the swipe-specific ‹ pos › controls are hidden — only the mode toggle
+   itself stays visible. */
+#combos-nav.scroll-mode button:not(#combos-mode-toggle),
+#combos-nav.scroll-mode #combos-position{ display:none; }
 
 /* Combinable Trips defaults to a swipeable carousel — one card at a time —
    but #combos-mode-toggle can flip #combos-list into a free-scrolling view
@@ -411,8 +416,10 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   cursor:pointer;
 }
 .combo-card:hover{ box-shadow:var(--shadow-md); }
-#combos-list.scroll-mode{ scroll-snap-type:none; }
-#combos-list.scroll-mode .combo-card{ flex:0 0 230px; scroll-snap-align:none; }
+#combos-list.scroll-mode{
+  flex-direction:column; overflow-x:visible; scroll-snap-type:none;
+}
+#combos-list.scroll-mode .combo-card{ flex:0 0 auto; width:100%; scroll-snap-align:none; }
 .combo-card .combo-title{ font-size:0.74rem; font-weight:700; color:var(--ink); margin-bottom:6px; display:flex; align-items:center; gap:5px; }
 .combo-card .combo-title .icon{ width:13px; height:13px; color:var(--green-dark); }
 .combo-card .combo-game{ font-size:0.75rem; padding:3px 0; }

@@ -922,13 +922,18 @@ let combosScrollMode = false;
 function toggleCombosScrollMode(){
   combosScrollMode = !combosScrollMode;
   document.getElementById('combos-list').classList.toggle('scroll-mode', combosScrollMode);
+  document.getElementById('combos-nav').classList.toggle('scroll-mode', combosScrollMode);
   const btn = document.getElementById('combos-mode-toggle');
   btn.classList.toggle('active', combosScrollMode);
   btn.textContent = combosScrollMode ? 'Swipe view' : 'Scroll view';
   updateCombosPositionUI();
 }
 
+// In scroll mode there's no single "current card" — it's a plain stacked
+// list — so the ‹ pos › swipe controls are hidden (see the #combos-nav
+// .scroll-mode CSS rule) and this is a no-op.
 function updateCombosPositionUI(){
+  if(combosScrollMode) return;
   const list = document.getElementById('combos-list');
   const posEl = document.getElementById('combos-position');
   if(!list || !posEl) return;
