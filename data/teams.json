@@ -3833,6 +3833,13 @@
       "lng": 23.2925,
       "logo": "https://upload.wikimedia.org/wikipedia/commons/8/8d/CSKA_Sofia_logo.svg",
       "country": "BUL"
+    },
+    "LEC": {
+      "name": "KKS Lech Poznań",
+      "city": "Poznan",
+      "lat": 52.4064,
+      "lng": 16.9252,
+      "country": "POL"
     }
   },
   "conference_league": {
