@@ -72,11 +72,23 @@ to refresh it; `dist/` isn't tracked in git.
 - League picker (multi-select checkbox panel, 32 leagues: 29 domestic
   leagues across 16 countries plus the 3 UEFA club competitions — Champions
   League, Europa League, Conference League) — each selected league gets its
-  own matchday dropdown, since leagues don't share a common calendar or
-  matchday numbering. A club playing in two selected competitions at once
-  (e.g. a domestic fixture and a Champions League fixture the same window)
-  gets a single marker with a pageable "1 / 2 ‹ ›" popup instead of two
-  overlapping ones — see "UEFA club competitions" below
+  own matchday dropdown by default, since leagues don't share a common
+  calendar or matchday numbering. A club playing in two selected
+  competitions at once (e.g. a domestic fixture and a Champions League
+  fixture the same window) gets a single marker with a pageable "1 / 2 ‹ ›"
+  popup instead of two overlapping ones — see "UEFA club competitions"
+  below. A "By matchday" / "By date range" toggle at the top of the picker
+  switches every selected league at once to a single global **date range**
+  instead — every selected league then shows *all* its home fixtures whose
+  kickoff falls inside that From/To window, spanning as many matchdays as
+  the range covers, instead of one chosen matchday each (each league's
+  fixture-list header shows the date range in place of the matchday
+  dropdown while this mode is active). Defaults to today+14 days the first
+  time it's switched on, then stays exactly as edited. Combines for free
+  with Combinable Trips' own candidate-pool date range below — that range
+  auto-derives from whatever's currently anchored, so a wide date-range
+  selection here naturally widens it too, the same way a matchday selection
+  already did
 - Shows every selected league's home fixtures highlighted (own color per
   league); other clubs of the same league in a pale shade; unselected
   leagues' clubs in muted grey
@@ -188,7 +200,15 @@ to refresh it; `dist/` isn't tracked in git.
   "Use as route start" — so the route is driven from that origin (e.g. the
   airport you're flying into) instead of starting at the first added
   fixture; only one start point at a time, shown ahead of the numbered
-  stops and removable on its own without clearing the whole route
+  stops and removable on its own without clearing the whole route. Every
+  fixture currently on the route is also marked directly on the map and in
+  every list it appears in (fixture list, radius search results) — its
+  marker gets a small gold numbered badge matching its position in the
+  route panel, plus a gold ring around the marker itself, and its list
+  row(s) get a matching gold left-border highlight — so it's clear at a
+  glance which games are already in the route without having to open the
+  route panel or a popup. Updates live as stops are added/removed/cleared,
+  without needing a full re-render of the map
 - "⭐ My Plan" watchlist (top of the side panel) — separate from the route
   planner: this is for marking games you want to see, not for building a
   drivable itinerary. Add a fixture by clicking its ☆ (fixture list, radius

@@ -342,31 +342,53 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 
 let currentMarkers = [];
 
-function makeDiamondIcon(color){
+// A small numbered badge, overlaid on any marker whose stop is currently on
+// the route planner — the number matches that stop's position in the
+// #route-stops list (see renderStops), so the map and the route panel read
+// as the same ordering. null/undefined routeIndex means "not on the route",
+// which every icon factory below treats as "render normally".
+function routeBadgeHtml(routeIndex){
+  if(routeIndex == null) return '';
+  return `<div style="position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;padding:0 3px;border-radius:50%;background:var(--gold);color:var(--green-dark);font-size:9px;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;border:1.5px solid #fffdf4;box-shadow:0 1px 2px rgba(0,0,0,0.35);">${routeIndex}</div>`;
+}
+function routeRingStyle(routeIndex){
+  return routeIndex == null ? 'box-shadow:0 1px 3px rgba(0,0,0,0.4);' : 'box-shadow:0 0 0 2.5px var(--gold), 0 1px 3px rgba(0,0,0,0.4);';
+}
+
+function makeDiamondIcon(color, routeIndex){
+  const size = 14;
   return L.divIcon({
     className:'',
-    html:`<div style="width:14px;height:14px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:1.5px solid #fffdf4;box-shadow:0 1px 3px rgba(0,0,0,0.4);"></div>`,
-    iconSize:[14,14], iconAnchor:[7,14], popupAnchor:[0,-14]
+    html:`<div style="position:relative;width:${size}px;height:${size}px;">
+      <div style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:1.5px solid #fffdf4;${routeRingStyle(routeIndex)}"></div>
+      ${routeBadgeHtml(routeIndex)}
+    </div>`,
+    iconSize:[size,size], iconAnchor:[size/2,size], popupAnchor:[0,-size]
   });
 }
 
 // If a club has a logo URL, show it as a circular badge with a league-color
 // ring; otherwise fall back to the plain colored diamond. handleLogoError
 // swaps a broken/missing image (e.g. a stale hotlinked URL) back to the
-// diamond at runtime too.
+// diamond at runtime too — it only replaces the inner circle, so a route
+// badge positioned on the wrapper around it (see makeIcon) survives.
 function handleLogoError(imgEl){
   const color = imgEl.dataset.fallbackColor;
   imgEl.parentElement.outerHTML = `<div style="width:14px;height:14px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:1.5px solid #fffdf4;box-shadow:0 1px 3px rgba(0,0,0,0.4);"></div>`;
 }
 
-function makeIcon(color, logoUrl){
-  if(!logoUrl) return makeDiamondIcon(color);
+function makeIcon(color, logoUrl, routeIndex){
+  if(!logoUrl) return makeDiamondIcon(color, routeIndex);
+  const size = 24;
   return L.divIcon({
     className:'',
-    html:`<div style="width:24px;height:24px;border-radius:50%;background:#fffdf4;border:2px solid ${color};box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;">
-      <img src="${logoUrl}" data-fallback-color="${color}" onerror="handleLogoError(this)" style="width:17px;height:17px;object-fit:contain;" />
+    html:`<div style="position:relative;width:${size}px;height:${size}px;">
+      <div style="width:${size}px;height:${size}px;border-radius:50%;background:#fffdf4;border:2px solid ${color};${routeRingStyle(routeIndex)}display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        <img src="${logoUrl}" data-fallback-color="${color}" onerror="handleLogoError(this)" style="width:17px;height:17px;object-fit:contain;" />
+      </div>
+      ${routeBadgeHtml(routeIndex)}
     </div>`,
-    iconSize:[24,24], iconAnchor:[12,24], popupAnchor:[0,-24]
+    iconSize:[size,size], iconAnchor:[size/2,size], popupAnchor:[0,-size]
   });
 }
 
@@ -375,16 +397,27 @@ function fmtDate(iso){
   return d.toLocaleString('en-GB', { weekday:'short', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
 }
 
+// Short calendar-date-only label (no weekday/time) for the date-range mode's
+// league-block header, e.g. "21 Aug" — fmtDate above is time-of-kickoff
+// oriented and too long to sit next to a league name.
+function fmtDateShort(d){
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
+}
+
 function fmtHM(totalSeconds){
   const totalMin = Math.round(totalSeconds/60);
   return `${Math.floor(totalMin/60)}h ${totalMin%60}m`;
 }
 
-function makeMutedIcon(){
+function makeMutedIcon(routeIndex){
+  const size = 9;
   return L.divIcon({
     className:'',
-    html:`<div style="width:9px;height:9px;border-radius:50% 50% 50% 0;background:#a8a89c;transform:rotate(-45deg);border:1px solid #fffdf4;box-shadow:0 1px 2px rgba(0,0,0,0.3); opacity:0.75;"></div>`,
-    iconSize:[9,9], iconAnchor:[5,9], popupAnchor:[0,-9]
+    html:`<div style="position:relative;width:${size}px;height:${size}px;">
+      <div style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;background:#a8a89c;transform:rotate(-45deg);border:1px solid #fffdf4;${routeRingStyle(routeIndex)} opacity:0.75;"></div>
+      ${routeBadgeHtml(routeIndex)}
+    </div>`,
+    iconSize:[size,size], iconAnchor:[size/2,size], popupAnchor:[0,-size]
   });
 }
 
@@ -397,10 +430,13 @@ function lightenColor(hex, amount){
   return `rgb(${nr},${ng},${nb})`;
 }
 
-function makeLeagueIcon(color, size){
+function makeLeagueIcon(color, size, routeIndex){
   return L.divIcon({
     className:'',
-    html:`<div style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:1.5px solid #fffdf4;box-shadow:0 1px 3px rgba(0,0,0,0.35);"></div>`,
+    html:`<div style="position:relative;width:${size}px;height:${size}px;">
+      <div style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:1.5px solid #fffdf4;${routeRingStyle(routeIndex)}"></div>
+      ${routeBadgeHtml(routeIndex)}
+    </div>`,
     iconSize:[size,size], iconAnchor:[size/2,size], popupAnchor:[0,-size]
   });
 }
@@ -445,6 +481,33 @@ function toggleAirports(){
 let selectedLeagues = new Set(['epl']);
 let leagueMatchday = {}; // league code -> chosen matchday number
 
+// ----- Map filter mode: per-league matchday (default) vs. a single global
+// date range. In 'range' mode every selected league shows ALL its home
+// fixtures whose kickoff falls inside #map-date-from/#map-date-to, instead
+// of just one chosen matchday — useful since matchdays don't line up across
+// leagues' own calendars, but a date range does. Combinable Trips already
+// has its own From/To range (combos-date-from/to) for the candidate POOL of
+// connecting legs; this one instead controls which fixtures are ANCHORS in
+// the first place, same role leagueMatchday plays in the default mode. -----
+let filterMode = 'matchday'; // 'matchday' | 'range'
+
+function setFilterMode(mode){
+  filterMode = mode;
+  document.querySelectorAll('#filter-mode-row .mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  document.getElementById('map-daterange-row').style.display = mode === 'range' ? 'flex' : 'none';
+  if(mode === 'range'){
+    const fromEl = document.getElementById('map-date-from');
+    const toEl = document.getElementById('map-date-to');
+    if(!fromEl.value && !toEl.value){
+      const today = new Date();
+      fromEl.value = localDateKey(today);
+      toEl.value = localDateKey(new Date(today.getTime() + 14 * 24 * 3600 * 1000));
+    }
+  }
+  renderAll();
+  if(calendarOpen) renderCalendar();
+}
+
 // If a league has a competition logo, show it as a small badge; otherwise
 // fall back to the plain color swatch. handleLeagueLogoError swaps a
 // broken/missing image back to the swatch at runtime too.
@@ -453,8 +516,8 @@ function handleLeagueLogoError(imgEl, color){
 }
 
 function buildLeaguePanel(){
-  const panel = document.getElementById('league-panel');
-  panel.innerHTML = Object.keys(LEAGUE_LABELS).map(code => `
+  const list = document.getElementById('league-checkbox-list');
+  list.innerHTML = Object.keys(LEAGUE_LABELS).map(code => `
     <label class="league-row">
       <input type="checkbox" value="${code}" ${selectedLeagues.has(code) ? 'checked' : ''} onchange="toggleLeague('${code}', this.checked)">
       ${LEAGUE_LOGO[code]
@@ -541,6 +604,16 @@ function renderAll(){
     }
   });
 
+  // 'range' mode: every selected league shows ALL its home fixtures inside
+  // this single global window instead of one chosen matchday each — see
+  // setFilterMode above. Both ends are optional (an empty input = no bound
+  // on that side).
+  const useRange = filterMode === 'range';
+  const mapRangeFromVal = document.getElementById('map-date-from').value;
+  const mapRangeToVal = document.getElementById('map-date-to').value;
+  const mapRangeFrom = useRange && mapRangeFromVal ? new Date(mapRangeFromVal + 'T00:00:00') : null;
+  const mapRangeTo = useRange && mapRangeToVal ? new Date(mapRangeToVal + 'T23:59:59') : null;
+
   // Muted grey markers for every league NOT selected, for geographic context —
   // ONE marker per club, not per fixture. Several leagues carry full-season
   // data (e.g. Championship/League One: 46 matchdays), so grouping by
@@ -562,7 +635,9 @@ function renderAll(){
       const next = teamFixtures[0];
       const a = otherTeams[next.away];
       const stopKey = `${otherLeague}::${code}`;
-      const marker = L.marker([h.lat, h.lng], { icon: makeMutedIcon() });
+      const marker = L.marker([h.lat, h.lng], { icon: makeMutedIcon(routeIndexFor([stopKey])) });
+      marker._routeStopKeys = [stopKey];
+      marker._iconBuilder = (idx) => makeMutedIcon(idx);
       const more = teamFixtures.length > 1 ? ` <span style="opacity:0.7;">(+${teamFixtures.length - 1} more this window)</span>` : '';
       marker.bindPopup(`
         <div class="popup-club">${h.name} vs ${a ? a.name : next.away}</div>
@@ -589,7 +664,15 @@ function renderAll(){
   orderedSelected.forEach(league => {
     const teams = TEAMS[league];
     const selectedMd = leagueMatchday[league];
-    const fixtures = FIXTURES[league].filter(f => f.matchday === selectedMd).slice().sort((a,b)=> new Date(a.start)-new Date(b.start));
+    const fixtures = (useRange
+      ? FIXTURES[league].filter(f => {
+          const d = new Date(f.start);
+          if(mapRangeFrom && d < mapRangeFrom) return false;
+          if(mapRangeTo && d > mapRangeTo) return false;
+          return true;
+        })
+      : FIXTURES[league].filter(f => f.matchday === selectedMd)
+    ).slice().sort((a,b)=> new Date(a.start)-new Date(b.start));
     const color = LEAGUE_COLOR[league];
     const lightColor = lightenColor(color, 0.72);
     const homeThisWindow = new Set(fixtures.map(f => f.home));
@@ -599,7 +682,9 @@ function renderAll(){
       if(homeThisWindow.has(code)) return;
       const t = teams[code];
       const stopKey = `${league}::${code}`;
-      const marker = L.marker([t.lat, t.lng], { icon: makeLeagueIcon(lightColor, 11) });
+      const marker = L.marker([t.lat, t.lng], { icon: makeLeagueIcon(lightColor, 11, routeIndexFor([stopKey])) });
+      marker._routeStopKeys = [stopKey];
+      marker._iconBuilder = (idx) => makeLeagueIcon(lightColor, 11, idx);
       marker.bindTooltip(t.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
       marker.bindPopup(`
         <div class="popup-club">${t.name}</div>
@@ -612,8 +697,14 @@ function renderAll(){
       bounds.push([t.lat, t.lng]);
     });
 
-    // Fixtures block for this league, with its own matchday picker
+    // Fixtures block for this league. In matchday mode it has its own
+    // matchday picker; in range mode the matchday concept doesn't apply per
+    // league (fixtures can span several matchdays at once), so a plain date
+    // label replaces the dropdown.
     const mds = [...new Set(FIXTURES[league].map(f => f.matchday))].sort((a,b)=>a-b);
+    const rangeNote = mapRangeFrom || mapRangeTo
+      ? `${mapRangeFrom ? fmtDateShort(mapRangeFrom) : '…'}–${mapRangeTo ? fmtDateShort(mapRangeTo) : '…'}`
+      : 'all loaded fixtures';
     const block = document.createElement('div');
     block.className = 'league-block' + (collapsedLeagueBlocks.has(league) ? ' collapsed' : '');
     block.dataset.league = league;
@@ -624,13 +715,15 @@ function renderAll(){
           ${LEAGUE_LOGO[league] ? `<img class="league-logo-block" src="${LEAGUE_LOGO[league]}" alt="" onerror="this.remove()">` : ''}
           <span class="league-name">${LEAGUE_LABELS[league]}</span>
         </span>
-        <select class="md-select">${mds.map(md => `<option value="${md}" ${md===selectedMd?'selected':''}>Matchday ${md}</option>`).join('')}</select>
+        ${useRange
+          ? `<span class="league-range-note">${rangeNote}</span>`
+          : `<select class="md-select">${mds.map(md => `<option value="${md}" ${md===selectedMd?'selected':''}>Matchday ${md}</option>`).join('')}</select>`}
         <span class="count">(${fixtures.length})</span>
       </h2>
       <div class="fixture-list-inner"></div>
     `;
     fixturesContainer.appendChild(block);
-    block.querySelector('.md-select').addEventListener('change', (e) => changeLeagueMatchday(league, e.target.value));
+    if(!useRange) block.querySelector('.md-select').addEventListener('change', (e) => changeLeagueMatchday(league, e.target.value));
     const listDiv = block.querySelector('.fixture-list-inner');
 
     fixtures.forEach(f => {
@@ -648,12 +741,13 @@ function renderAll(){
       bounds.push([h.lat, h.lng]);
 
       const item = document.createElement('div');
-      item.className = 'fixture-item';
+      item.className = 'fixture-item' + (routeIndexFor([stopKey]) !== null ? ' in-route' : '');
+      item.dataset.stop = stopKey;
       item.innerHTML = `
         <span class="watch-star" data-key="${watchKey}">☆</span>
         <div class="fbody">
           <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
-          <div class="meta">${h.city} · ${fmtDate(f.start)}</div>
+          <div class="meta">${h.city} · ${fmtDate(f.start)}${useRange ? ` · MD${f.matchday}` : ''}</div>
         </div>
         <span class="suggest-btn" data-tooltip="Suggest a trip around this game">${ICONS.sparkle}</span>
       `;
@@ -672,13 +766,16 @@ function renderAll(){
       listDiv.appendChild(item);
     });
 
-    anchorSelections.push({ league, matchday: selectedMd, fixtures });
+    anchorSelections.push({ league, matchday: useRange ? null : selectedMd, fixtures });
   });
 
   venueGroups.forEach((games, vKey) => {
     const [lat, lng] = vKey.split(',').map(Number);
     const primary = games[0];
-    const marker = L.marker([lat, lng], { icon: makeIcon(primary.color, primary.h.logo) });
+    const stopKeys = games.map(g => g.stopKey);
+    const marker = L.marker([lat, lng], { icon: makeIcon(primary.color, primary.h.logo, routeIndexFor(stopKeys)) });
+    marker._routeStopKeys = stopKeys;
+    marker._iconBuilder = (idx) => makeIcon(primary.color, primary.h.logo, idx);
     marker.bindTooltip(primary.h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
     marker._venueGames = games;
     marker._venueIndex = 0;
@@ -1065,7 +1162,7 @@ async function renderCombosMulti(selections, focusLabel = null){
   }
 
   const withFixtures = selections.filter(s => s.fixtures.length > 0);
-  const summaryLabel = focusLabel || selections.map(s => `${LEAGUE_LABELS[s.league]} MD${s.matchday}`).join(' · ');
+  const summaryLabel = focusLabel || selections.map(s => s.matchday != null ? `${LEAGUE_LABELS[s.league]} MD${s.matchday}` : LEAGUE_LABELS[s.league]).join(' · ');
   if(heading) heading.textContent = focusLabel
     ? `Suggested Trips – ${focusLabel}`
     : (selections.length ? `Combinable Trips – ${summaryLabel}` : 'Combinable Trips');
@@ -1075,7 +1172,7 @@ async function renderCombosMulti(selections, focusLabel = null){
     return;
   }
   if(withFixtures.length === 0){
-    combosList.innerHTML = `<div class="empty-note">No home fixtures to combine for this matchday.</div>`;
+    combosList.innerHTML = `<div class="empty-note">No home fixtures to combine for this selection.</div>`;
     return;
   }
 
@@ -1394,18 +1491,51 @@ function sortRouteStopsChronologically(){
   });
 }
 
+// Which route-panel position (1-based) a stop is currently at, or null if
+// it isn't on the route at all — drives both the gold marker badge (see
+// routeBadgeHtml) and the .in-route highlight on fixture/radius-result rows.
+// Takes an array since a venue-grouped marker (see renderAll's venueGroups)
+// can represent more than one stopKey at once (e.g. a club with both a
+// domestic and a UEFA fixture) — the first one that's actually on the route
+// wins.
+function routeIndexFor(stopKeys){
+  for(const k of stopKeys){
+    const idx = routeStops.findIndex(s => s.key === k);
+    if(idx !== -1) return idx + 1;
+  }
+  return null;
+}
+
+// Re-applies route-membership badges/highlights to already-rendered markers
+// and list rows without a full renderAll() — cheap enough to call on every
+// route change, and keeps map markers, the fixtures list, and radius
+// results all in sync with whatever's currently in the route panel. Markers
+// opt in by carrying _routeStopKeys + _iconBuilder (set at creation time in
+// renderAll/renderRadiusResults); anything else is left alone.
+function refreshRouteVisuals(){
+  [...currentMarkers, ...radiusMarkers].forEach(m => {
+    if(!m._routeStopKeys || !m._iconBuilder) return;
+    m.setIcon(m._iconBuilder(routeIndexFor(m._routeStopKeys)));
+  });
+  document.querySelectorAll('.fixture-item[data-stop], .radius-result[data-stop]').forEach(el => {
+    el.classList.toggle('in-route', routeIndexFor([el.dataset.stop]) !== null);
+  });
+}
+
 function addStop(key, team, start){
   if(routeStops.some(s => s.key === key)) return;
   routeStops.push({ key, team, start: start || null });
   sortRouteStopsChronologically();
   renderStops();
   computeRoute();
+  refreshRouteVisuals();
 }
 
 function removeStop(key){
   routeStops = routeStops.filter(s => s.key !== key);
   renderStops();
   computeRoute();
+  refreshRouteVisuals();
 }
 
 function clearRoute(){
@@ -1413,6 +1543,7 @@ function clearRoute(){
   routeStart = null;
   renderStops();
   computeRoute();
+  refreshRouteVisuals();
 }
 
 // Replaces the whole route with a set of games in one shot — used when
@@ -1430,6 +1561,7 @@ function loadRouteFromGames(games){
   sortRouteStopsChronologically();
   renderStops();
   computeRoute();
+  refreshRouteVisuals();
   document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
   document.getElementById('route-panel').classList.add('open');
 }
@@ -1618,7 +1750,9 @@ function renderRadiusResults(point, radiusKm, fitView){
     const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
     const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
     const gameLabel = `${g.home.name} vs ${g.awayName}`;
-    const marker = L.marker([g.home.lat, g.home.lng], { icon: makeIcon(LEAGUE_COLOR[g.league], g.home.logo) });
+    const marker = L.marker([g.home.lat, g.home.lng], { icon: makeIcon(LEAGUE_COLOR[g.league], g.home.logo, routeIndexFor([stopKey])) });
+    marker._routeStopKeys = [stopKey];
+    marker._iconBuilder = (idx) => makeIcon(LEAGUE_COLOR[g.league], g.home.logo, idx);
     marker.bindPopup(`
       <div class="popup-club">${gameLabel}</div>
       <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
@@ -1632,7 +1766,8 @@ function renderRadiusResults(point, radiusKm, fitView){
     bounds.push([g.home.lat, g.home.lng]);
 
     const item = document.createElement('div');
-    item.className = 'radius-result';
+    item.className = 'radius-result' + (routeIndexFor([stopKey]) !== null ? ' in-route' : '');
+    item.dataset.stop = stopKey;
     item.innerHTML = `
       <span class="watch-star" data-key="${watchKey}">☆</span>
       ${resultLogoHtml(g.home.logo, LEAGUE_COLOR[g.league])}
@@ -1766,6 +1901,12 @@ function resetAllFilters(){
   leagueMatchday = {};
   buildLeaguePanel();
 
+  filterMode = 'matchday';
+  document.querySelectorAll('#filter-mode-row .mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === 'matchday'));
+  document.getElementById('map-daterange-row').style.display = 'none';
+  document.getElementById('map-date-from').value = '';
+  document.getElementById('map-date-to').value = '';
+
   if(showAirports) toggleAirports();
 
   includeCrossBorder = false;
@@ -1886,6 +2027,11 @@ function buildDayCellMatches(dayFixtures){
 function jumpToFixtureOnMap(league, matchday, lat, lng, label){
   selectedLeagues.add(league);
   leagueMatchday[league] = matchday;
+  // Jumping to one specific fixture only makes sense against the matchday
+  // picker — a date-range selection could easily not even cover this date.
+  filterMode = 'matchday';
+  document.querySelectorAll('#filter-mode-row .mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === 'matchday'));
+  document.getElementById('map-daterange-row').style.display = 'none';
   buildLeaguePanel();
   renderAll();
   toggleCalendarView();

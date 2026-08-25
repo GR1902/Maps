@@ -44,7 +44,21 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   box-shadow:var(--shadow-md);
 }
 .header-dropdown-panel.open{ display:block; }
-#league-panel{ padding:6px; min-width:250px; max-height:340px; overflow-y:auto; }
+#league-panel{ padding:6px; min-width:250px; }
+#filter-mode-row{ display:flex; gap:4px; padding:2px 2px 8px 2px; border-bottom:1px solid var(--line); margin-bottom:6px; }
+.mode-tab{
+  flex:1; font-family:inherit; font-size:0.7rem; font-weight:600; padding:6px 8px; border-radius:var(--radius-sm);
+  border:1px solid var(--line); background:var(--paper); color:var(--text-muted); cursor:pointer; transition:background 0.1s, color 0.1s;
+}
+.mode-tab:hover{ background:var(--surface); }
+.mode-tab.active{ background:var(--green-dark); border-color:var(--green-dark); color:#fff; }
+#map-daterange-row{ display:flex; align-items:center; gap:8px; font-size:0.72rem; color:var(--text-muted); flex-wrap:wrap; padding:0 2px 8px 2px; border-bottom:1px solid var(--line); margin-bottom:6px; }
+#map-daterange-row label{ display:flex; align-items:center; gap:5px; }
+#map-daterange-row input[type="date"]{
+  font-family:inherit; font-size:0.74rem; padding:6px 8px; border-radius:var(--radius-sm);
+  border:1px solid var(--line); background:var(--paper); color:var(--ink);
+}
+#league-checkbox-list{ max-height:280px; overflow-y:auto; }
 .league-row{
   display:flex; align-items:center; gap:8px; font-size:0.78rem; color:var(--ink);
   padding:6px 8px; cursor:pointer; border-radius:var(--radius-sm);
@@ -69,6 +83,7 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   font-family:inherit; font-size:0.68rem; padding:3px 6px; border-radius:6px;
   border:1px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer;
 }
+.league-block h2 .league-range-note{ font-size:0.68rem; font-weight:400; color:var(--text-muted); text-transform:none; letter-spacing:normal; }
 .league-block h2 .count{ margin-left:auto; font-weight:400; color:var(--text-muted); text-transform:none; letter-spacing:normal; }
 
 /* Route panel */
@@ -284,6 +299,12 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .fixture-item .fbody{ flex:1; min-width:0; }
 .fixture-item .teams{ font-weight:600; color:var(--ink); }
 .fixture-item .meta{ font-size:0.68rem; color:var(--text-muted); margin-top:2px; }
+
+/* A fixture that's currently a stop on the route planner — same gold accent
+   as the numbered marker badge on the map (see routeBadgeHtml), so the two
+   views read as the same thing. */
+.fixture-item.in-route{ border-left:3px solid var(--gold); background:var(--surface); padding-left:13px; }
+.radius-result.in-route{ border-left:3px solid var(--gold); background:var(--surface); padding-left:1px; }
 
 /* Watchlist ("My Plan") */
 #watchlist-heading .count{ font-weight:400; text-transform:none; letter-spacing:normal; font-size:0.68rem; opacity:0.8; }
