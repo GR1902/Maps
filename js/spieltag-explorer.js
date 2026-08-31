@@ -413,12 +413,17 @@ function fmtHM(totalSeconds){
   return `${Math.floor(totalMin/60)}h ${totalMin%60}m`;
 }
 
+// Muted "geographic context" markers for clubs in leagues not currently
+// selected — kept deliberately understated relative to the highlighted
+// match markers, but still fully opaque with a solid white border and
+// real shadow so they read clearly against OSM's much busier, more
+// colorful tiles (this used to sit on the flatter, paler CARTO basemap).
 function makeMutedIcon(routeIndex){
-  const size = 9;
+  const size = 12;
   return L.divIcon({
     className:'',
     html:`<div style="position:relative;width:${size}px;height:${size}px;">
-      <div style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;background:#a8a89c;transform:rotate(-45deg);border:1px solid #fffdf4;${routeRingStyle(routeIndex)} opacity:0.75;"></div>
+      <div style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;background:#5b6169;transform:rotate(-45deg);border:1.5px solid #ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.5);${routeRingStyle(routeIndex)}"></div>
       ${routeBadgeHtml(routeIndex)}
     </div>`,
     iconSize:[size,size], iconAnchor:[size/2,size], popupAnchor:[0,-size]
