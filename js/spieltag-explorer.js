@@ -535,25 +535,15 @@ function buildLeaguePanel(){
       ${LEAGUE_LABELS[code]}
     </label>
   `).join('');
-  updateLeaguePickerLabel();
 }
 
 function toggleLeague(code, checked){
   if(checked) selectedLeagues.add(code); else selectedLeagues.delete(code);
-  updateLeaguePickerLabel();
   renderAll();
   // The League picker stays reachable while the Calendar overlay is open
   // (it lives in the header, not #body) — keep the grid in sync instead of
   // leaving it showing the pre-change league selection.
   if(calendarOpen) renderCalendar();
-}
-
-function updateLeaguePickerLabel(){
-  const label = document.getElementById('league-picker-label');
-  const n = selectedLeagues.size;
-  if(n === 0) label.textContent = 'Select leagues…';
-  else if(n === 1) label.textContent = LEAGUE_LABELS[[...selectedLeagues][0]];
-  else label.textContent = `${n} leagues selected`;
 }
 
 // Generic open/close for the header dropdowns (Leagues, Plan Route, Radius
