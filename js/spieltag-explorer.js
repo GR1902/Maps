@@ -336,8 +336,12 @@ const LEAGUE_LABELS = {
 
 // ===== Map setup =====
 const map = L.map('map', { zoomControl:true }).setView([48, 5], 4);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap contributors &copy; CARTO', maxZoom: 19
+// CARTO's basemap tiles (formerly used here) now require a registered API
+// key even for anonymous/free-tier use — switched to OSM's own standard
+// tile server, which stays keyless. Note: no {r} retina-tile support on
+// this endpoint (OSM only serves @1x), unlike the old CARTO URL.
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
 }).addTo(map);
 
 let currentMarkers = [];
