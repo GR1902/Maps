@@ -3647,6 +3647,46 @@
       "lng": 14.3719,
       "logo": "https://upload.wikimedia.org/wikipedia/en/8/8d/FK_Bodo_Glimt_logo.svg",
       "country": "NOR"
+    },
+    "BMU": {
+      "name": "Bayern Munich",
+      "city": "München",
+      "lat": 48.2188,
+      "lng": 11.6247,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/8/8d/FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg",
+      "country": "GER"
+    },
+    "VFB": {
+      "name": "VfB Stuttgart",
+      "city": "Stuttgart",
+      "lat": 48.7924,
+      "lng": 9.2321,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/eb/VfB_Stuttgart_1893_Logo.svg",
+      "country": "GER"
+    },
+    "PSG": {
+      "name": "Paris Saint-Germain",
+      "city": "Paris",
+      "lat": 48.8414,
+      "lng": 2.253,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg",
+      "country": "FRA"
+    },
+    "ROM": {
+      "name": "AS Roma",
+      "city": "Rom",
+      "lat": 41.9339,
+      "lng": 12.4547,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f7/AS_Roma_logo_%282017%29.svg",
+      "country": "ITA"
+    },
+    "MUN": {
+      "name": "Manchester United",
+      "city": "Manchester",
+      "lat": 53.4631,
+      "lng": -2.2913,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg",
+      "country": "ENG"
     }
   },
   "europa_league": {
@@ -4217,6 +4257,27 @@
       "lng": 34.7649,
       "logo": "https://upload.wikimedia.org/wikipedia/en/e/e9/Maccabi_Tel_Aviv.png",
       "country": "ISR"
+    },
+    "AGF": {
+      "name": "AGF Aarhus",
+      "city": "Aarhus",
+      "lat": 56.1497,
+      "lng": 10.2144,
+      "country": "DEN"
+    },
+    "CRA": {
+      "name": "Universitatea Craiova",
+      "city": "Craiova",
+      "lat": 44.314,
+      "lng": 23.7843,
+      "country": "ROU"
+    },
+    "CZV": {
+      "name": "Crvena Zvezda",
+      "city": "Belgrade",
+      "lat": 44.7833,
+      "lng": 20.4647,
+      "country": "SRB"
     }
   }
 }
