@@ -23,9 +23,17 @@
   <div id="controls">
     <div id="league-picker" class="header-dropdown">
       <button id="league-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('league-panel')">
-        <span id="league-picker-label">League / Date Selection</span> <span aria-hidden="true">▾</span>
+        <span id="league-picker-label">Leagues</span> <span aria-hidden="true">▾</span>
       </button>
       <div id="league-panel" class="header-dropdown-panel">
+        <div id="league-checkbox-list"></div>
+      </div>
+    </div>
+    <div id="date-picker" class="header-dropdown">
+      <button id="date-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('date-panel')">
+        <span id="date-picker-label">Date Selection</span> <span aria-hidden="true">▾</span>
+      </button>
+      <div id="date-panel" class="header-dropdown-panel">
         <div id="filter-mode-row">
           <button type="button" class="mode-tab active" data-mode="matchday" onclick="setFilterMode('matchday')">By matchday</button>
           <button type="button" class="mode-tab" data-mode="range" onclick="setFilterMode('range')">By date range</button>
@@ -34,7 +42,6 @@
           <label>From <input type="date" id="map-date-from" onchange="renderAll()"></label>
           <label>To <input type="date" id="map-date-to" onchange="renderAll()"></label>
         </div>
-        <div id="league-checkbox-list"></div>
       </div>
     </div>
     <div id="route-picker" class="header-dropdown">

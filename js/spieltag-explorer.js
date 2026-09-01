@@ -289,7 +289,8 @@ const LEAGUE_COLOR = {
   scottish_prem:"#1a5c38", swiss_super_league:"#b03a2e", austrian_bundesliga:"#2f6f6f",
   super_league_greece:"#003087", super_lig:"#e30a17", ekstraklasa:"#996515",
   czech_first_league:"#11457e", croatian_hnl:"#c65102",
-  champions_league:"#0b1f4e", europa_league:"#ff6a13", conference_league:"#00a19a"
+  champions_league:"#0b1f4e", europa_league:"#ff6a13", conference_league:"#00a19a",
+  youth_league:"#7a1fa2"
 };
 // UEFA club competitions deliberately have NO entry here — unlike a
 // domestic league, a single competition spans many countries, so there's
@@ -331,7 +332,7 @@ const LEAGUE_LABELS = {
   super_lig: "Süper Lig (TUR)", ekstraklasa: "Ekstraklasa (POL)",
   czech_first_league: "Chance Liga (CZE)", croatian_hnl: "HNL (CRO)",
   champions_league: "UEFA Champions League", europa_league: "UEFA Europa League",
-  conference_league: "UEFA Conference League"
+  conference_league: "UEFA Conference League", youth_league: "UEFA Youth League"
 };
 
 // ===== Map setup =====
@@ -500,6 +501,20 @@ let leagueMatchday = {}; // league code -> chosen matchday number
 // the first place, same role leagueMatchday plays in the default mode. -----
 let filterMode = 'matchday'; // 'matchday' | 'range'
 
+// Shared by renderAll and the Radius Search: only meaningful in 'range'
+// mode, where #map-date-from/#map-date-to bound which fixtures are in
+// play. Returns {from,to} (either side possibly null if left open) or
+// null when the Date Selection dropdown is in 'matchday' mode.
+function getActiveDateRange(){
+  if(filterMode !== 'range') return null;
+  const fromVal = document.getElementById('map-date-from').value;
+  const toVal = document.getElementById('map-date-to').value;
+  return {
+    from: fromVal ? new Date(fromVal + 'T00:00:00') : null,
+    to: toVal ? new Date(toVal + 'T23:59:59') : null
+  };
+}
+
 function setFilterMode(mode){
   filterMode = mode;
   document.querySelectorAll('#filter-mode-row .mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
@@ -608,10 +623,9 @@ function renderAll(){
   // setFilterMode above. Both ends are optional (an empty input = no bound
   // on that side).
   const useRange = filterMode === 'range';
-  const mapRangeFromVal = document.getElementById('map-date-from').value;
-  const mapRangeToVal = document.getElementById('map-date-to').value;
-  const mapRangeFrom = useRange && mapRangeFromVal ? new Date(mapRangeFromVal + 'T00:00:00') : null;
-  const mapRangeTo = useRange && mapRangeToVal ? new Date(mapRangeToVal + 'T23:59:59') : null;
+  const activeRange = getActiveDateRange();
+  const mapRangeFrom = activeRange ? activeRange.from : null;
+  const mapRangeTo = activeRange ? activeRange.to : null;
 
   // Muted grey markers for every league NOT selected, for geographic context —
   // ONE marker per club, not per fixture. Several leagues carry full-season
@@ -1721,14 +1735,30 @@ function resultLogoHtml(logoUrl, color){
     : `<span class="result-logo-dot" style="background:${color}"></span>`;
 }
 
-function renderRadiusResults(point, radiusKm, fitView){
+// includePast lets the calendar's "jump to this match" shortcut (see
+// jumpToFixtureOnMap) still surface the exact fixture it was pointed at
+// even if that fixture already kicked off — a genuine address/radius
+// search, on the other hand, always excludes past games (see below).
+function renderRadiusResults(point, radiusKm, fitView, includePast){
   clearRadiusSearch();
   const status = document.getElementById('radius-status');
 
-  // Search across ALL leagues and ALL matchdays currently loaded — not just
-  // the leagues/matchday toggled on — since "what's near this address" is
-  // naturally a global question, independent of the current view filter.
-  const pool = buildGamePool();
+  // Search across ALL leagues currently loaded — not just the leagues
+  // toggled on — since "what's near this address" is naturally a global
+  // question, independent of the league filter. The Date Selection dropdown
+  // still applies though (an explicit 'range' bounds the pool the same way
+  // it bounds the map view), and past kickoffs are excluded by default — a
+  // scouting trip can't be planned around a game that already happened.
+  const now = Date.now();
+  const activeRange = getActiveDateRange();
+  const pool = buildGamePool().filter(g => {
+    if(!includePast && g.start.getTime() < now) return false;
+    if(activeRange){
+      if(activeRange.from && g.start < activeRange.from) return false;
+      if(activeRange.to && g.start > activeRange.to) return false;
+    }
+    return true;
+  });
   const matches = pool
     .map(g => ({ ...g, distKm: haversine(point.lat, point.lng, g.home.lat, g.home.lng) }))
     .filter(g => g.distKm <= radiusKm)
@@ -2044,7 +2074,7 @@ function jumpToFixtureOnMap(league, matchday, lat, lng, label){
     // actual 200 km circle. Fit to the circle's real bounds instead so the
     // whole radius is always visible, not just wherever the closest games
     // happen to cluster.
-    renderRadiusResults(point, 200, false);
+    renderRadiusResults(point, 200, false, true);
     if(radiusCircle) map.fitBounds(radiusCircle.getBounds(), { padding:[20,20] });
     document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
     document.getElementById('radius-panel').classList.add('open');
