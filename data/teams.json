@@ -4735,5 +4735,405 @@
       "logo": "https://upload.wikimedia.org/wikipedia/en/9/9e/Saburtalo_Tbilisi_Logo.png",
       "country": "GEO"
     }
+  },
+  "youth_league": {
+    "KAI": {
+      "name": "FC Kairat",
+      "city": "Almaty",
+      "lat": 43.222,
+      "lng": 76.8512,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1b/FCKairat_logo.png",
+      "country": "KAZ"
+    },
+    "HJK": {
+      "name": "HJK Helsinki",
+      "city": "Helsinki",
+      "lat": 60.1841,
+      "lng": 24.9204,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/02/HJK_Helsinki_Logo.svg",
+      "country": "FIN"
+    },
+    "KRC": {
+      "name": "KRC Genk",
+      "city": "Genk",
+      "lat": 50.9649,
+      "lng": 5.4959,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/7/77/Logo_KRC_Genk.png",
+      "country": "BEL"
+    },
+    "SAL": {
+      "name": "Red Bull Salzburg",
+      "city": "Wals-Siezenheim",
+      "lat": 47.8228,
+      "lng": 13.0489,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/77/FC_Red_Bull_Salzburg_logo.svg",
+      "country": "AUT"
+    },
+    "RAN": {
+      "name": "Rangers",
+      "city": "Glasgow",
+      "lat": 55.8531,
+      "lng": -4.3092,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/4/43/Rangers_FC.svg",
+      "country": "SCO"
+    },
+    "CZV": {
+      "name": "Crvena Zvezda",
+      "city": "Belgrade",
+      "lat": 44.7833,
+      "lng": 20.4647,
+      "country": "SRB"
+    },
+    "CLE": {
+      "name": "Clermont",
+      "city": "Clermont-Ferrand",
+      "lat": 45.7936,
+      "lng": 3.1354,
+      "country": "FRA"
+    },
+    "AZA": {
+      "name": "AZ Alkmaar",
+      "city": "Alkmaar",
+      "lat": 52.6132,
+      "lng": 4.7458,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e0/AZ_Alkmaar.svg",
+      "country": "NED"
+    },
+    "LEG": {
+      "name": "Legia Warsaw",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lng": 21.0122,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/6/6d/Legia_Warsaw_logo.svg",
+      "country": "POL"
+    },
+    "HAM": {
+      "name": "Hammarby IF",
+      "city": "Stockholm",
+      "lat": 59.2907,
+      "lng": 18.0973,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/0a/Hammarby_IF_logo.svg",
+      "country": "SWE"
+    },
+    "FIO": {
+      "name": "ACF Fiorentina",
+      "city": "Florenz",
+      "lat": 43.7809,
+      "lng": 11.2822,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/8/8c/ACF_Fiorentina_-_logo_%28Italy%2C_2022%29.svg",
+      "country": "ITA"
+    },
+    "HRA": {
+      "name": "FC Hradec Kralove",
+      "city": "Hradec Kralove",
+      "lat": 50.2092,
+      "lng": 15.8328,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/d5/FC_Hradec_Kralove.png",
+      "country": "CZE"
+    },
+    "TSG": {
+      "name": "TSG Hoffenheim",
+      "city": "Sinsheim",
+      "lat": 49.2381,
+      "lng": 8.8888,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Logo_TSG_Hoffenheim.svg",
+      "country": "GER"
+    },
+    "BEN": {
+      "name": "SL Benfica",
+      "city": "Lissabon",
+      "lat": 38.7526905,
+      "lng": -9.184692,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a2/SL_Benfica_logo.svg",
+      "country": "POR"
+    },
+    "PAO": {
+      "name": "PAOK",
+      "city": "Thessaloniki",
+      "lat": 40.6236,
+      "lng": 22.9647,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e6/PAOK_FC_EMBLEM.png",
+      "country": "GRE"
+    },
+    "MTA": {
+      "name": "Maccabi Tel Aviv",
+      "city": "Tel Aviv",
+      "lat": 32.0578,
+      "lng": 34.7649,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e9/Maccabi_Tel_Aviv.png",
+      "country": "ISR"
+    },
+    "PAF": {
+      "name": "Pafos FC",
+      "city": "Paphos",
+      "lat": 34.7571,
+      "lng": 32.4066,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9b/Pafos_FC_crest.svg",
+      "country": "CYP"
+    },
+    "CFC": {
+      "name": "Chelsea FC",
+      "city": "London",
+      "lat": 51.4817,
+      "lng": -0.191,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
+      "country": "ENG"
+    },
+    "FCK": {
+      "name": "FC København",
+      "city": "Copenhagen",
+      "lat": 55.7031,
+      "lng": 12.5766,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/2/26/FC_Copenhagen_logo.svg",
+      "country": "DEN"
+    },
+    "DIN": {
+      "name": "Dinamo Zagreb",
+      "city": "Zagreb",
+      "lat": 45.815,
+      "lng": 15.9819,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/5/56/Logo_GNK_Dinamo_Zagreb_%282019%29.svg",
+      "country": "CRO"
+    },
+    "LRI": {
+      "name": "Lincoln Red Imps FC",
+      "city": "Gibraltar",
+      "lat": 36.1077,
+      "lng": -5.3423,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/6/6e/Lincoln_Red_Imps_FC_logo.svg",
+      "country": "GIB"
+    },
+    "THO": {
+      "name": "Þór Akureyri",
+      "city": "Akureyri",
+      "lat": 65.6835,
+      "lng": -18.0878,
+      "logo": null,
+      "country": "ISL"
+    },
+    "HBT": {
+      "name": "HB Tórshavn",
+      "city": "Tórshavn",
+      "lat": 62.0107,
+      "lng": -6.7741,
+      "logo": null,
+      "country": "FRO"
+    },
+    "ZAV": {
+      "name": "Žalgiris Vilnius",
+      "city": "Vilnius",
+      "lat": 54.6872,
+      "lng": 25.2797,
+      "logo": null,
+      "country": "LTU"
+    },
+    "FLO": {
+      "name": "FC Flora Tallinn",
+      "city": "Tallinn",
+      "lat": 59.437,
+      "lng": 24.7536,
+      "logo": null,
+      "country": "EST"
+    },
+    "SNO": {
+      "name": "FK Super Nova",
+      "city": "Riga",
+      "lat": 56.9496,
+      "lng": 24.1052,
+      "logo": null,
+      "country": "LVA"
+    },
+    "BAL": {
+      "name": "KF Ballkani",
+      "city": "Suva Reka",
+      "lat": 42.3547,
+      "lng": 20.83,
+      "logo": null,
+      "country": "KOS"
+    },
+    "CLI": {
+      "name": "Cliftonville FC",
+      "city": "Belfast",
+      "lat": 54.612,
+      "lng": -5.943,
+      "logo": null,
+      "country": "NIR"
+    },
+    "UNA": {
+      "name": "UNA Strassen",
+      "city": "Strassen",
+      "lat": 49.6275,
+      "lng": 6.0708,
+      "logo": null,
+      "country": "LUX"
+    },
+    "CDM": {
+      "name": "Cardiff Metropolitan University FC",
+      "city": "Cardiff",
+      "lat": 51.4816,
+      "lng": -3.1791,
+      "logo": null,
+      "country": "WAL"
+    },
+    "VAL": {
+      "name": "Valletta FC",
+      "city": "Valletta",
+      "lat": 35.8989,
+      "lng": 14.5146,
+      "logo": null,
+      "country": "MLT"
+    },
+    "PAR": {
+      "name": "KF Partizani Tirana",
+      "city": "Tirana",
+      "lat": 41.3275,
+      "lng": 19.8187,
+      "logo": null,
+      "country": "ALB"
+    },
+    "MLA": {
+      "name": "FK Mladost Podgorica",
+      "city": "Podgorica",
+      "lat": 42.4304,
+      "lng": 19.2594,
+      "logo": null,
+      "country": "MNE"
+    },
+    "DTB": {
+      "name": "Dinamo Tbilisi",
+      "city": "Tbilisi",
+      "lat": 41.723,
+      "lng": 44.768,
+      "logo": null,
+      "country": "GEO"
+    },
+    "DMI": {
+      "name": "Dinamo Minsk",
+      "city": "Minsk",
+      "lat": 53.9006,
+      "lng": 27.559,
+      "logo": null,
+      "country": "BLR"
+    },
+    "ZRI": {
+      "name": "HŠK Zrinjski Mostar",
+      "city": "Mostar",
+      "lat": 43.3438,
+      "lng": 17.8078,
+      "logo": null,
+      "country": "BIH"
+    },
+    "BRS": {
+      "name": "AP Brera Strumica",
+      "city": "Strumica",
+      "lat": 41.4374,
+      "lng": 22.6433,
+      "logo": null,
+      "country": "MKD"
+    },
+    "SNC": {
+      "name": "FC Santa Coloma",
+      "city": "Santa Coloma",
+      "lat": 42.5117,
+      "lng": 1.5347,
+      "logo": null,
+      "country": "AND"
+    },
+    "DKY": {
+      "name": "Dynamo Kyiv",
+      "city": "Kyiv",
+      "lat": 50.433,
+      "lng": 30.52,
+      "logo": null,
+      "country": "UKR"
+    },
+    "BRV": {
+      "name": "NK Bravo",
+      "city": "Ljubljana",
+      "lat": 46.0569,
+      "lng": 14.5058,
+      "logo": null,
+      "country": "SVN"
+    },
+    "STP": {
+      "name": "St Patrick's Athletic",
+      "city": "Dublin",
+      "lat": 53.3331,
+      "lng": -6.2489,
+      "logo": null,
+      "country": "IRL"
+    },
+    "GOZ": {
+      "name": "Göztepe SK",
+      "city": "Izmir",
+      "lat": 38.4192,
+      "lng": 27.1287,
+      "logo": null,
+      "country": "TUR"
+    },
+    "STB": {
+      "name": "Stabæk Fotball",
+      "city": "Bærum",
+      "lat": 59.8963,
+      "lng": 10.6244,
+      "logo": null,
+      "country": "NOR"
+    },
+    "ZIL": {
+      "name": "MŠK Žilina",
+      "city": "Žilina",
+      "lat": 49.2231,
+      "lng": 18.7394,
+      "logo": null,
+      "country": "SVK"
+    },
+    "MTK": {
+      "name": "MTK Budapest",
+      "city": "Budapest",
+      "lat": 47.479,
+      "lng": 19.083,
+      "logo": null,
+      "country": "HUN"
+    },
+    "SEP": {
+      "name": "Septemvri Sofia",
+      "city": "Sofia",
+      "lat": 42.6977,
+      "lng": 23.3219,
+      "logo": null,
+      "country": "BUL"
+    },
+    "QAR": {
+      "name": "Qarabağ FK",
+      "city": "Baku",
+      "lat": 40.4093,
+      "lng": 49.8671,
+      "logo": null,
+      "country": "AZE"
+    },
+    "ZUR": {
+      "name": "FC Zürich",
+      "city": "Zürich",
+      "lat": 47.377,
+      "lng": 8.504,
+      "logo": null,
+      "country": "SUI"
+    },
+    "FAR": {
+      "name": "Farul Constanța",
+      "city": "Constanța",
+      "lat": 44.1733,
+      "lng": 28.6383,
+      "logo": null,
+      "country": "ROU"
+    },
+    "SHF": {
+      "name": "Sheriff Tiraspol",
+      "city": "Tiraspol",
+      "lat": 46.8403,
+      "lng": 29.6433,
+      "logo": null,
+      "country": "MDA"
+    }
   }
 }
