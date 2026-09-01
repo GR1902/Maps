@@ -3687,6 +3687,198 @@
       "lng": -2.2913,
       "logo": "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg",
       "country": "ENG"
+    },
+    "CLB": {
+      "name": "Club Brugge",
+      "city": "Bruges",
+      "lat": 51.1958,
+      "lng": 3.1817,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/97/Club_brugge.png",
+      "country": "BEL"
+    },
+    "AVL": {
+      "name": "Aston Villa",
+      "city": "Birmingham",
+      "lat": 52.509,
+      "lng": -1.8848,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9a/Aston_Villa_FC_new_crest.svg",
+      "country": "ENG"
+    },
+    "BVB": {
+      "name": "Borussia Dortmund",
+      "city": "Dortmund",
+      "lat": 51.4926,
+      "lng": 7.4517,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg",
+      "country": "GER"
+    },
+    "VIL": {
+      "name": "Villarreal CF",
+      "city": "Villarreal",
+      "lat": 39.9442,
+      "lng": -0.1035,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/b/b9/Villarreal_CF_logo-en.svg",
+      "country": "ESP"
+    },
+    "POR": {
+      "name": "FC Porto",
+      "city": "Porto",
+      "lat": 41.16177,
+      "lng": -8.583591,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg",
+      "country": "POR"
+    },
+    "MCI": {
+      "name": "Manchester City",
+      "city": "Manchester",
+      "lat": 53.4831,
+      "lng": -2.2004,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
+      "country": "ENG"
+    },
+    "LIL": {
+      "name": "Lille OSC",
+      "city": "Villeneuve-d'Ascq",
+      "lat": 50.6119,
+      "lng": 3.13,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/3/3f/Lille_OSC_2018_logo.svg",
+      "country": "FRA"
+    },
+    "RBB": {
+      "name": "Real Betis Seville",
+      "city": "Sevilla",
+      "lat": 37.3568,
+      "lng": -5.9822,
+      "logo": null,
+      "country": "ESP"
+    },
+    "RMA": {
+      "name": "Real Madrid",
+      "city": "Madrid",
+      "lat": 40.4531,
+      "lng": -3.6883,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
+      "country": "ESP"
+    },
+    "INT": {
+      "name": "Inter Milano",
+      "city": "Mailand",
+      "lat": 45.4781,
+      "lng": 9.124,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg",
+      "country": "ITA"
+    },
+    "BAR": {
+      "name": "FC Barcelona",
+      "city": "Barcelona",
+      "lat": 41.3809,
+      "lng": 2.1228,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
+      "country": "ESP"
+    },
+    "FEY": {
+      "name": "Feyenoord Rotterdam",
+      "city": "Rotterdam",
+      "lat": 51.8935,
+      "lng": 4.5233,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Feyenoord_logo_since_2024.svg",
+      "country": "NED"
+    },
+    "LFC": {
+      "name": "Liverpool FC",
+      "city": "Liverpool",
+      "lat": 53.4308,
+      "lng": -2.9608,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg",
+      "country": "ENG"
+    },
+    "ATM": {
+      "name": "Atletico Madrid",
+      "city": "Madrid",
+      "lat": 40.4362,
+      "lng": -3.5995,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f9/Atletico_Madrid_Logo_2024.svg",
+      "country": "ESP"
+    },
+    "SCP": {
+      "name": "Sporting CP",
+      "city": "Lissabon",
+      "lat": 38.7612216,
+      "lng": -9.16179,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Sporting_Clube_de_Portugal_2026.svg",
+      "country": "POR"
+    },
+    "GAL": {
+      "name": "Galatasaray",
+      "city": "Istanbul",
+      "lat": 41.1039,
+      "lng": 28.9903,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/0/07/Galatasaray_S.K._Logo_2026_5-stars.svg",
+      "country": "TUR"
+    },
+    "NAP": {
+      "name": "SSC Napoli",
+      "city": "Neapel",
+      "lat": 40.8279,
+      "lng": 14.193,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/4/4d/SSC_Napoli_2025_%28white_and_azure%29.svg",
+      "country": "ITA"
+    },
+    "ARS": {
+      "name": "Arsenal FC",
+      "city": "London",
+      "lat": 51.5549,
+      "lng": -0.1084,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg",
+      "country": "ENG"
+    },
+    "PSV": {
+      "name": "PSV Eindhoven",
+      "city": "Eindhoven",
+      "lat": 51.4416,
+      "lng": 5.4677,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/05/PSV_Eindhoven.svg",
+      "country": "NED"
+    },
+    "COM": {
+      "name": "Como 1907",
+      "city": "Como",
+      "lat": 45.8081,
+      "lng": 9.0852,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/99/Calcio_Como_-_logo_%28Italy%2C_2019-%29.svg",
+      "country": "ITA"
+    },
+    "RBL": {
+      "name": "RB Leipzig",
+      "city": "Leipzig",
+      "lat": 51.3459,
+      "lng": 12.3482,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig_2014_logo.svg",
+      "country": "GER"
+    },
+    "SLA": {
+      "name": "SK Slavia Prague",
+      "city": "Prague",
+      "lat": 50.0755,
+      "lng": 14.4378,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2b/SK_Slavia_Praha_full_logo.svg",
+      "country": "CZE"
+    },
+    "RCL": {
+      "name": "Racing Club De Lens",
+      "city": "Lens",
+      "lat": 50.4331,
+      "lng": 2.8151,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/cc/RC_Lens_logo.svg",
+      "country": "FRA"
+    },
+    "SHK": {
+      "name": "Shakhtar Donetsk",
+      "city": "London",
+      "lat": 51.4817,
+      "lng": -0.191,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a1/FC_Shakhtar_Donetsk.svg",
+      "country": "UKR"
     }
   },
   "europa_league": {
@@ -3880,6 +4072,198 @@
       "lat": 52.4064,
       "lng": 16.9252,
       "country": "POL"
+    },
+    "SPA": {
+      "name": "AC Sparta Prague",
+      "city": "Prague",
+      "lat": 50.0996,
+      "lng": 14.4222,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/d/dd/AC-Sparta-LOGO2021.svg",
+      "country": "CZE"
+    },
+    "RCC": {
+      "name": "RC Celta de Vigo",
+      "city": "Vigo",
+      "lat": 42.2119,
+      "lng": -8.7422,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/1/12/RC_Celta_de_Vigo_logo.svg",
+      "country": "ESP"
+    },
+    "ACM": {
+      "name": "AC Milan",
+      "city": "Mailand",
+      "lat": 45.4781,
+      "lng": 9.124,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg",
+      "country": "ITA"
+    },
+    "LEV": {
+      "name": "Bayer Leverkusen",
+      "city": "Leverkusen",
+      "lat": 51.0382,
+      "lng": 6.999,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/59/Bayer_04_Leverkusen_logo.svg",
+      "country": "GER"
+    },
+    "CLJ": {
+      "name": "NK Celje",
+      "city": "Celje",
+      "lat": 46.2394,
+      "lng": 15.2542,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/fc/NK_Celje.png",
+      "country": "SVN"
+    },
+    "HBS": {
+      "name": "Hapoel Be'er Sheva",
+      "city": "Beer Sheva",
+      "lat": 31.2585,
+      "lng": 34.7996,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/8/85/Logo-hapoel-positive.svg",
+      "country": "ISR"
+    },
+    "DIN": {
+      "name": "Dinamo Zagreb",
+      "city": "Zagreb",
+      "lat": 45.815,
+      "lng": 15.9819,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/5/56/Logo_GNK_Dinamo_Zagreb_%282019%29.svg",
+      "country": "CRO"
+    },
+    "OLY": {
+      "name": "Olympiacos",
+      "city": "Piraeus",
+      "lat": 37.9469,
+      "lng": 23.6547,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a2/Olympiacos_FC_crest.svg",
+      "country": "GRE"
+    },
+    "OL": {
+      "name": "Olympique Lyon",
+      "city": "Décines-Charpieu",
+      "lat": 45.7652,
+      "lng": 4.9822,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/1/1c/Olympique_Lyonnais_logo.svg",
+      "country": "FRA"
+    },
+    "STU": {
+      "name": "SK Sturm Graz",
+      "city": "Graz",
+      "lat": 47.0611,
+      "lng": 15.4744,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/91/SK_Sturm_Graz_logo.svg",
+      "country": "AUT"
+    },
+    "SUN": {
+      "name": "Sunderland AFC",
+      "city": "Sunderland",
+      "lat": 54.9144,
+      "lng": -1.3883,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/77/Logo_Sunderland.svg",
+      "country": "ENG"
+    },
+    "AZA": {
+      "name": "AZ Alkmaar",
+      "city": "Alkmaar",
+      "lat": 52.6132,
+      "lng": 4.7458,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e0/AZ_Alkmaar.svg",
+      "country": "NED"
+    },
+    "TSG": {
+      "name": "TSG Hoffenheim",
+      "city": "Sinsheim",
+      "lat": 49.2381,
+      "lng": 8.8888,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Logo_TSG_Hoffenheim.svg",
+      "country": "GER"
+    },
+    "LSO": {
+      "name": "PFC Levski Sofia",
+      "city": "Sofia",
+      "lat": 42.6852,
+      "lng": 23.3282,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e6/Levski_Sofia_crest_%282026%29.svg",
+      "country": "BUL"
+    },
+    "OLM": {
+      "name": "Olympique Marseille",
+      "city": "Marseille",
+      "lat": 43.2696,
+      "lng": 5.3958,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Olympique_de_Marseille_2026_logo.svg",
+      "country": "FRA"
+    },
+    "CEL": {
+      "name": "Celtic",
+      "city": "Glasgow",
+      "lat": 55.8497,
+      "lng": -4.2058,
+      "logo": null,
+      "country": "SCO"
+    },
+    "CRY": {
+      "name": "Crystal Palace",
+      "city": "London",
+      "lat": 51.3983,
+      "lng": -0.0854,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/d/d8/Crystal_Palace_General_view_from_Water_Temple.jpg",
+      "country": "ENG"
+    },
+    "USG": {
+      "name": "Union Saint-Gilloise",
+      "city": "Brussels",
+      "lat": 50.8221,
+      "lng": 4.3487,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/1/11/Royale_Union_Saint-Gilloise_logo.svg",
+      "country": "BEL"
+    },
+    "JUV": {
+      "name": "Juventus Turin",
+      "city": "Turin",
+      "lat": 45.1096,
+      "lng": 7.6413,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Juventus_FC_-_logo_black_%28Italy%2C_2020%29.svg",
+      "country": "ITA"
+    },
+    "NEC": {
+      "name": "NEC Nijmegen",
+      "city": "Nijmegen",
+      "lat": 51.8425,
+      "lng": 5.8514,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/3/38/NEC_Nijmegen_logo.svg",
+      "country": "NED"
+    },
+    "RSO": {
+      "name": "Real Sociedad San Sebastian",
+      "city": "San Sebastián",
+      "lat": 43.3014,
+      "lng": -1.9736,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f1/Real_Sociedad_logo.svg",
+      "country": "ESP"
+    },
+    "BOU": {
+      "name": "AFC Bournemouth",
+      "city": "Bournemouth",
+      "lat": 50.7352,
+      "lng": -1.8384,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e5/AFC_Bournemouth_%282013%29.svg",
+      "country": "ENG"
+    },
+    "REN": {
+      "name": "Stade Rennais FC",
+      "city": "Rennes",
+      "lat": 48.1075,
+      "lng": -1.7128,
+      "logo": null,
+      "country": "FRA"
+    },
+    "TOR": {
+      "name": "CD Torreense",
+      "city": "Faro",
+      "lat": 37.08833,
+      "lng": -7.97472,
+      "logo": null,
+      "country": "POR"
     }
   },
   "conference_league": {
@@ -4278,6 +4662,78 @@
       "lat": 44.7833,
       "lng": 20.4647,
       "country": "SRB"
+    },
+    "TRA": {
+      "name": "Trabzonspor",
+      "city": "Trabzon",
+      "lat": 41.0028,
+      "lng": 39.7469,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/de/Trabzonspor_Amblem.svg",
+      "country": "TUR"
+    },
+    "KAI": {
+      "name": "FC Kairat",
+      "city": "Almaty",
+      "lat": 43.222,
+      "lng": 76.8512,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1b/FCKairat_logo.png",
+      "country": "KAZ"
+    },
+    "CSK": {
+      "name": "PFC CSKA Sofia",
+      "city": "Sofia",
+      "lat": 42.6767,
+      "lng": 23.2925,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/8/8d/CSKA_Sofia_logo.svg",
+      "country": "BUL"
+    },
+    "MJA": {
+      "name": "Mjällby AIF",
+      "city": "Hällevik",
+      "lat": 56.1667,
+      "lng": 15.7833,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a5/Mjallby_AIF_logo.svg",
+      "country": "SWE"
+    },
+    "EGN": {
+      "name": "KF Egnatia",
+      "city": "Rrogozhinë",
+      "lat": 41.0836,
+      "lng": 19.6675,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a5/Egnatia_Club_Logo.svg",
+      "country": "ALB"
+    },
+    "ZAL": {
+      "name": "FK Kauno Žalgiris",
+      "city": "Kaunas",
+      "lat": 54.8973,
+      "lng": 23.8891,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/b/b8/BC_%C5%BDalgiris_2023.png",
+      "country": "LTU"
+    },
+    "THU": {
+      "name": "FC Thun",
+      "city": "Thun",
+      "lat": 46.7594,
+      "lng": 7.6294,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/24/FC_Thun_Logo_2011.svg",
+      "country": "SUI"
+    },
+    "STV": {
+      "name": "Sint-Truidense VV",
+      "city": "Sint-Truiden",
+      "lat": 50.818,
+      "lng": 5.1837,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f1/K._Sint-Truidense_V.V._logo.png",
+      "country": "BEL"
+    },
+    "IBE": {
+      "name": "FC Iberia 1999",
+      "city": "Tbilisi",
+      "lat": 41.7238,
+      "lng": 44.7573,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9e/Saburtalo_Tbilisi_Logo.png",
+      "country": "GEO"
     }
   }
 }
