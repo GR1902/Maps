@@ -3169,6 +3169,12 @@
       "away": "BEV",
       "start": "2026-09-20T17:15:00+00:00",
       "matchday": 7
+    },
+    {
+      "home": "CER",
+      "away": "AND",
+      "start": "2026-10-10T14:00:00+00:00",
+      "matchday": 8
     }
   ],
   "allsvenskan": [
@@ -4219,6 +4225,18 @@
       "away": "FCN",
       "start": "2026-09-20T15:00:00+00:00",
       "matchday": 9
+    },
+    {
+      "home": "AGF",
+      "away": "SON",
+      "start": "2026-10-12T17:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "FCM",
+      "away": "FCK",
+      "start": "2026-10-11T16:00:00+00:00",
+      "matchday": 10
     }
   ],
   "veikkausliiga": [
@@ -4329,6 +4347,12 @@
       "away": "LAH",
       "start": "2026-08-31T16:00:00+00:00",
       "matchday": 22
+    },
+    {
+      "home": "HJK",
+      "away": "INT",
+      "start": "2026-09-09T15:00:00+00:00",
+      "matchday": 23
     }
   ],
   "championship": [
