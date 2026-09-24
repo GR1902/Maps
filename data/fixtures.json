@@ -2241,6 +2241,330 @@
       "away": "RAV",
       "start": "2026-09-06T14:30:00+00:00",
       "matchday": 5
+    },
+    {
+      "home": "NAC",
+      "away": "ALV",
+      "start": "2026-09-12T14:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "CAS",
+      "away": "POR",
+      "start": "2026-09-12T17:00:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "AVI",
+      "away": "VSC",
+      "start": "2026-09-12T19:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "BEN",
+      "away": "GIL",
+      "start": "2026-09-13T17:00:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "ARO",
+      "away": "SCL",
+      "start": "2026-09-13T17:00:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "FAM",
+      "away": "SCP",
+      "start": "2026-09-13T19:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "RAV",
+      "away": "AMA",
+      "start": "2026-09-14T17:45:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "MOR",
+      "away": "MAR",
+      "start": "2026-09-14T19:15:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "BRA",
+      "away": "EST",
+      "start": "2026-09-14T19:45:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "GIL",
+      "away": "MAR",
+      "start": "2026-09-19T14:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "NAC",
+      "away": "FAM",
+      "start": "2026-09-19T14:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "ALV",
+      "away": "RAV",
+      "start": "2026-09-19T17:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "SCP",
+      "away": "ARO",
+      "start": "2026-09-19T19:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "AMA",
+      "away": "AVI",
+      "start": "2026-09-20T14:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "EST",
+      "away": "CAS",
+      "start": "2026-09-20T17:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "POR",
+      "away": "BEN",
+      "start": "2026-09-20T19:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "SCL",
+      "away": "BRA",
+      "start": "2026-09-20T17:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "VSC",
+      "away": "MOR",
+      "start": "2026-09-20T14:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "MOR",
+      "away": "GIL",
+      "start": "2026-10-09T17:45:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "BRA",
+      "away": "SCP",
+      "start": "2026-10-09T19:15:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "CAS",
+      "away": "SCL",
+      "start": "2026-10-10T14:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "MAR",
+      "away": "POR",
+      "start": "2026-10-10T17:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "AVI",
+      "away": "EST",
+      "start": "2026-10-10T19:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "RAV",
+      "away": "NAC",
+      "start": "2026-10-11T14:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "ARO",
+      "away": "AMA",
+      "start": "2026-10-11T19:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "BEN",
+      "away": "VSC",
+      "start": "2026-10-11T17:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "FAM",
+      "away": "ALV",
+      "start": "2026-10-12T19:15:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "VSC",
+      "away": "MAR",
+      "start": "2026-10-23T19:45:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "AMA",
+      "away": "CAS",
+      "start": "2026-10-24T14:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "ALV",
+      "away": "ARO",
+      "start": "2026-10-24T17:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "GIL",
+      "away": "POR",
+      "start": "2026-10-24T19:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "EST",
+      "away": "MOR",
+      "start": "2026-10-25T15:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "NAC",
+      "away": "BRA",
+      "start": "2026-10-25T18:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "RAV",
+      "away": "FAM",
+      "start": "2026-10-25T18:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "SCP",
+      "away": "AVI",
+      "start": "2026-10-25T20:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "SCL",
+      "away": "BEN",
+      "start": "2026-10-26T18:45:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "CAS",
+      "away": "SCP",
+      "start": "2026-10-30T20:15:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "MOR",
+      "away": "AMA",
+      "start": "2026-10-31T15:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "POR",
+      "away": "EST",
+      "start": "2026-10-31T20:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "ARO",
+      "away": "NAC",
+      "start": "2026-11-01T15:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "AVI",
+      "away": "RAV",
+      "start": "2026-11-01T18:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "MAR",
+      "away": "SCL",
+      "start": "2026-11-01T18:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "BRA",
+      "away": "FAM",
+      "start": "2026-11-01T20:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "GIL",
+      "away": "VSC",
+      "start": "2026-11-02T20:15:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "BEN",
+      "away": "ALV",
+      "start": "2026-11-02T20:15:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "FAM",
+      "away": "ARO",
+      "start": "2026-11-06T20:45:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "NAC",
+      "away": "AVI",
+      "start": "2026-11-07T15:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "ALV",
+      "away": "CAS",
+      "start": "2026-11-07T18:00:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "SCP",
+      "away": "MOR",
+      "start": "2026-11-07T20:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "EST",
+      "away": "MAR",
+      "start": "2026-11-08T15:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "SCL",
+      "away": "GIL",
+      "start": "2026-11-08T15:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "VSC",
+      "away": "POR",
+      "start": "2026-11-08T18:00:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "AMA",
+      "away": "BEN",
+      "start": "2026-11-08T20:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "RAV",
+      "away": "BRA",
+      "start": "2026-11-08T20:30:00+00:00",
+      "matchday": 11
     }
   ],
   "eredivisie": [
@@ -4821,6 +5145,270 @@
       "away": "INT",
       "start": "2026-09-09T15:00:00+00:00",
       "matchday": 23
+    },
+    {
+      "home": "VPS",
+      "away": "OUL",
+      "start": "2026-09-08T15:00:00+00:00",
+      "matchday": 23
+    },
+    {
+      "home": "GNI",
+      "away": "KUP",
+      "start": "2026-09-08T16:00:00+00:00",
+      "matchday": 23
+    },
+    {
+      "home": "OUL",
+      "away": "GNI",
+      "start": "2026-09-12T16:00:00+00:00",
+      "matchday": 24
+    },
+    {
+      "home": "KUP",
+      "away": "HJK",
+      "start": "2026-09-13T12:00:00+00:00",
+      "matchday": 24
+    },
+    {
+      "home": "INT",
+      "away": "VPS",
+      "start": "2026-09-14T15:00:00+00:00",
+      "matchday": 24
+    },
+    {
+      "home": "OUL",
+      "away": "INT",
+      "start": "2026-09-18T16:00:00+00:00",
+      "matchday": 25
+    },
+    {
+      "home": "GNI",
+      "away": "HJK",
+      "start": "2026-09-18T16:00:00+00:00",
+      "matchday": 25
+    },
+    {
+      "home": "VPS",
+      "away": "KUP",
+      "start": "2026-09-19T14:00:00+00:00",
+      "matchday": 25
+    },
+    {
+      "home": "GNI",
+      "away": "INT",
+      "start": "2026-10-07T16:00:00+00:00",
+      "matchday": 26
+    },
+    {
+      "home": "HJK",
+      "away": "VPS",
+      "start": "2026-10-08T15:00:00+00:00",
+      "matchday": 26
+    },
+    {
+      "home": "KUP",
+      "away": "OUL",
+      "start": "2026-10-08T16:00:00+00:00",
+      "matchday": 26
+    },
+    {
+      "home": "INT",
+      "away": "KUP",
+      "start": "2026-10-11T12:00:00+00:00",
+      "matchday": 27
+    },
+    {
+      "home": "VPS",
+      "away": "GNI",
+      "start": "2026-10-12T15:00:00+00:00",
+      "matchday": 27
+    },
+    {
+      "home": "OUL",
+      "away": "HJK",
+      "start": "2026-10-12T16:00:00+00:00",
+      "matchday": 27
+    },
+    {
+      "home": "HJK",
+      "away": "GNI",
+      "start": "2026-10-17T13:00:00+00:00",
+      "matchday": 28
+    },
+    {
+      "home": "INT",
+      "away": "OUL",
+      "start": "2026-10-17T15:00:00+00:00",
+      "matchday": 28
+    },
+    {
+      "home": "KUP",
+      "away": "VPS",
+      "start": "2026-10-18T12:00:00+00:00",
+      "matchday": 28
+    },
+    {
+      "home": "VPS",
+      "away": "INT",
+      "start": "2026-10-24T11:00:00+00:00",
+      "matchday": 29
+    },
+    {
+      "home": "GNI",
+      "away": "OUL",
+      "start": "2026-10-24T14:00:00+00:00",
+      "matchday": 29
+    },
+    {
+      "home": "HJK",
+      "away": "KUP",
+      "start": "2026-10-25T13:00:00+00:00",
+      "matchday": 29
+    },
+    {
+      "home": "OUL",
+      "away": "VPS",
+      "start": "2026-10-28T16:00:00+00:00",
+      "matchday": 30
+    },
+    {
+      "home": "INT",
+      "away": "HJK",
+      "start": "2026-10-29T16:00:00+00:00",
+      "matchday": 30
+    },
+    {
+      "home": "KUP",
+      "away": "GNI",
+      "start": "2026-10-29T17:00:00+00:00",
+      "matchday": 30
+    },
+    {
+      "home": "OUL",
+      "away": "KUP",
+      "start": "2026-11-01T13:00:00+00:00",
+      "matchday": 31
+    },
+    {
+      "home": "INT",
+      "away": "GNI",
+      "start": "2026-11-02T16:00:00+00:00",
+      "matchday": 31
+    },
+    {
+      "home": "VPS",
+      "away": "HJK",
+      "start": "2026-11-02T16:00:00+00:00",
+      "matchday": 31
+    },
+    {
+      "home": "HJK",
+      "away": "OUL",
+      "start": "2026-11-08T13:00:00+00:00",
+      "matchday": 32
+    },
+    {
+      "home": "GNI",
+      "away": "VPS",
+      "start": "2026-11-08T13:00:00+00:00",
+      "matchday": 32
+    },
+    {
+      "home": "KUP",
+      "away": "INT",
+      "start": "2026-11-08T13:00:00+00:00",
+      "matchday": 32
+    },
+    {
+      "home": "LAH",
+      "away": "MAR_F",
+      "start": "2026-09-08T15:00:00+00:00",
+      "matchday": 23
+    },
+    {
+      "home": "ILV",
+      "away": "JAR",
+      "start": "2026-09-08T15:00:00+00:00",
+      "matchday": 23
+    },
+    {
+      "home": "TPS",
+      "away": "SJK",
+      "start": "2026-09-08T15:00:00+00:00",
+      "matchday": 23
+    },
+    {
+      "home": "MAR_F",
+      "away": "TPS",
+      "start": "2026-09-12T14:00:00+00:00",
+      "matchday": 24
+    },
+    {
+      "home": "JAR",
+      "away": "SJK",
+      "start": "2026-09-12T16:00:00+00:00",
+      "matchday": 24
+    },
+    {
+      "home": "ILV",
+      "away": "LAH",
+      "start": "2026-09-12T16:00:00+00:00",
+      "matchday": 24
+    },
+    {
+      "home": "LAH",
+      "away": "JAR",
+      "start": "2026-09-18T15:00:00+00:00",
+      "matchday": 25
+    },
+    {
+      "home": "SJK",
+      "away": "MAR_F",
+      "start": "2026-09-18T15:00:00+00:00",
+      "matchday": 25
+    },
+    {
+      "home": "TPS",
+      "away": "ILV",
+      "start": "2026-09-19T12:00:00+00:00",
+      "matchday": 25
+    },
+    {
+      "home": "SJK",
+      "away": "LAH",
+      "start": "2026-10-09T15:00:00+00:00",
+      "matchday": 26
+    },
+    {
+      "home": "TPS",
+      "away": "JAR",
+      "start": "2026-10-10T14:00:00+00:00",
+      "matchday": 26
+    },
+    {
+      "home": "MAR_F",
+      "away": "ILV",
+      "start": "2026-10-10T16:00:00+00:00",
+      "matchday": 26
+    },
+    {
+      "home": "LAH",
+      "away": "TPS",
+      "start": "2026-10-17T11:00:00+00:00",
+      "matchday": 27
+    },
+    {
+      "home": "JAR",
+      "away": "MAR_F",
+      "start": "2026-10-17T11:00:00+00:00",
+      "matchday": 27
+    },
+    {
+      "home": "ILV",
+      "away": "SJK",
+      "start": "2026-10-17T11:00:00+00:00",
+      "matchday": 27
     }
   ],
   "championship": [
@@ -8413,6 +9001,336 @@
       "away": "EIB",
       "start": "2026-09-14T18:30:00+00:00",
       "matchday": 5
+    },
+    {
+      "home": "ALB",
+      "away": "COR",
+      "start": "2026-09-18T17:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "RSB",
+      "away": "MAL",
+      "start": "2026-09-19T11:00:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "AND",
+      "away": "SPG",
+      "start": "2026-09-19T13:15:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "CAS",
+      "away": "TEN",
+      "start": "2026-09-19T15:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "ELD",
+      "away": "EIB",
+      "start": "2026-09-19T15:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "CAD",
+      "away": "GIR",
+      "start": "2026-09-19T18:00:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "SAB",
+      "away": "OVI",
+      "start": "2026-09-20T11:00:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "CEU",
+      "away": "VLL",
+      "start": "2026-09-20T13:15:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "ALM",
+      "away": "CFO",
+      "start": "2026-09-20T15:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "LPA",
+      "away": "BUR",
+      "start": "2026-09-20T15:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "LEG",
+      "away": "GRA",
+      "start": "2026-09-20T18:00:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "GIR",
+      "away": "ALB",
+      "start": "2026-09-25T17:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "CEU",
+      "away": "RSB",
+      "start": "2026-09-26T11:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "GRA",
+      "away": "AND",
+      "start": "2026-09-26T13:15:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "CFO",
+      "away": "SAB",
+      "start": "2026-09-26T15:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "TEN",
+      "away": "CAD",
+      "start": "2026-09-26T15:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "VLL",
+      "away": "COR",
+      "start": "2026-09-27T11:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "MAL",
+      "away": "ALM",
+      "start": "2026-09-27T13:15:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "BUR",
+      "away": "ELD",
+      "start": "2026-09-27T15:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "EIB",
+      "away": "LPA",
+      "start": "2026-09-27T15:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "OVI",
+      "away": "SPG",
+      "start": "2026-09-27T18:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "LEG",
+      "away": "CAS",
+      "start": "2026-09-28T17:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "ELD",
+      "away": "OVI",
+      "start": "2026-10-02T17:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "ALB",
+      "away": "EIB",
+      "start": "2026-10-03T11:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "ALM",
+      "away": "BUR",
+      "start": "2026-10-03T13:15:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "CAD",
+      "away": "LEG",
+      "start": "2026-10-03T15:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "SAB",
+      "away": "AND",
+      "start": "2026-10-03T15:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "RSB",
+      "away": "GRA",
+      "start": "2026-10-04T11:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "SPG",
+      "away": "CFO",
+      "start": "2026-10-04T13:15:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "CAS",
+      "away": "CEU",
+      "start": "2026-10-04T15:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "LPA",
+      "away": "VLL",
+      "start": "2026-10-04T15:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "GIR",
+      "away": "MAL",
+      "start": "2026-10-04T18:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "COR",
+      "away": "TEN",
+      "start": "2026-10-05T17:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "CEU",
+      "away": "SAB",
+      "start": "2026-10-10T13:15:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "ELD",
+      "away": "COR",
+      "start": "2026-10-10T15:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "CFO",
+      "away": "RSB",
+      "start": "2026-10-10T18:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "AND",
+      "away": "CAS",
+      "start": "2026-10-11T11:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "ALM",
+      "away": "LEG",
+      "start": "2026-10-11T13:15:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "MAL",
+      "away": "LPA",
+      "start": "2026-10-11T15:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "CAD",
+      "away": "SPG",
+      "start": "2026-10-11T18:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "VLL",
+      "away": "ALB",
+      "start": "2026-10-12T11:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "BUR",
+      "away": "GRA",
+      "start": "2026-10-12T13:15:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "OVI",
+      "away": "EIB",
+      "start": "2026-10-12T15:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "TEN",
+      "away": "GIR",
+      "start": "2026-10-12T18:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "LEG",
+      "away": "COR",
+      "start": "2026-10-16T17:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "RSB",
+      "away": "ALM",
+      "start": "2026-10-17T11:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "EIB",
+      "away": "MAL",
+      "start": "2026-10-17T13:15:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "SPG",
+      "away": "ALB",
+      "start": "2026-10-17T15:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "LPA",
+      "away": "CAS",
+      "start": "2026-10-17T18:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "CEU",
+      "away": "OVI",
+      "start": "2026-10-18T11:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "GRA",
+      "away": "CAD",
+      "start": "2026-10-18T13:15:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "GIR",
+      "away": "AND",
+      "start": "2026-10-18T15:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "VLL",
+      "away": "ELD",
+      "start": "2026-10-18T15:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "BUR",
+      "away": "SAB",
+      "start": "2026-10-18T18:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "CFO",
+      "away": "TEN",
+      "start": "2026-10-19T17:30:00+00:00",
+      "matchday": 10
     }
   ],
   "bundesliga_2": [
@@ -18439,6 +19357,66 @@
       "away": "LOK",
       "start": "2026-09-06T19:00:00+00:00",
       "matchday": 6
+    },
+    {
+      "home": "OSI",
+      "away": "DIN",
+      "start": "2026-09-12T15:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "LOK",
+      "away": "RIJ",
+      "start": "2026-09-12T18:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "IST",
+      "away": "RUD",
+      "start": "2026-09-13T15:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "HAJ",
+      "away": "SLA",
+      "start": "2026-09-13T18:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "GOR",
+      "away": "VAR",
+      "start": "2026-09-14T16:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "RUD",
+      "away": "SLA",
+      "start": "2026-09-18T18:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "VAR",
+      "away": "OSI",
+      "start": "2026-09-19T15:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "IST",
+      "away": "GOR",
+      "start": "2026-09-19T18:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "RIJ",
+      "away": "HAJ",
+      "start": "2026-09-20T15:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "DIN",
+      "away": "LOK",
+      "start": "2026-09-20T18:00:00+00:00",
+      "matchday": 8
     }
   ],
   "champions_league": [
