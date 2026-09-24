@@ -22,7 +22,7 @@ norwich-scouting-map/
 │   └── spieltag-explorer.js   App logic (fetches data/teams.json + data/fixtures.json)
 ├── data/
 │   ├── teams.json             699 club/venue records, keyed by league → team code
-│   ├── fixtures.json          3094 fixtures, keyed by league, with matchday numbers
+│   ├── fixtures.json          3381 fixtures, keyed by league, with matchday numbers
 │   ├── airports.json          ~60 major European airports (name, IATA, city, lat/lng)
 │   └── leagues.json           Competition logo URL per league code (see below)
 ├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
