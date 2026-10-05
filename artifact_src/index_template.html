@@ -1,0 +1,71 @@
+<title>Matchday Explorer</title>
+<style>
+__CSS__
+</style>
+<div id="app">
+  <header>
+    <div>
+      <h1>Matchday Explorer</h1>
+      <div class="sub">Home fixture locations &amp; combinable scouting routes</div>
+    </div>
+  </header>
+  <div id="controls">
+    <label for="league-select">League:</label>
+    <select id="league-select" onchange="onLeagueChange()">
+      <option value="epl">Premier League (ENG)</option>
+      <option value="la_liga">La Liga (ESP)</option>
+      <option value="bundesliga">Bundesliga (GER)</option>
+      <option value="serie_a">Serie A (ITA)</option>
+      <option value="ligue_1">Ligue 1 (FRA)</option>
+      <option value="primeira_liga">Primeira Liga (POR)</option>
+      <option value="eredivisie">Eredivisie (NED)</option>
+      <option value="pro_league">Pro League (BEL)</option>
+      <option value="allsvenskan">Allsvenskan (SWE)</option>
+      <option value="eliteserien">Eliteserien (NOR)</option>
+      <option value="superliga">Superliga (DEN)</option>
+      <option value="veikkausliiga">Veikkausliiga (FIN)</option>
+    </select>
+    <label for="matchday-select">Matchday:</label>
+    <select id="matchday-select" onchange="renderLeague(document.getElementById('league-select').value)"></select>
+    <span id="snapshot-note">Artifact edition: driving times/distances are estimates (straight-line × 1.3, ~80 km/h), not live routing.</span>
+  </div>
+  <div id="body">
+    <div id="map-wrap">
+      <div id="map-world">
+        <svg id="map-svg" xmlns="http://www.w3.org/2000/svg">
+__SVG_PATHS__
+        </svg>
+      </div>
+      <div id="marker-layer"></div>
+      <div id="zoom-controls">
+        <button class="zoom-btn" onclick="zoomBy(1.35)">+</button>
+        <button class="zoom-btn" onclick="zoomBy(1/1.35)">&minus;</button>
+      </div>
+      <div id="popup">
+        <span class="popup-close" onclick="closePopup()">&times;</span>
+        <div id="popup-body"></div>
+      </div>
+      <div id="route-panel">
+        <div id="route-header"><span id="route-title">Plan Route</span></div>
+        <div id="route-hint">Click a marker → "+ Add to route".</div>
+        <div id="route-stops"></div>
+        <div id="route-summary"></div>
+        <div id="route-actions">
+          <button class="route-btn" id="clear-route-btn" onclick="clearRoute()" disabled>Clear</button>
+        </div>
+      </div>
+      <div id="estimate-note">Distances/times on this page are estimates (no live routing available in this format) — see README in the full project for the real, drive-time-based version.</div>
+    </div>
+    <div id="side">
+      <h2 id="fixtures-heading">Home Fixtures</h2>
+      <div id="fixtures-list"></div>
+      <h2 id="combos-heading">Combinable Trips</h2>
+      <div id="combos-list"></div>
+    </div>
+  </div>
+</div>
+<script>
+const TEAMS = __TEAMS_JSON__;
+const FIXTURES = __FIXTURES_JSON__;
+__JS__
+</script>

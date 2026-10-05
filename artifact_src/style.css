@@ -1,0 +1,141 @@
+:root{
+  --ink: #14210a;
+  --paper: #fffdf4;
+  --green-dark: #00622F;
+  --green: #00A650;
+  --gold: #FFF200;
+  --line: #d8d2a8;
+  --red: #a3341f;
+  --map-bg: #e7e2c0;
+  --map-ctx: #d8d2a8;
+  --map-hl: #c9dfc4;
+  --map-hl-stroke: #fffdf4;
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; height:100%; font-family:'Georgia','Iowan Old Style',serif; background:var(--paper); color:var(--ink); }
+#app{ display:flex; flex-direction:column; height:100vh; }
+
+header{
+  padding:12px 18px 9px 18px; border-bottom:3px solid var(--gold); background:var(--green-dark);
+  display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;
+}
+header h1{ font-size:1.02rem; margin:0; font-weight:700; color:var(--gold); }
+header .sub{ font-size:0.68rem; color:#fff; opacity:0.85; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; text-transform:uppercase; letter-spacing:0.03em; }
+
+#controls{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:10px 18px; border-bottom:1px solid var(--line); background:#fbf9e8;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+#controls label{ font-size:0.72rem; font-weight:600; color:var(--green-dark); }
+#league-select, #matchday-select{
+  font-family:inherit; font-size:0.8rem; padding:6px 10px; border-radius:6px;
+  border:1px solid var(--green); background:#fff; color:var(--ink); cursor:pointer;
+}
+#snapshot-note{ font-size:0.64rem; color:#6b6455; margin-left:auto; max-width:340px; text-align:right; line-height:1.35; }
+
+#body{ flex:1; display:flex; min-height:0; }
+#map-wrap{ position:relative; flex:1.3; min-width:0; background:var(--map-bg); overflow:hidden; touch-action:none; cursor:grab; }
+#map-wrap.grabbing{ cursor:grabbing; }
+#map-world{ position:absolute; top:0; left:0; transform-origin:0 0; }
+#map-svg{ position:absolute; top:0; left:0; display:block; }
+#map-svg path.ctx{ fill:var(--map-ctx); stroke:var(--map-bg); stroke-width:1.2; }
+#map-svg path.hl{ fill:var(--map-hl); stroke:var(--map-hl-stroke); stroke-width:1.2; }
+/* Unscaled overlay: pins/labels stay a fixed screen size regardless of map
+   zoom (like Leaflet markers), unlike the SVG country paths which scale. */
+#marker-layer{ position:absolute; inset:0; pointer-events:none; }
+
+.pin{
+  position:absolute; width:13px; height:13px; margin:-13px 0 0 -6.5px;
+  border-radius:50% 50% 50% 0; transform:rotate(-45deg);
+  border:1.5px solid #fffdf4; box-shadow:0 1px 3px rgba(0,0,0,0.4);
+  cursor:pointer; pointer-events:auto;
+}
+.pin.muted{ width:9px; height:9px; margin:-9px 0 0 -4.5px; background:#a8a89c; border:1px solid #fffdf4; opacity:0.75; box-shadow:0 1px 2px rgba(0,0,0,0.3); cursor:default; }
+.pin-label{
+  position:absolute; transform:translate(-50%, 2px);
+  background:rgba(255,253,244,0.92); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:9px; font-weight:700; color:var(--ink); padding:0 3px; white-space:nowrap; pointer-events:none;
+}
+
+#zoom-controls{ position:absolute; top:10px; left:10px; z-index:20; display:flex; flex-direction:column; gap:4px; }
+.zoom-btn{
+  width:26px; height:26px; border-radius:4px; border:2px solid rgba(0,0,0,0.15); background:#fff;
+  font-size:1rem; font-weight:700; line-height:1; cursor:pointer; color:var(--ink);
+  box-shadow:0 1px 3px rgba(0,0,0,0.3);
+}
+#estimate-note{
+  position:absolute; bottom:8px; left:10px; z-index:20; font-size:0.6rem; color:#6b6455;
+  background:rgba(255,253,244,0.85); padding:3px 7px; border-radius:5px;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; max-width:260px; line-height:1.35;
+}
+
+#popup{
+  position:absolute; z-index:30; background:#fffdf4; border:1px solid var(--line); border-radius:8px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.25); padding:8px 10px; min-width:150px; display:none;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+#popup .popup-close{ position:absolute; top:3px; right:6px; cursor:pointer; color:#9c9484; font-size:0.9rem; }
+.popup-club{ font-weight:700; font-size:0.82rem; color:var(--green-dark); padding-right:14px; }
+.popup-meta{ font-size:0.72rem; color:#4a4438; margin-top:2px; }
+.add-stop-btn{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:0.66rem; font-weight:700; padding:4px 8px; border-radius:5px;
+  border:1px solid var(--green); background:var(--gold); color:#14210a; cursor:pointer; margin-top:6px;
+}
+
+#route-panel{
+  position:absolute; top:10px; right:10px; z-index:20;
+  background:rgba(255,253,244,0.97);
+  border:1px solid var(--line); border-radius:8px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.14);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  width:220px; max-width:calc(100vw - 24px);
+}
+#route-header{ display:flex; align-items:center; justify-content:space-between; padding:7px 10px; border-bottom:2px solid var(--gold); background:var(--green-dark); border-radius:8px 8px 0 0; }
+#route-title{ font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--gold); }
+#route-hint{ font-size:0.63rem; color:#6b6455; padding:6px 10px 0 10px; line-height:1.3; }
+#route-stops{ padding:5px 10px; max-height:150px; overflow-y:auto; }
+.route-stop{ display:flex; align-items:center; gap:6px; font-size:0.68rem; padding:2.5px 0; color:var(--ink); }
+.route-stop .num{ width:15px; height:15px; border-radius:50%; background:var(--green); color:#fff; font-size:0.58rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.route-stop .name{ flex:1; }
+.route-stop .rm{ cursor:pointer; color:#a3341f; font-weight:700; font-size:0.72rem; padding:0 2px; }
+#route-summary{ padding:5px 10px 0 10px; font-size:0.65rem; color:var(--green-dark); font-weight:600; display:none; }
+#route-actions{ display:flex; gap:6px; padding:7px 10px 9px 10px; }
+.route-btn{
+  flex:1; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:0.66rem; font-weight:600; padding:5px 8px; border-radius:5px;
+  border:1px solid var(--green); background:#fff; color:var(--green-dark); cursor:pointer;
+}
+.route-btn:disabled{ opacity:0.4; cursor:default; }
+
+#side{
+  flex:1; min-width:280px; max-width:380px; border-left:1px solid var(--line);
+  overflow-y:auto; background:#fffdf4;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+#side h2{
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; color:#fff;
+  margin:0; padding:12px 14px 8px 14px; border-bottom:2px solid var(--gold); background:var(--green-dark);
+  position:sticky; top:0;
+}
+.fixture-item{ padding:9px 14px; border-bottom:1px solid #eee6c8; font-size:0.76rem; cursor:pointer; }
+.fixture-item:hover{ background:#fdf6c8; }
+.fixture-item .teams{ font-weight:700; color:var(--ink); }
+.fixture-item .meta{ font-size:0.66rem; color:#6b6455; margin-top:2px; }
+
+.combo-card{
+  margin:10px 14px; padding:10px 12px; border-radius:8px; background:#fff;
+  border:1px solid var(--line); border-left:4px solid var(--gold); box-shadow:0 1px 4px rgba(0,0,0,0.08);
+  cursor:pointer;
+}
+.combo-card .combo-title{ font-size:0.72rem; font-weight:700; color:var(--green-dark); margin-bottom:5px; }
+.combo-card .combo-game{ font-size:0.74rem; padding:2px 0; }
+.combo-card .combo-stats{ font-size:0.66rem; color:#6b6455; margin-top:5px; border-top:1px solid #eee; padding-top:5px; }
+.empty-note{ padding:16px 14px; font-size:0.75rem; color:#6b6455; line-height:1.4; }
+
+@media (max-width: 700px){
+  #body{ flex-direction:column; }
+  #side{ max-width:100%; border-left:none; border-top:1px solid var(--line); max-height:45vh; }
+}
