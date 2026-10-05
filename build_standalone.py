@@ -19,12 +19,14 @@ root = Path(__file__).parent
 css = (root / "css/variables.css").read_text() + "\n" + (root / "css/spieltag-explorer.css").read_text()
 teams_json = (root / "data/teams.json").read_text()
 fixtures_json = (root / "data/fixtures.json").read_text()
+airports_json = (root / "data/airports.json").read_text()
+leagues_json = (root / "data/leagues.json").read_text()
 
 js = (root / "js/spieltag-explorer.js").read_text()
 
 js, n = re.subn(
-    r"^let TEAMS = \{\};\nlet FIXTURES = \{\};$",
-    f"let TEAMS = {teams_json};\nlet FIXTURES = {fixtures_json};",
+    r"^let TEAMS = \{\};\nlet FIXTURES = \{\};\nlet AIRPORTS = \[\];\nlet LEAGUE_LOGO = \{\};.*$",
+    f"let TEAMS = {teams_json};\nlet FIXTURES = {fixtures_json};\nlet AIRPORTS = {airports_json};\nlet LEAGUE_LOGO = {leagues_json};",
     js,
     count=1,
     flags=re.M,
@@ -34,7 +36,8 @@ if n != 1:
 
 js, n = re.subn(
     r"// ===== Bootstrap: load data, then render =====\nasync function loadData\(\)\{.*?\}\n\nloadData\(\);",
-    "// ===== Bootstrap: data is embedded above, render immediately =====\nonLeagueChange();",
+    "// ===== Bootstrap: data is embedded above, render immediately =====\n"
+    "buildLeaguePanel();\nrenderWatchlist();\ncomputeWatchlistLegs();\nrenderAll();",
     js,
     count=1,
     flags=re.S,
