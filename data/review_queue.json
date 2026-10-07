@@ -32,26 +32,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "la_liga_2-11",
-      "league": "la_liga_2",
-      "matchday": 11,
-      "type": "single_source",
-      "priority": "high",
-      "note": "Spieltag 11 (23.-26.10.): Kicker hat 11 Spiele mit gestaffelten Zeiten, offizielle laliga.com-Seite noch nicht abrufbar (Nachrichtenseite 404). Spieltag 12 ohne Zeiten.",
-      "sources_tried": "kicker.de",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "primeira_liga-2-12",
-      "league": "primeira_liga",
-      "matchday": 2,
-      "type": "missing",
-      "priority": "medium",
-      "note": "Spieltag 2 und 12 haben je 8 von 9 Spielen, das fehlende Spiel jeweils nicht gefunden (Verlegung?).",
-      "sources_tried": "Websuche",
-      "added": "2026-10-07"
-    },
-    {
       "id": "czech-8-plz-olo",
       "league": "czech_first_league",
       "matchday": 8,
@@ -112,46 +92,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "challenger_pro_league-7",
-      "league": "challenger_pro_league",
-      "matchday": 7,
-      "type": "missing",
-      "priority": "high",
-      "note": "Nur bis Spieltag 6 gespeichert (letzter Termin 20.9.), proleague.be/cpl-kalender pruefen.",
-      "sources_tried": "",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "scottish_prem",
-      "league": "scottish_prem",
-      "matchday": null,
-      "type": "missing",
-      "priority": "medium",
-      "note": "Spieltag 2, 3 und 6 unvollstaendig, ab Spieltag 10 fehlt alles.",
-      "sources_tried": "",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "super_league_greece-6",
-      "league": "super_league_greece",
-      "matchday": 6,
-      "type": "missing",
-      "priority": "medium",
-      "note": "Spieltag 6 hat 2 von 7 Spielen, danach nichts.",
-      "sources_tried": "",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "super_lig-8",
-      "league": "super_lig",
-      "matchday": 8,
-      "type": "missing",
-      "priority": "medium",
-      "note": "Nur bis Spieltag 7 (12.10.).",
-      "sources_tried": "",
-      "added": "2026-10-07"
-    },
-    {
       "id": "nordic-early-rounds",
       "league": "multiple",
       "matchday": null,
@@ -169,6 +109,96 @@
       "priority": "high",
       "note": "Giornata 12 bis 18 sind eingetragen (legab.it + kicker.de). Giornata 19 und folgende auf legab.it/seriebkt/calendario/2026-2027/stagione-regolare/N pruefen, sobald Zeiten stehen.",
       "sources_tried": "legab.it, kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "kicker-only-0710",
+      "league": "multiple",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "high",
+      "note": "Nur durch kicker.de belegt, mit unverified markiert, offizielle Seite im Browser gegenpruefen: Challenger Pro League 7-13 (proleague.be/cpl-kalender), Griechenland 6-12, Sueper Lig 8-14, Schottland 10-16 (spfl.co.uk), Oesterreich 9-14 (bundesliga.at), Tschechien 10-14, Schweiz 13-16 (sfl.ch), La Liga 2 Spieltag 11 (laliga.com), Primeira Liga je ein Spiel in Spieltag 2 (Braga-Gil Vicente, 19.10.) und 12.",
+      "sources_tried": "kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "poland-14",
+      "league": "ekstraklasa",
+      "matchday": 14,
+      "type": "not_scheduled",
+      "priority": "medium",
+      "note": "Spieltag 14 (7.11.) und 15 bei kicker.de nur mit Datum, ohne Uhrzeit.",
+      "sources_tried": "kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "primeira_liga-13",
+      "league": "primeira_liga",
+      "matchday": 13,
+      "type": "not_scheduled",
+      "priority": "medium",
+      "note": "Spieltag 13 (6.12.) bei kicker.de ohne Uhrzeiten.",
+      "sources_tried": "kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "la_liga_2-12",
+      "league": "la_liga_2",
+      "matchday": 12,
+      "type": "not_scheduled",
+      "priority": "medium",
+      "note": "Spieltag 12 ohne Zeiten bei kicker.de.",
+      "sources_tried": "kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "super_lig-15",
+      "league": "super_lig",
+      "matchday": 15,
+      "type": "missing",
+      "priority": "medium",
+      "note": "Spieltag 15 und folgende pruefen (bis Spieltag 14 eingetragen).",
+      "sources_tried": "",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "greece-7-missing",
+      "league": "super_league_greece",
+      "matchday": 7,
+      "type": "missing",
+      "priority": "medium",
+      "note": "Spieltag 7: 6 von 7 Spielen, ein Spiel bei kicker.de nicht angesetzt.",
+      "sources_tried": "kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "czech-9",
+      "league": "czech_first_league",
+      "matchday": 9,
+      "type": "missing",
+      "priority": "low",
+      "note": "Spieltag 9 (gespielt Mitte Oktober) fehlt, kicker.de zeigt keine Zeiten mehr. Bohemians-Mlada Boleslav steht bei kicker.de am 14.10. (Nachholspiel, Spieltag unklar).",
+      "sources_tried": "kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "scottish-past",
+      "league": "scottish_prem",
+      "matchday": null,
+      "type": "missing",
+      "priority": "low",
+      "note": "Spieltag 2, 3 und 6 unvollstaendig (gespielt).",
+      "sources_tried": "",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "youth_league",
+      "league": "youth_league",
+      "matchday": null,
+      "type": "missing",
+      "priority": "low",
+      "note": "Noch keine Spiele eingetragen, Spielplan der UEFA Youth League pruefen.",
+      "sources_tried": "",
       "added": "2026-10-07"
     }
   ]
