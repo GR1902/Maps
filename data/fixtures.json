@@ -7123,6 +7123,108 @@
       "away": "FCN",
       "start": "2026-11-30T18:00:00+00:00",
       "matchday": 16
+    },
+    {
+      "home": "HOR",
+      "away": "RAN",
+      "start": "2026-10-16T17:00:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "LYN",
+      "away": "FCN",
+      "start": "2026-10-18T12:00:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "VIB",
+      "away": "FCM",
+      "start": "2026-10-19T17:00:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "FCM",
+      "away": "LYN",
+      "start": "2026-10-25T13:00:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "SIL",
+      "away": "FCN",
+      "start": "2026-10-25T13:00:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "AGF",
+      "away": "VIB",
+      "start": "2026-10-25T17:00:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "LYN",
+      "away": "RAN",
+      "start": "2026-10-30T18:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "OBK",
+      "away": "SIL",
+      "start": "2026-11-01T13:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "VIB",
+      "away": "HOR",
+      "start": "2026-11-01T13:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "FCN",
+      "away": "FCM",
+      "start": "2026-11-01T15:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "SIL",
+      "away": "LYN",
+      "start": "2026-11-06T18:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "OBK",
+      "away": "VIB",
+      "start": "2026-11-07T17:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "AGF",
+      "away": "HOR",
+      "start": "2026-11-08T13:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "RAN",
+      "away": "FCN",
+      "start": "2026-11-08T15:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "FCM",
+      "away": "SON",
+      "start": "2026-11-08T17:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "FCK",
+      "away": "FCM",
+      "start": "2026-11-29T15:00:00+00:00",
+      "matchday": 16
+    },
+    {
+      "home": "SIL",
+      "away": "AGF",
+      "start": "2026-11-29T19:00:00+00:00",
+      "matchday": 16
     }
   ],
   "veikkausliiga": [
@@ -20881,6 +20983,78 @@
       "away": "BAS",
       "start": "2026-11-01T15:30:00+00:00",
       "matchday": 12
+    },
+    {
+      "home": "ZUR",
+      "away": "SER",
+      "start": "2026-08-01T14:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "BAS",
+      "away": "LAU",
+      "start": "2026-08-01T15:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "THU",
+      "away": "YB",
+      "start": "2026-08-01T18:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "SIO",
+      "away": "LUZ",
+      "start": "2026-08-02T14:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "VAD",
+      "away": "STG",
+      "start": "2026-08-02T11:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "GRA",
+      "away": "LUG",
+      "start": "2026-08-02T14:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "LAU",
+      "away": "YB",
+      "start": "2026-08-08T16:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "SER",
+      "away": "GRA",
+      "start": "2026-08-08T18:30:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "LUG",
+      "away": "ZUR",
+      "start": "2026-08-09T12:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "BAS",
+      "away": "THU",
+      "start": "2026-08-09T14:30:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "SIO",
+      "away": "VAD",
+      "start": "2026-08-09T14:30:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "STG",
+      "away": "LUZ",
+      "start": "2026-08-09T14:30:00+00:00",
+      "matchday": 3
     }
   ],
   "austrian_bundesliga": [
@@ -21128,6 +21302,48 @@
       "home": "ALT",
       "away": "WOL",
       "start": "2026-10-11T12:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "ALT",
+      "away": "TIR",
+      "start": "2026-08-07T17:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "GAK",
+      "away": "LUS",
+      "start": "2026-08-08T15:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "HAR",
+      "away": "STU",
+      "start": "2026-08-08T17:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "RIE",
+      "away": "RAP",
+      "start": "2026-08-09T15:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "WOL",
+      "away": "SAL",
+      "start": "2026-08-09T15:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "AUW",
+      "away": "LAS",
+      "start": "2026-08-09T17:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "AUW",
+      "away": "STU",
+      "start": "2026-10-10T17:30:00+00:00",
       "matchday": 8
     }
   ],
@@ -22335,6 +22551,96 @@
       "away": "POG",
       "start": "2026-11-02T19:30:00+00:00",
       "matchday": 13
+    },
+    {
+      "home": "PLO",
+      "away": "WID",
+      "start": "2026-07-31T16:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "LUB",
+      "away": "BIA",
+      "start": "2026-07-31T18:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "PIA",
+      "away": "WIS",
+      "start": "2026-08-01T12:45:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "WIE",
+      "away": "LEC",
+      "start": "2026-08-01T15:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "LEG",
+      "away": "ZAG",
+      "start": "2026-08-02T12:45:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "SLA",
+      "away": "RAK",
+      "start": "2026-08-02T15:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "KAT",
+      "away": "RAD",
+      "start": "2026-08-02T18:15:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "CRA",
+      "away": "POG",
+      "start": "2026-08-03T17:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "WIS",
+      "away": "PLO",
+      "start": "2026-08-07T18:30:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "RAD",
+      "away": "ZAB",
+      "start": "2026-08-08T12:45:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "POG",
+      "away": "LUB",
+      "start": "2026-08-08T15:30:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "KIE",
+      "away": "LEG",
+      "start": "2026-08-08T18:15:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "SLA",
+      "away": "CRA",
+      "start": "2026-08-09T15:30:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "LEC",
+      "away": "PIA",
+      "start": "2026-08-09T15:30:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "BIA",
+      "away": "WID",
+      "start": "2026-08-09T18:15:00+00:00",
+      "matchday": 3
     }
   ],
   "czech_first_league": [
@@ -22649,6 +22955,120 @@
       "away": "PLZ",
       "start": "2026-09-20T16:00:00+00:00",
       "matchday": 9
+    },
+    {
+      "home": "SPA",
+      "away": "ZLI",
+      "start": "2026-07-31T17:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "LIB",
+      "away": "TEP",
+      "start": "2026-08-01T15:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "OST",
+      "away": "SLA",
+      "start": "2026-08-01T15:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "SLO",
+      "away": "ART",
+      "start": "2026-08-01T15:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "PLZ",
+      "away": "ZBR",
+      "start": "2026-08-01T18:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "OLO",
+      "away": "MLA",
+      "start": "2026-08-02T13:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "BOH",
+      "away": "HRA",
+      "start": "2026-08-02T15:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "PAR",
+      "away": "JAB",
+      "start": "2026-08-02T18:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "ZBR",
+      "away": "LIB",
+      "start": "2026-08-07T17:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "ZLI",
+      "away": "BOH",
+      "start": "2026-08-08T15:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "TEP",
+      "away": "PLZ",
+      "start": "2026-08-08T15:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "MLA",
+      "away": "SPA",
+      "start": "2026-08-08T18:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "SLA",
+      "away": "PAR",
+      "start": "2026-08-09T13:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "JAB",
+      "away": "SLO",
+      "start": "2026-08-09T15:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "HRA",
+      "away": "OST",
+      "start": "2026-08-09T15:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "ART",
+      "away": "OLO",
+      "start": "2026-08-09T18:00:00+00:00",
+      "matchday": 3
+    },
+    {
+      "home": "ZLI",
+      "away": "HRA",
+      "start": "2026-09-12T13:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "OST",
+      "away": "PAR",
+      "start": "2026-09-13T11:00:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "TEP",
+      "away": "SLA",
+      "start": "2026-09-13T16:00:00+00:00",
+      "matchday": 8
     }
   ],
   "croatian_hnl": [
@@ -22866,6 +23286,60 @@
       "home": "HAJ",
       "away": "DIN",
       "start": "2026-10-10T13:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "RIJ",
+      "away": "DIN",
+      "start": "2026-08-08T15:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "RUD",
+      "away": "OSI",
+      "start": "2026-08-08T16:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "LOK",
+      "away": "GOR",
+      "start": "2026-08-08T19:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "SLA",
+      "away": "VAR",
+      "start": "2026-08-09T16:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "HAJ",
+      "away": "IST",
+      "start": "2026-08-09T19:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "GOR",
+      "away": "RUD",
+      "start": "2026-10-09T16:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "OSI",
+      "away": "IST",
+      "start": "2026-10-10T16:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "SLA",
+      "away": "RIJ",
+      "start": "2026-10-10T15:00:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "LOK",
+      "away": "VAR",
+      "start": "2026-10-11T13:00:00+00:00",
       "matchday": 9
     }
   ],
