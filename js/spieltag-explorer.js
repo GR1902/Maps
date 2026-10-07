@@ -147,6 +147,7 @@ async function computeWatchlistLegs(){
   if(items.length < 2){
     watchlistLegs = null;
     renderWatchlist();
+    if(planRouteActive) drawPlanRoute(false);
     return;
   }
   try{
@@ -160,6 +161,7 @@ async function computeWatchlistLegs(){
     watchlistLegs = null;
   }
   renderWatchlist();
+  if(planRouteActive) drawPlanRoute(false);
 }
 
 function renderWatchlist(){
@@ -171,6 +173,7 @@ function renderWatchlist(){
   const countEl = document.getElementById('watchlist-count');
   countEl.textContent = `(${items.length})`;
   dropzone.classList.toggle('empty', items.length === 0);
+  updatePlanRouteButton();
   list.innerHTML = '';
 
   // Per-leg drive time/distance between consecutive rows in their CURRENT
@@ -238,6 +241,160 @@ function renderWatchlist(){
     summaryEl.style.display = 'none';
     summaryEl.textContent = '';
   }
+}
+
+// ===== My Plan route on the map =====
+// "Show route" draws the planned games, in the order shown in My Plan, as a
+// route on the map: numbered stops with their kickoff, and a chip on every leg
+// with drive time + distance. A leg turns red when the next kickoff can't be
+// reached in time (previous kickoff + match length + drive time) or when the
+// order itself runs backwards in time. Geometry comes from OSRM, one request
+// per leg (cached), with a dashed straight-line estimate as a fallback.
+const PLAN_MATCH_MINUTES = 120; // time to allow for the match itself before driving on
+let planRouteActive = false;
+let planRouteLayer = null;
+let planRouteSummaryControl = null;
+let planRouteDrawId = 0;
+const planLegCache = new Map();
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+}
+
+function updatePlanRouteButton(){
+  const btn = document.getElementById('plan-route-btn');
+  if(!btn) return;
+  const n = activePlan().items.length;
+  btn.disabled = n < 2;
+  btn.title = n < 2 ? 'Add at least two games to My Plan to show a route' : 'Draw the planned games on the map as a route, in the order shown above';
+  document.getElementById('plan-route-btn-label').textContent = planRouteActive ? 'Hide route' : 'Show route';
+}
+
+function clearPlanRoute(){
+  if(planRouteLayer){ map.removeLayer(planRouteLayer); planRouteLayer = null; }
+  if(planRouteSummaryControl){ map.removeControl(planRouteSummaryControl); planRouteSummaryControl = null; }
+}
+
+function togglePlanRoute(){
+  planRouteActive = !planRouteActive;
+  if(planRouteActive) drawPlanRoute(true);
+  else { planRouteDrawId++; clearPlanRoute(); }
+  updatePlanRouteButton();
+}
+
+async function fetchPlanLeg(a, b){
+  const key = `${a.lat},${a.lng}|${b.lat},${b.lng}`;
+  if(planLegCache.has(key)) return planLegCache.get(key);
+  let result = null;
+  try{
+    const url = `https://router.project-osrm.org/route/v1/driving/${a.lng},${a.lat};${b.lng},${b.lat}?overview=full&geometries=geojson`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const r = data.routes && data.routes[0];
+    if(r) result = { coords: r.geometry.coordinates.map(([lng, lat]) => [lat, lng]), time: r.duration, dist: r.distance };
+  } catch(e){ /* falls back to a straight-line estimate */ }
+  if(result) planLegCache.set(key, result);
+  return result;
+}
+
+// The point halfway along a polyline (by length) — where the leg chip sits.
+function polylineMidpoint(coords){
+  let total = 0;
+  const seg = [];
+  for(let i = 1; i < coords.length; i++){
+    const d = haversine(coords[i-1][0], coords[i-1][1], coords[i][0], coords[i][1]);
+    seg.push(d); total += d;
+  }
+  let acc = 0;
+  for(let i = 0; i < seg.length; i++){
+    if(acc + seg[i] >= total / 2){
+      const t = seg[i] ? (total / 2 - acc) / seg[i] : 0;
+      return [coords[i][0] + (coords[i+1][0] - coords[i][0]) * t, coords[i][1] + (coords[i+1][1] - coords[i][1]) * t];
+    }
+    acc += seg[i];
+  }
+  return coords[Math.floor(coords.length / 2)];
+}
+
+async function drawPlanRoute(fit){
+  const items = activePlan().items;
+  const drawId = ++planRouteDrawId;
+  if(items.length < 2){
+    clearPlanRoute();
+    planRouteActive = false;
+    updatePlanRouteButton();
+    return;
+  }
+  const fetched = await Promise.all(items.slice(1).map((_, i) => fetchPlanLeg(items[i], items[i+1])));
+  if(drawId !== planRouteDrawId) return; // superseded by a newer draw (or the route was hidden)
+
+  clearPlanRoute();
+  const layer = L.layerGroup().addTo(map);
+  planRouteLayer = layer;
+  const allCoords = [];
+  let totalTime = 0, totalDist = 0, warnCount = 0, anyEstimate = false;
+
+  fetched.forEach((leg, i) => {
+    const a = items[i], b = items[i+1];
+    const estimated = !leg;
+    let coords, time, dist;
+    if(leg){ coords = leg.coords; time = leg.time; dist = leg.dist; }
+    else {
+      coords = [[a.lat, a.lng], [b.lat, b.lng]];
+      dist = haversine(a.lat, a.lng, b.lat, b.lng) * 1.3 * 1000; // rough road factor
+      time = dist / 1000 / 75 * 3600;
+      anyEstimate = true;
+    }
+    totalTime += time; totalDist += dist;
+    allCoords.push(...coords);
+
+    // Timing check: can we leave after the first match and still make the next kickoff?
+    const kickA = new Date(a.start), kickB = new Date(b.start);
+    const arrive = new Date(kickA.getTime() + PLAN_MATCH_MINUTES * 60000 + time * 1000);
+    const backwards = kickB < kickA;
+    const tooTight = !backwards && arrive > kickB;
+    const warn = backwards || tooTight;
+    if(warn) warnCount++;
+
+    L.polyline(coords, { color:'#00622F', weight:9, opacity:0.85, lineCap:'round', dashArray: estimated ? '2 12' : null }).addTo(layer);
+    L.polyline(coords, { color:'#FFF200', weight:5, opacity:1, lineCap:'round', dashArray: estimated ? '2 12' : null }).addTo(layer);
+
+    const chipText = `${warn ? '⚠ ' : ''}${estimated ? '≈ ' : ''}${fmtHM(time)} · ${(dist/1000).toFixed(0)} km`;
+    const chip = L.marker(polylineMidpoint(coords), {
+      icon: L.divIcon({ className:'plan-leg-icon', html:`<div class="plan-leg-chip${warn ? ' warn' : ''}">${chipText}</div>`, iconSize:[0,0] }),
+      zIndexOffset: 500
+    }).addTo(layer);
+    const tip = backwards
+      ? `Game ${i+2} kicks off before game ${i+1}. Reorder My Plan.`
+      : tooTight
+        ? `Too tight: after game ${i+1} (+${PLAN_MATCH_MINUTES / 60} h match) you arrive about ${fmtTimeOnly(arrive)}, kickoff is ${fmtTimeOnly(kickB)}.`
+        : `Arrive about ${fmtTimeOnly(arrive)} (kickoff ${fmtTimeOnly(kickB)}), assuming ${PLAN_MATCH_MINUTES / 60} h per match.`;
+    chip.bindTooltip(tip, { direction:'top', offset:[0,-10] });
+  });
+
+  items.forEach((w, i) => {
+    L.marker([w.lat, w.lng], {
+      icon: L.divIcon({
+        className:'plan-stop-icon', iconSize:[0,0],
+        html:`<div class="plan-stop"><span class="plan-stop-num">${i + 1}</span><span class="plan-stop-label">${escapeHtml(w.homeName)} – ${escapeHtml(w.awayName)}<small>${fmtDate(w.start)}</small></span></div>`
+      }),
+      zIndexOffset: 1000
+    }).addTo(layer);
+  });
+
+  const SummaryControl = L.Control.extend({
+    options: { position:'bottomleft' },
+    onAdd(){
+      const div = L.DomUtil.create('div', 'plan-route-summary');
+      div.innerHTML = `My Plan route · ${items.length} stops<br>${anyEstimate ? '≈ ' : ''}${fmtHM(totalTime)} · ${(totalDist / 1000).toFixed(0)} km driving`
+        + (warnCount ? `<br><span class="warn-line">⚠ ${warnCount} timing ${warnCount === 1 ? 'conflict' : 'conflicts'}</span>` : '');
+      L.DomEvent.disableClickPropagation(div);
+      return div;
+    }
+  });
+  planRouteSummaryControl = new SummaryControl().addTo(map);
+
+  if(fit) map.fitBounds(L.latLngBounds(allCoords), { padding:[70,70] });
 }
 
 // Drop target for dragging a fixture in from the side list or radius

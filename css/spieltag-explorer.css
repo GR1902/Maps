@@ -546,3 +546,30 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
      button itself being rotated for the mobile (stacked) layout. */
   #side-toggle-btn[data-tooltip]::after{ transform:translateX(-50%) rotate(-90deg); }
 }
+
+/* ===== My Plan route on the map ===== */
+#plan-route-row{ padding:0 16px 10px 16px; }
+#plan-route-row .route-btn{ width:100%; display:flex; align-items:center; justify-content:center; gap:6px; }
+.plan-stop-icon{ background:none; border:none; }
+.plan-stop{ position:relative; display:flex; align-items:center; gap:6px; width:max-content; transform:translate(-13px,-13px); }
+.plan-stop-num{
+  flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--green-dark); color:#fff;
+  border:2px solid var(--gold); font:700 0.78rem var(--font-sans); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 1px 4px rgba(0,0,0,0.35);
+}
+.plan-stop-label{
+  background:rgba(255,255,255,0.96); color:var(--ink); border:1px solid var(--line); border-radius:6px;
+  font:600 0.68rem var(--font-sans); padding:3px 6px; white-space:nowrap; line-height:1.25; box-shadow:0 1px 3px rgba(0,0,0,0.18);
+}
+.plan-stop-label small{ display:block; font-weight:500; color:var(--text-muted); font-size:0.64rem; }
+.plan-leg-icon{ background:none; border:none; }
+.plan-leg-chip{
+  transform:translate(-50%,-50%); width:max-content; background:var(--green-dark); color:#fff; border:1.5px solid var(--gold);
+  border-radius:999px; font:700 0.68rem var(--font-sans); padding:3px 9px; white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+.plan-leg-chip.warn{ background:var(--red); border-color:#fff; }
+.plan-route-summary{
+  background:rgba(255,255,255,0.97); border:1px solid var(--line); border-radius:var(--radius-sm); box-shadow:var(--shadow-md);
+  padding:8px 10px; font:600 0.72rem var(--font-sans); color:var(--ink); line-height:1.4; max-width:230px;
+}
+.plan-route-summary .warn-line{ color:var(--red); }
