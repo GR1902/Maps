@@ -362,7 +362,7 @@ async function drawPlanRoute(fit){
     const chipText = `${warn ? '⚠ ' : ''}${estimated ? '≈ ' : ''}${fmtHM(time)} · ${(dist/1000).toFixed(0)} km`;
     const chip = L.marker(polylineMidpoint(coords), {
       icon: L.divIcon({ className:'plan-leg-icon', html:`<div class="plan-leg-chip${warn ? ' warn' : ''}">${chipText}</div>`, iconSize:[0,0] }),
-      zIndexOffset: 500
+      zIndexOffset: 2000 // above the stop labels, so a chip on a short leg is never hidden under one
     }).addTo(layer);
     const tip = backwards
       ? `Game ${i+2} kicks off before game ${i+1}. Reorder My Plan.`
