@@ -316,6 +316,62 @@ function polylineMidpoint(coords){
   return coords[Math.floor(coords.length / 2)];
 }
 
+// Chip on the middle of one route leg: drive time + distance, red with a
+// warning when the next kickoff cannot be reached (previous kickoff + match
+// length + drive time) or when the order runs backwards in time. Either
+// kickoff may be missing (plain waypoint or start point): then there is no
+// timing check. Returns true when the leg is flagged.
+function addLegChip(layer, coords, time, dist, estimated, startA, startB, legIndex){
+  let warn = false, tip = '';
+  if(startA && startB){
+    const kickA = new Date(startA), kickB = new Date(startB);
+    const arrive = new Date(kickA.getTime() + PLAN_MATCH_MINUTES * 60000 + time * 1000);
+    const backwards = kickB < kickA;
+    const tooTight = !backwards && arrive > kickB;
+    warn = backwards || tooTight;
+    tip = backwards
+      ? `Stop ${legIndex+2} kicks off before stop ${legIndex+1}. Reorder the route.`
+      : tooTight
+        ? `Too tight: after stop ${legIndex+1} (+${PLAN_MATCH_MINUTES / 60} h match) you arrive about ${fmtTimeOnly(arrive)}, kickoff is ${fmtTimeOnly(kickB)}.`
+        : `Arrive about ${fmtTimeOnly(arrive)} (kickoff ${fmtTimeOnly(kickB)}), assuming ${PLAN_MATCH_MINUTES / 60} h per match.`;
+  }
+  const chipText = `${warn ? '⚠ ' : ''}${estimated ? '≈ ' : ''}${fmtHM(time)} · ${(dist/1000).toFixed(0)} km`;
+  const chip = L.marker(polylineMidpoint(coords), {
+    icon: L.divIcon({ className:'plan-leg-icon', html:`<div class="plan-leg-chip${warn ? ' warn' : ''}">${chipText}</div>`, iconSize:[0,0] }),
+    zIndexOffset: 2000 // above the stop labels, so a chip on a short leg is never hidden under one
+  }).addTo(layer);
+  if(tip) chip.bindTooltip(tip, { direction:'top', offset:[0,-10] });
+  return warn;
+}
+
+// Chips for the manually built Plan Route (the yellow line itself is drawn by
+// Leaflet Routing Machine in computeRoute); same chips as "Show route" in My Plan.
+let manualRouteChipLayer = null;
+let manualRouteChipId = 0;
+function clearManualRouteChips(){
+  manualRouteChipId++;
+  if(manualRouteChipLayer){ map.removeLayer(manualRouteChipLayer); manualRouteChipLayer = null; }
+}
+async function drawManualRouteChips(points, starts){
+  const id = ++manualRouteChipId;
+  const fetched = await Promise.all(points.slice(1).map((_, i) => fetchPlanLeg(points[i], points[i+1])));
+  if(id !== manualRouteChipId) return; // route changed meanwhile
+  if(manualRouteChipLayer){ map.removeLayer(manualRouteChipLayer); manualRouteChipLayer = null; }
+  const layer = L.layerGroup().addTo(map);
+  manualRouteChipLayer = layer;
+  fetched.forEach((leg, i) => {
+    const a = points[i], b = points[i+1];
+    let coords, time, dist;
+    if(leg){ coords = leg.coords; time = leg.time; dist = leg.dist; }
+    else {
+      coords = [[a.lat, a.lng], [b.lat, b.lng]];
+      dist = haversine(a.lat, a.lng, b.lat, b.lng) * 1.3 * 1000;
+      time = dist / 1000 / 75 * 3600;
+    }
+    addLegChip(layer, coords, time, dist, !leg, starts[i], starts[i+1], i);
+  });
+}
+
 async function drawPlanRoute(fit){
   const items = activePlan().items;
   const drawId = ++planRouteDrawId;
@@ -348,28 +404,11 @@ async function drawPlanRoute(fit){
     totalTime += time; totalDist += dist;
     allCoords.push(...coords);
 
-    // Timing check: can we leave after the first match and still make the next kickoff?
-    const kickA = new Date(a.start), kickB = new Date(b.start);
-    const arrive = new Date(kickA.getTime() + PLAN_MATCH_MINUTES * 60000 + time * 1000);
-    const backwards = kickB < kickA;
-    const tooTight = !backwards && arrive > kickB;
-    const warn = backwards || tooTight;
+    const warn = addLegChip(layer, coords, time, dist, estimated, a.start, b.start, i);
     if(warn) warnCount++;
 
     L.polyline(coords, { color:'#00622F', weight:9, opacity:0.85, lineCap:'round', dashArray: estimated ? '2 12' : null }).addTo(layer);
     L.polyline(coords, { color:'#FFF200', weight:5, opacity:1, lineCap:'round', dashArray: estimated ? '2 12' : null }).addTo(layer);
-
-    const chipText = `${warn ? '⚠ ' : ''}${estimated ? '≈ ' : ''}${fmtHM(time)} · ${(dist/1000).toFixed(0)} km`;
-    const chip = L.marker(polylineMidpoint(coords), {
-      icon: L.divIcon({ className:'plan-leg-icon', html:`<div class="plan-leg-chip${warn ? ' warn' : ''}">${chipText}</div>`, iconSize:[0,0] }),
-      zIndexOffset: 2000 // above the stop labels, so a chip on a short leg is never hidden under one
-    }).addTo(layer);
-    const tip = backwards
-      ? `Game ${i+2} kicks off before game ${i+1}. Reorder My Plan.`
-      : tooTight
-        ? `Too tight: after game ${i+1} (+${PLAN_MATCH_MINUTES / 60} h match) you arrive about ${fmtTimeOnly(arrive)}, kickoff is ${fmtTimeOnly(kickB)}.`
-        : `Arrive about ${fmtTimeOnly(arrive)} (kickoff ${fmtTimeOnly(kickB)}), assuming ${PLAN_MATCH_MINUTES / 60} h per match.`;
-    chip.bindTooltip(tip, { direction:'top', offset:[0,-10] });
   });
 
   items.forEach((w, i) => {
@@ -1892,9 +1931,12 @@ async function computeRoute(){
   const summary = document.getElementById('route-summary');
   if(routingControl){ map.removeControl(routingControl); routingControl = null; }
   const points = [...(routeStart ? [routeStart] : []), ...routeStops.map(s => s.team)];
+  const pointStarts = [...(routeStart ? [null] : []), ...routeStops.map(s => s.start || null)];
   routeLegs = null;
   const computeId = ++routeComputeId;
+  clearManualRouteChips();
   if(points.length < 2){ summary.style.display='none'; summary.textContent=''; renderStops(); return; }
+  drawManualRouteChips(points, pointStarts);
   const waypoints = points.map(p => L.latLng(p.lat, p.lng));
   routingControl = L.Routing.control({
     waypoints: waypoints,
