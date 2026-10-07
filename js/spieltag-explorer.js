@@ -558,16 +558,17 @@ function makeIcon(color, logoUrl, routeIndex){
 // confirmed by two independent sources (see data/review_queue.json). The set
 // is rebuilt whenever FIXTURES is replaced, keyed like watchKeyFor().
 let unverifiedKeysSource = null;
-let unverifiedKeys = new Set();
+let unverifiedKeys = new Map(); // key -> kickoff time (ms)
 function isUnverifiedKey(key){
   if(unverifiedKeysSource !== FIXTURES){
-    unverifiedKeys = new Set();
+    unverifiedKeys = new Map();
     Object.keys(FIXTURES).forEach(lg => FIXTURES[lg].forEach(f => {
-      if(f.unverified) unverifiedKeys.add(`${lg}::${f.home}::${f.matchday}`);
+      if(f.unverified) unverifiedKeys.set(`${lg}::${f.home}::${f.matchday}`, new Date(f.start).getTime());
     }));
     unverifiedKeysSource = FIXTURES;
   }
-  return unverifiedKeys.has(key);
+  // Only worth a warning while the game is still ahead of us.
+  return unverifiedKeys.has(key) && unverifiedKeys.get(key) > Date.now();
 }
 // Small amber warning for a game whose kickoff isn't double-confirmed yet.
 // verbose=true spells it out (map popups); the short form is just the symbol.

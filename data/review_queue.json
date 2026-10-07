@@ -2,16 +2,6 @@
   "_comment": "Offene Pruefungen. Der Agent liest diese Liste zuerst, klaert die Faelle mit zwei bis drei Quellen und loescht geklaerte Eintraege. Spiele mit \"unverified\": true in fixtures.json gehoeren dazu.",
   "items": [
     {
-      "id": "serie_b-12",
-      "league": "serie_b",
-      "matchday": 12,
-      "type": "conflict",
-      "priority": "high",
-      "note": "Gespeicherte Spiele Arezzo-Padova und Catanzaro-Palermo stehen auf 21.11. 20:00 Ortszeit, Kicker nennt Arezzo-Padova So 22.11. 17:15 und Catanzaro-Palermo Sa 21.11. 17:15; Sky schreibt, die Zeiten seien noch nicht festgelegt. Restliche 8 Spiele fehlen. Kicker hat auch Spieltag 13 und 14 mit Zeiten, ohne zweite Quelle.",
-      "sources_tried": "kicker.de, sky.it; legab.it nicht erreichbar",
-      "added": "2026-10-07"
-    },
-    {
       "id": "superliga-16-sil-agf",
       "league": "superliga",
       "matchday": 16,
@@ -82,42 +72,12 @@
       "added": "2026-10-07"
     },
     {
-      "id": "pro_league-8-13",
-      "league": "pro_league",
-      "matchday": 8,
-      "type": "single_source",
-      "priority": "high",
-      "note": "Spieltag 8 bis 13 (44 Spiele): offizielle proleague.be/jpl-kalender, Zeiten nur dort (Seite zeigt Zeiten in der Zeitzone des Betrachters). Zweite Quelle fuer Uhrzeiten fehlt, Paarungen Spieltag 8 und 9 durch voetbalbelgie.be bestaetigt. Kicker-Link fuer Belgien noch nicht gefunden.",
-      "sources_tried": "proleague.be, voetbalbelgie.be",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "serie_a-13-19",
-      "league": "serie_a",
-      "matchday": 13,
-      "type": "single_source",
-      "priority": "medium",
-      "note": "Spieltag 13 bis 19: kicker.de und calciodangolo.com stimmen ueberein, offizielle Lega-Seite war nicht lesbar (Cookie-Wand). Nur Juventus-Spiele (juventus.com) und Cagliari-Milan sind offiziell bestaetigt.",
-      "sources_tried": "kicker.de, calciodangolo.com, juventus.com, acmilan.com",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "agent-2026-10-05",
-      "league": "multiple",
-      "matchday": null,
-      "type": "single_source",
-      "priority": "medium",
-      "note": "Agenten-Ergaenzungen vom 05.10. nicht unabhaengig geprueft: Premier League Spieltag 11, Ligue 1 und Ligue 2 Spieltag 12, Eliteserien Spieltag 30, Champions League und Europa League Spieltag 9 (je 18 Spiele).",
-      "sources_tried": "agent",
-      "added": "2026-10-07"
-    },
-    {
       "id": "agent-past-rounds",
       "league": "multiple",
       "matchday": null,
       "type": "single_source",
       "priority": "low",
-      "note": "Bereits gespielte Runden vom Agenten (Oesterreich 2, Schweiz 2/3, Polen 2/3, Tschechien 2/3, La Liga 7): Paarung und Datum mit Kicker bestaetigt, Uhrzeiten nicht pruefbar (Kicker zeigt nach dem Spiel keine Zeit).",
+      "note": "Bereits gespielte Runden vom Agenten (Oesterreich 2, Schweiz 2/3, Polen 2/3, Tschechien 2/3, La Liga 7): Paarung und Datum mit Kicker bestaetigt, Uhrzeiten nicht pruefbar (Kicker zeigt nach dem Spiel keine Zeit). Warnsymbol wird in der App nur bei zukuenftigen Spielen angezeigt.",
       "sources_tried": "kicker.de",
       "added": "2026-10-07"
     },
@@ -199,6 +159,16 @@
       "priority": "low",
       "note": "Allsvenskan, Eliteserien, Veikkausliiga: fruehe Spieltage fehlen (gespielt, geringe Prioritaet). Youth League hat noch keine Spiele.",
       "sources_tried": "",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "serie_b-19",
+      "league": "serie_b",
+      "matchday": 19,
+      "type": "missing",
+      "priority": "high",
+      "note": "Giornata 12 bis 18 sind eingetragen (legab.it + kicker.de). Giornata 19 und folgende auf legab.it/seriebkt/calendario/2026-2027/stagione-regolare/N pruefen, sobald Zeiten stehen.",
+      "sources_tried": "legab.it, kicker.de",
       "added": "2026-10-07"
     }
   ]
