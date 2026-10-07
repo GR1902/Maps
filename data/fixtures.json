@@ -1231,6 +1231,48 @@
       "away": "OSA",
       "start": "2026-11-02T20:00:00+00:00",
       "matchday": 11
+    },
+    {
+      "home": "ATH",
+      "away": "ALA",
+      "start": "2026-09-19T14:15:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "RCC",
+      "away": "RAC",
+      "start": "2026-09-19T16:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "SEV",
+      "away": "BAR",
+      "start": "2026-09-19T19:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "GET",
+      "away": "MCF",
+      "start": "2026-09-20T12:00:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "DEP",
+      "away": "RBB",
+      "start": "2026-09-20T16:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "VIL",
+      "away": "LEV",
+      "start": "2026-09-20T16:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "VAL",
+      "away": "RSO",
+      "start": "2026-09-20T19:00:00+00:00",
+      "matchday": 7
     }
   ],
   "bundesliga": [
