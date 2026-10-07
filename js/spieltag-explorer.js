@@ -198,7 +198,7 @@ function renderWatchlist(){
       <span class="rank">${idx + 1}</span>
       <div class="wbody">
         <div class="wteams">${w.homeName} – ${w.awayName}</div>
-        <div class="wmeta">${w.city} · ${fmtDate(w.start)} · ${LEAGUE_LABELS[w.league] || w.league}</div>
+        <div class="wmeta">${w.city} · ${fmtDate(w.start)}${unverifiedBadge(w.key)} · ${LEAGUE_LABELS[w.league] || w.league}</div>
       </div>
       <span class="wremove" title="Remove">×</span>
     `;
@@ -376,7 +376,7 @@ async function drawPlanRoute(fit){
     L.marker([w.lat, w.lng], {
       icon: L.divIcon({
         className:'plan-stop-icon', iconSize:[0,0],
-        html:`<div class="plan-stop"><span class="plan-stop-num">${i + 1}</span><span class="plan-stop-label">${escapeHtml(w.homeName)} – ${escapeHtml(w.awayName)}<small>${fmtDate(w.start)}</small></span></div>`
+        html:`<div class="plan-stop"><span class="plan-stop-num">${i + 1}</span><span class="plan-stop-label">${escapeHtml(w.homeName)} – ${escapeHtml(w.awayName)}<small>${fmtDate(w.start)}${unverifiedBadge(w.key)}</small></span></div>`
       }),
       zIndexOffset: 1000
     }).addTo(layer);
@@ -552,6 +552,31 @@ function makeIcon(color, logoUrl, routeIndex){
     </div>`,
     iconSize:[size,size], iconAnchor:[size/2,size], popupAnchor:[0,-size]
   });
+}
+
+// Fixtures flagged "unverified": true in fixtures.json have not yet been
+// confirmed by two independent sources (see data/review_queue.json). The set
+// is rebuilt whenever FIXTURES is replaced, keyed like watchKeyFor().
+let unverifiedKeysSource = null;
+let unverifiedKeys = new Set();
+function isUnverifiedKey(key){
+  if(unverifiedKeysSource !== FIXTURES){
+    unverifiedKeys = new Set();
+    Object.keys(FIXTURES).forEach(lg => FIXTURES[lg].forEach(f => {
+      if(f.unverified) unverifiedKeys.add(`${lg}::${f.home}::${f.matchday}`);
+    }));
+    unverifiedKeysSource = FIXTURES;
+  }
+  return unverifiedKeys.has(key);
+}
+// Small amber warning for a game whose kickoff isn't double-confirmed yet.
+// verbose=true spells it out (map popups); the short form is just the symbol.
+function unverifiedBadge(key, verbose){
+  if(!isUnverifiedKey(key)) return '';
+  const tip = 'Kickoff not yet confirmed by two sources. Check before you travel.';
+  return verbose
+    ? ` <span class="unverified-badge verbose" title="${tip}">⚠ unconfirmed</span>`
+    : ` <span class="unverified-badge" title="${tip}">⚠</span>`;
 }
 
 function fmtDate(iso){
@@ -886,7 +911,7 @@ function renderAll(){
       const more = teamFixtures.length > 1 ? ` <span style="opacity:0.7;">(+${teamFixtures.length - 1} more this window)</span>` : '';
       marker.bindPopup(`
         <div class="popup-club">${h.name} vs ${a ? a.name : next.away}</div>
-        <div class="popup-meta">${h.city} · ${fmtDate(next.start)} · ${COUNTRY_TAG[otherLeague] || h.country || ''}${more}</div>
+        <div class="popup-meta">${h.city} · ${fmtDate(next.start)}${unverifiedBadge(watchKeyFor(otherLeague, code, next.matchday), true)} · ${COUNTRY_TAG[otherLeague] || h.country || ''}${more}</div>
         <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
       `);
       bindStopButton(marker, stopKey, h, next.start);
@@ -992,7 +1017,7 @@ function renderAll(){
         <span class="watch-star" data-key="${watchKey}">☆</span>
         <div class="fbody">
           <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
-          <div class="meta">${h.city} · ${fmtDate(f.start)}${useRange ? ` · MD${f.matchday}` : ''}</div>
+          <div class="meta">${h.city} · ${fmtDate(f.start)}${unverifiedBadge(watchKey)}${useRange ? ` · MD${f.matchday}` : ''}</div>
         </div>
         <span class="suggest-btn" data-tooltip="Suggest a trip around this game">${ICONS.sparkle}</span>
       `;
@@ -1053,7 +1078,7 @@ function buildVenuePopupHtml(games, idx){
   return `
     ${pager}
     <div class="popup-club">${g.gameLabel}</div>
-    <div class="popup-meta">${g.h.city} · ${fmtDate(g.f.start)}</div>
+    <div class="popup-meta">${g.h.city} · ${fmtDate(g.f.start)}${unverifiedBadge(g.watchKey, true)}</div>
     <div><button class="add-stop-btn" data-stop="${g.stopKey}">+ Add to route</button><button class="watch-btn" data-key="${g.watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${g.watchKey}">${ICONS.sparkle} Suggest trip</button></div>
   `;
 }
@@ -2019,7 +2044,7 @@ function renderRadiusResults(point, radiusKm, fitView, includePast){
     marker._iconBuilder = (idx) => makeIcon(LEAGUE_COLOR[g.league], g.home.logo, idx);
     marker.bindPopup(`
       <div class="popup-club">${gameLabel}</div>
-      <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+      <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())}${unverifiedBadge(watchKey, true)} · ${LEAGUE_LABELS[g.league] || g.league}</div>
       <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">${ICONS.sparkle} Suggest trip</button></div>
     `);
     bindStopButton(marker, stopKey, g.home, g.start.toISOString());
@@ -2037,7 +2062,7 @@ function renderRadiusResults(point, radiusKm, fitView, includePast){
       ${resultLogoHtml(g.home.logo, LEAGUE_COLOR[g.league])}
       <div class="rbody">
         <div class="rteams">${g.home.name} – ${g.awayName}</div>
-        <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+        <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())}${unverifiedBadge(watchKey)} · ${LEAGUE_LABELS[g.league] || g.league}</div>
       </div>
       <span class="suggest-btn" data-tooltip="Suggest a trip around this game">${ICONS.sparkle}</span>
     `;

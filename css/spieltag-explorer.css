@@ -573,3 +573,7 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   padding:8px 10px; font:600 0.72rem var(--font-sans); color:var(--ink); line-height:1.4; max-width:230px;
 }
 .plan-route-summary .warn-line{ color:var(--red); }
+
+/* Game whose kickoff is not yet confirmed by two sources */
+.unverified-badge{ color:#b45309; font-weight:700; cursor:help; white-space:nowrap; }
+.unverified-badge.verbose{ background:#fef3c7; border:1px solid #fcd34d; border-radius:999px; padding:0 7px; font-size:0.66rem; }
