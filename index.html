@@ -26,7 +26,12 @@
         <span id="league-picker-label">Leagues</span> <span aria-hidden="true">▾</span>
       </button>
       <div id="league-panel" class="header-dropdown-panel">
+        <div class="search-field">
+          <input type="text" id="league-search" placeholder="Search leagues…" autocomplete="off" oninput="filterLeagues(this.value)" />
+          <button type="button" class="search-clear-btn" id="league-search-clear" onclick="clearLeagueSearch()" aria-label="Clear league search" title="Clear search">✕</button>
+        </div>
         <div id="league-checkbox-list"></div>
+        <div id="league-no-results" class="empty-note" style="display:none;">No leagues found</div>
       </div>
     </div>
     <div id="date-picker" class="header-dropdown">
@@ -41,6 +46,7 @@
         <div id="map-daterange-row" style="display:none;">
           <label>From <input type="date" id="map-date-from" onchange="renderAll()"></label>
           <label>To <input type="date" id="map-date-to" onchange="renderAll()"></label>
+          <button type="button" class="mini-btn" id="map-date-clear" onclick="clearMapDateRange()" title="Clear both dates">Clear</button>
         </div>
       </div>
     </div>
@@ -65,7 +71,10 @@
       </button>
       <div id="radius-panel" class="header-dropdown-panel">
         <div id="radius-body">
-          <input type="text" id="radius-address" placeholder="Address, city, postcode…" onkeydown="if(event.key==='Enter')runRadiusSearch()" />
+          <div class="search-field">
+            <input type="text" id="radius-address" placeholder="Address, city, postcode…" onkeydown="if(event.key==='Enter')runRadiusSearch()" oninput="updateSearchClearButtons()" />
+            <button type="button" class="search-clear-btn" id="radius-address-clear" onclick="clearRadiusAddress()" aria-label="Clear address and radius results" title="Clear search">✕</button>
+          </div>
           <div class="radius-row">
             <input type="range" id="radius-km" min="5" max="500" step="5" value="100" title="Drag or scroll to adjust">
             <span id="radius-km-label">100 km</span>

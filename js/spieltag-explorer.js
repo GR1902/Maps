@@ -550,6 +550,79 @@ function buildLeaguePanel(){
       ${LEAGUE_LABELS[code]}
     </label>
   `).join('');
+  const search = document.getElementById('league-search');
+  if(search && search.value) filterLeagues(search.value);
+}
+
+// Country names (English + German) so "austria", "osterreich" or "spanien" find
+// a league even though the label only carries the 3-letter country code.
+const COUNTRY_SEARCH_TERMS = {
+  ENG: 'england englisch', ESP: 'spain spanien spanisch', GER: 'germany deutschland deutsch',
+  ITA: 'italy italien italienisch', FRA: 'france frankreich franzosisch', POR: 'portugal',
+  NED: 'netherlands holland niederlande dutch', BEL: 'belgium belgien', SWE: 'sweden schweden',
+  NOR: 'norway norwegen', DEN: 'denmark danemark', FIN: 'finland finnland', SCO: 'scotland schottland',
+  SUI: 'switzerland schweiz swiss', AUT: 'austria osterreich', GRE: 'greece griechenland',
+  TUR: 'turkey turkei turkiye', POL: 'poland polen', CZE: 'czech tschechien czechia', CRO: 'croatia kroatien'
+};
+function leagueSearchHaystack(code){
+  const label = LEAGUE_LABELS[code];
+  const m = label.match(/\(([A-Z]{3})\)\s*$/);
+  const country = m ? (COUNTRY_SEARCH_TERMS[m[1]] || '') : (code.endsWith('_league') ? 'uefa europe europa' : '');
+  return normalizeSearchText(`${label} ${code.replace(/_/g, ' ')} ${country}`);
+}
+
+// Lowercase + strip diacritics so "osterreich"/"Österreich" and "bund" all match.
+function normalizeSearchText(str){
+  return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+// Live-filters the league checklist by label or league code. Only hides rows —
+// the checked state lives in selectedLeagues, so a hidden league stays selected.
+function filterLeagues(query){
+  const q = normalizeSearchText(query);
+  let visible = 0;
+  document.querySelectorAll('#league-checkbox-list .league-row').forEach(row => {
+    const code = row.querySelector('input').value;
+    const hit = !q || leagueSearchHaystack(code).includes(q);
+    row.style.display = hit ? '' : 'none';
+    if(hit) visible++;
+  });
+  document.getElementById('league-no-results').style.display = visible ? 'none' : 'block';
+  updateSearchClearButtons();
+}
+
+function clearLeagueSearch(){
+  const search = document.getElementById('league-search');
+  search.value = '';
+  filterLeagues('');
+  search.focus();
+}
+
+// Clears the address field AND the radius results (circle, markers, list),
+// the same way "Reset filters" does for that one section.
+function clearRadiusAddress(){
+  if(mapPickMode) toggleMapPick();
+  clearRadiusSearch();
+  lastRadiusPoint = null;
+  document.getElementById('radius-address').value = '';
+  document.getElementById('radius-status').textContent = '';
+  updateSearchClearButtons();
+  document.getElementById('radius-address').focus();
+}
+
+function clearMapDateRange(){
+  document.getElementById('map-date-from').value = '';
+  document.getElementById('map-date-to').value = '';
+  renderAll();
+  if(calendarOpen) renderCalendar();
+}
+
+// Shows the inline ✕ only while its field has text.
+function updateSearchClearButtons(){
+  [['league-search','league-search-clear'], ['radius-address','radius-address-clear']].forEach(([inputId]) => {
+    const input = document.getElementById(inputId);
+    if(input && input.parentElement) input.parentElement.classList.toggle('has-text', input.value.length > 0);
+  });
 }
 
 function toggleLeague(code, checked){
@@ -569,6 +642,8 @@ function toggleDropdown(panelId){
   const wasOpen = panel.classList.contains('open');
   document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
   if(!wasOpen) panel.classList.add('open');
+  // Jump straight into the league search so typing works right after opening.
+  if(!wasOpen && panelId === 'league-panel') document.getElementById('league-search').focus();
 }
 document.addEventListener('click', (e) => {
   document.querySelectorAll('.header-dropdown-panel.open').forEach(panel => {
@@ -1911,6 +1986,7 @@ map.on('click', async (e) => {
   status.textContent = 'Looking up that location…';
   const label = await reverseGeocode(lat, lng);
   document.getElementById('radius-address').value = label;
+  updateSearchClearButtons();
   const point = { lat, lng, label };
   lastRadiusPoint = point;
   const radiusKm = parseInt(document.getElementById('radius-km').value, 10);
@@ -1928,7 +2004,9 @@ map.on('click', async (e) => {
 function resetAllFilters(){
   selectedLeagues = new Set(['epl']);
   leagueMatchday = {};
+  document.getElementById('league-search').value = '';
   buildLeaguePanel();
+  filterLeagues('');
 
   filterMode = 'matchday';
   document.querySelectorAll('#filter-mode-row .mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === 'matchday'));
@@ -1954,6 +2032,7 @@ function resetAllFilters(){
   document.getElementById('radius-address').value = '';
   document.getElementById('radius-status').textContent = '';
   setRadiusSlider(100, false);
+  updateSearchClearButtons();
 
   document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
 
@@ -2068,6 +2147,7 @@ function jumpToFixtureOnMap(league, matchday, lat, lng, label){
     const point = { lat, lng, label: label || `${lat.toFixed(4)}, ${lng.toFixed(4)}` };
     lastRadiusPoint = point;
     document.getElementById('radius-address').value = point.label;
+    updateSearchClearButtons();
     setRadiusSlider(200, false);
     // fitView:false — renderRadiusResults's own fit only covers the nearest
     // 60 *results*, which for a dense area can be much tighter than the

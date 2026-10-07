@@ -61,6 +61,23 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   border:1px solid var(--line); background:var(--paper); color:var(--ink);
 }
 #league-checkbox-list{ max-height:280px; overflow-y:auto; }
+#league-no-results{ padding:10px 8px; font-size:0.76rem; color:var(--text-muted); text-align:center; }
+
+/* Search field with an inline clear (✕) button — shown only while the field has text */
+.search-field{ position:relative; }
+.search-field input[type="text"]{
+  width:100%; font-family:inherit; font-size:0.76rem; padding:7px 28px 7px 9px; border-radius:var(--radius-sm);
+  border:1px solid var(--line); background:var(--paper); color:var(--ink); box-sizing:border-box;
+}
+.search-field input[type="text"]:focus{ outline:2px solid var(--green); outline-offset:-1px; }
+#league-panel .search-field{ margin:2px 2px 6px 2px; }
+.search-clear-btn{
+  display:none; position:absolute; right:4px; top:50%; transform:translateY(-50%);
+  width:22px; height:22px; padding:0; border:none; border-radius:50%; background:transparent;
+  color:var(--text-muted); font-size:0.72rem; line-height:1; cursor:pointer;
+}
+.search-clear-btn:hover{ background:var(--surface-strong); color:var(--ink); }
+.search-field.has-text .search-clear-btn{ display:block; }
 .league-row{
   display:flex; align-items:center; gap:8px; font-size:0.78rem; color:var(--ink);
   padding:6px 8px; cursor:pointer; border-radius:var(--radius-sm);
