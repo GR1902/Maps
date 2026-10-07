@@ -132,32 +132,12 @@
       "added": "2026-10-07"
     },
     {
-      "id": "greece-7-missing",
-      "league": "super_league_greece",
-      "matchday": 7,
-      "type": "missing",
-      "priority": "medium",
-      "note": "Spieltag 7: 6 von 7 Spielen, ein Spiel bei kicker.de nicht angesetzt.",
-      "sources_tried": "kicker.de",
-      "added": "2026-10-07"
-    },
-    {
       "id": "czech-9",
       "league": "czech_first_league",
       "matchday": 9,
       "type": "missing",
       "priority": "low",
       "note": "Spieltag 9 (gespielt Mitte Oktober) fehlt, kicker.de zeigt keine Zeiten mehr. Bohemians-Mlada Boleslav steht bei kicker.de am 14.10. (Nachholspiel, Spieltag unklar).",
-      "sources_tried": "kicker.de",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "official-check-open",
-      "league": "multiple",
-      "matchday": null,
-      "type": "single_source",
-      "priority": "high",
-      "note": "Offizielle Seite noch nicht geprueft (nur kicker.de): Schweiz Spieltag 13-16 (sfl.ch laedt den Kalender dynamisch, Tab 'Calendrier' auf den Teamseiten), Griechenland 6-12 (slgr.gr liefert 403), Schottland Rest von Spieltag 12-16 (spfl.co.uk Vereinsseiten /clubs/<club>/fixtures laden teils unvollstaendig, mehrfach neu laden), Primeira Liga je ein Spiel in Spieltag 2 (Braga-Gil Vicente 19.10.) und 12 (ligaportugal.pt).",
       "sources_tried": "kicker.de",
       "added": "2026-10-07"
     },
@@ -209,6 +189,36 @@
       "priority": "low",
       "note": "Domestic Champions Path Runde 1: Rueckspiele (13./14.10.) und Dinamo Tbilisi-Dinamo-Minsk (10.10.) nur von uefa.com, kicker.de fuehrt sie nicht. Hinspiele (Sep) sind gespielt und nicht eingetragen. Spaetere K.o.-Runden (Playoffs ab Dez.) sind noch nicht terminiert. Matchday-Zaehlung: 1 = Runde 1, Ligaphase-Spieltag N = N+1.",
       "sources_tried": "uefa.com",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "greece-official",
+      "league": "super_league_greece",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "high",
+      "note": "Offizielle Seite slgr.gr ist hinter einer Cloudflare-Bot-Pruefung, wird nicht umgangen. Uhrzeiten Spieltag 6-12 nur von kicker.de (unverified). Paarungen Spieltag 7-10 durch naftemporiki.gr bestaetigt. Spieltag 7: Atromitos-AEK fehlt (7. Spiel), Uhrzeit nirgends gefunden. Alternative: Vereinsseiten oder Presse mit Uhrzeiten (sport24.gr, gazzetta.gr).",
+      "sources_tried": "kicker.de, naftemporiki.gr",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "scottish-official",
+      "league": "scottish_prem",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "spfl.co.uk zeigt offiziell nur TV-gewaehlte Spiele und je Verein die naechsten drei Spiele. Verifiziert sind 29 Spiele (Spieltag 8-15 teilweise). Restliche Spiele von Spieltag 12-16 bleiben bei kicker.de-Zeit (unverified), bis die SPFL sie in der Vereinsliste fuehrt.",
+      "sources_tried": "spfl.co.uk, kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "primeira-official",
+      "league": "primeira_liga",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "Braga-Gil Vicente (19.10., Spieltag 2) und das fehlende Spiel von Spieltag 12 nur von kicker.de. ligaportugal.pt Kalender-URL nicht gefunden (404).",
+      "sources_tried": "kicker.de",
       "added": "2026-10-07"
     }
   ]

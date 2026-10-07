@@ -22570,169 +22570,145 @@
       "home": "LUZ",
       "away": "YB",
       "start": "2026-11-07T17:00:00+00:00",
-      "matchday": 13,
-      "unverified": true
+      "matchday": 13
     },
     {
       "home": "VAD",
       "away": "SIO",
       "start": "2026-11-07T17:00:00+00:00",
-      "matchday": 13,
-      "unverified": true
+      "matchday": 13
     },
     {
       "home": "GRA",
       "away": "LAU",
       "start": "2026-11-07T19:30:00+00:00",
-      "matchday": 13,
-      "unverified": true
+      "matchday": 13
     },
     {
       "home": "STG",
       "away": "LUG",
       "start": "2026-11-08T13:00:00+00:00",
-      "matchday": 13,
-      "unverified": true
+      "matchday": 13
     },
     {
       "home": "SER",
       "away": "ZUR",
       "start": "2026-11-08T15:30:00+00:00",
-      "matchday": 13,
-      "unverified": true
+      "matchday": 13
     },
     {
       "home": "THU",
       "away": "BAS",
       "start": "2026-11-08T15:30:00+00:00",
-      "matchday": 13,
-      "unverified": true
+      "matchday": 13
     },
     {
       "home": "LUG",
       "away": "GRA",
       "start": "2026-11-21T17:00:00+00:00",
-      "matchday": 14,
-      "unverified": true
+      "matchday": 14
     },
     {
       "home": "YB",
       "away": "THU",
       "start": "2026-11-21T17:00:00+00:00",
-      "matchday": 14,
-      "unverified": true
+      "matchday": 14
     },
     {
       "home": "SIO",
       "away": "SER",
       "start": "2026-11-21T19:30:00+00:00",
-      "matchday": 14,
-      "unverified": true
+      "matchday": 14
     },
     {
       "home": "ZUR",
       "away": "STG",
       "start": "2026-11-22T13:00:00+00:00",
-      "matchday": 14,
-      "unverified": true
+      "matchday": 14
     },
     {
       "home": "BAS",
       "away": "LUZ",
       "start": "2026-11-22T15:30:00+00:00",
-      "matchday": 14,
-      "unverified": true
+      "matchday": 14
     },
     {
       "home": "LAU",
       "away": "VAD",
       "start": "2026-11-22T15:30:00+00:00",
-      "matchday": 14,
-      "unverified": true
+      "matchday": 14
     },
     {
       "home": "GRA",
       "away": "BAS",
       "start": "2026-11-28T17:00:00+00:00",
-      "matchday": 15,
-      "unverified": true
+      "matchday": 15
     },
     {
       "home": "VAD",
       "away": "ZUR",
       "start": "2026-11-28T17:00:00+00:00",
-      "matchday": 15,
-      "unverified": true
+      "matchday": 15
     },
     {
       "home": "SER",
       "away": "LAU",
       "start": "2026-11-28T19:30:00+00:00",
-      "matchday": 15,
-      "unverified": true
+      "matchday": 15
     },
     {
       "home": "LUZ",
       "away": "LUG",
       "start": "2026-11-29T13:00:00+00:00",
-      "matchday": 15,
-      "unverified": true
+      "matchday": 15
     },
     {
       "home": "SIO",
       "away": "YB",
       "start": "2026-11-29T15:30:00+00:00",
-      "matchday": 15,
-      "unverified": true
+      "matchday": 15
     },
     {
       "home": "THU",
       "away": "STG",
       "start": "2026-11-29T15:30:00+00:00",
-      "matchday": 15,
-      "unverified": true
+      "matchday": 15
     },
     {
       "home": "THU",
       "away": "LUZ",
       "start": "2026-12-05T17:00:00+00:00",
-      "matchday": 16,
-      "unverified": true
+      "matchday": 16
     },
     {
       "home": "VAD",
       "away": "YB",
       "start": "2026-12-05T17:00:00+00:00",
-      "matchday": 16,
-      "unverified": true
+      "matchday": 16
     },
     {
       "home": "ZUR",
       "away": "LUG",
       "start": "2026-12-05T19:30:00+00:00",
-      "matchday": 16,
-      "unverified": true
+      "matchday": 16
     },
     {
       "home": "BAS",
       "away": "SER",
       "start": "2026-12-06T13:00:00+00:00",
-      "matchday": 16,
-      "unverified": true
+      "matchday": 16
     },
     {
       "home": "LAU",
       "away": "SIO",
       "start": "2026-12-06T15:30:00+00:00",
-      "matchday": 16,
-      "unverified": true
+      "matchday": 16
     },
     {
       "home": "STG",
       "away": "GRA",
       "start": "2026-12-06T15:30:00+00:00",
-      "matchday": 16,
-      "unverified": true
+      "matchday": 16
     }
   ],
   "austrian_bundesliga": [
