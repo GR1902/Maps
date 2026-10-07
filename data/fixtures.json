@@ -29088,9 +29088,8 @@
     {
       "home": "POR",
       "away": "NAP",
-      "start": "2026-11-04T12:00:00+00:00",
-      "matchday": 5,
-      "unverified": true
+      "start": "2026-11-04T11:00:00+00:00",
+      "matchday": 5
     },
     {
       "home": "VIK",
@@ -29143,9 +29142,8 @@
     {
       "home": "ARS",
       "away": "BVB",
-      "start": "2026-11-24T13:00:00+00:00",
-      "matchday": 6,
-      "unverified": true
+      "start": "2026-11-24T12:00:00+00:00",
+      "matchday": 6
     },
     {
       "home": "FEY",
@@ -29174,9 +29172,8 @@
     {
       "home": "MCI",
       "away": "NAP",
-      "start": "2026-11-24T15:00:00+00:00",
-      "matchday": 6,
-      "unverified": true
+      "start": "2026-11-24T14:00:00+00:00",
+      "matchday": 6
     },
     {
       "home": "RBL",
@@ -29277,9 +29274,8 @@
     {
       "home": "MUN",
       "away": "RBL",
-      "start": "2026-12-08T14:00:00+00:00",
-      "matchday": 7,
-      "unverified": true
+      "start": "2026-12-08T13:00:00+00:00",
+      "matchday": 7
     },
     {
       "home": "BMU",
@@ -29297,8 +29293,7 @@
       "home": "LFC",
       "away": "POR",
       "start": "2026-12-09T15:00:00+00:00",
-      "matchday": 7,
-      "unverified": true
+      "matchday": 7
     },
     {
       "home": "RBB",
