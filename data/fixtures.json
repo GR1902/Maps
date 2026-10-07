@@ -17129,6 +17129,186 @@
       "away": "MUN",
       "start": "2026-11-01T18:30:00+00:00",
       "matchday": 12
+    },
+    {
+      "home": "VIK",
+      "away": "SAA",
+      "start": "2026-11-06T18:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "ESS",
+      "away": "AAC",
+      "start": "2026-11-07T13:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "ROS",
+      "away": "GRO",
+      "start": "2026-11-07T13:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "WIE",
+      "away": "HAV",
+      "start": "2026-11-07T13:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "MAN2",
+      "away": "KOE",
+      "start": "2026-11-07T13:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "ING",
+      "away": "FOR",
+      "start": "2026-11-07T13:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "MUN",
+      "away": "DUI",
+      "start": "2026-11-07T15:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "MEP",
+      "away": "REG",
+      "start": "2026-11-08T12:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "VFB2",
+      "away": "VER",
+      "start": "2026-11-08T15:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "WUR",
+      "away": "HOF2",
+      "start": "2026-11-08T18:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "HAV",
+      "away": "VIK",
+      "start": "2026-11-20T18:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "VER",
+      "away": "ESS",
+      "start": "2026-11-21T13:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "FOR",
+      "away": "GRO",
+      "start": "2026-11-21T13:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "REG",
+      "away": "WUR",
+      "start": "2026-11-21T13:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "HOF2",
+      "away": "MUN",
+      "start": "2026-11-21T13:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "KOE",
+      "away": "MEP",
+      "start": "2026-11-21T13:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "AAC",
+      "away": "MAN2",
+      "start": "2026-11-21T15:30:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "VFB2",
+      "away": "ING",
+      "start": "2026-11-22T12:30:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "SAA",
+      "away": "WIE",
+      "start": "2026-11-22T15:30:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "DUI",
+      "away": "ROS",
+      "start": "2026-11-22T18:30:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "ROS",
+      "away": "HAV",
+      "start": "2026-11-27T18:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "WUR",
+      "away": "FOR",
+      "start": "2026-11-28T13:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "MUN",
+      "away": "VER",
+      "start": "2026-11-28T13:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "ESS",
+      "away": "HOF2",
+      "start": "2026-11-28T13:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "MAN2",
+      "away": "VFB2",
+      "start": "2026-11-28T13:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "SAA",
+      "away": "AAC",
+      "start": "2026-11-28T13:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "GRO",
+      "away": "DUI",
+      "start": "2026-11-28T15:30:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "VIK",
+      "away": "KOE",
+      "start": "2026-11-29T12:30:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "WIE",
+      "away": "MEP",
+      "start": "2026-11-29T15:30:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "ING",
+      "away": "REG",
+      "start": "2026-11-29T18:30:00+00:00",
+      "matchday": 15
     }
   ],
   "eerste_divisie": [
