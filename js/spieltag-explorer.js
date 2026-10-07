@@ -1566,17 +1566,20 @@ function bindSuggestButton(marker, key, league, homeCode, start, label){
   });
 }
 
-// Stops are ordered by kickoff time — with fixed kickoff times, that's the
-// only order you can actually attend them in. Stops with no specific
-// fixture (e.g. a club added as a plain waypoint) sort after every timed
-// stop, keeping their relative insertion order among themselves.
+// The route keeps the order the stops were clicked in. It is only reordered
+// when that order is impossible because of the kickoff times, i.e. a stop
+// with a later kickoff sits before a stop with an earlier one. In that case
+// the timed stops are put into chronological order among THEIR OWN slots.
+// Stops with no specific fixture (e.g. a club added as a plain waypoint) are
+// never moved: they keep the position they were clicked into.
 function sortRouteStopsChronologically(){
-  routeStops.sort((a,b) => {
-    if(a.start && b.start) return new Date(a.start) - new Date(b.start);
-    if(a.start) return -1;
-    if(b.start) return 1;
-    return 0;
-  });
+  const slots = [];
+  routeStops.forEach((s, i) => { if(s.start) slots.push(i); });
+  const timed = slots.map(i => routeStops[i]);
+  const inOrder = timed.every((s, i) => i === 0 || new Date(timed[i-1].start) <= new Date(s.start));
+  if(inOrder) return;
+  const ordered = timed.slice().sort((a,b) => new Date(a.start) - new Date(b.start));
+  slots.forEach((slotIdx, k) => { routeStops[slotIdx] = ordered[k]; });
 }
 
 // Which route-panel position (1-based) a stop is currently at, or null if
