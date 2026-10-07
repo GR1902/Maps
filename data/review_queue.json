@@ -32,16 +32,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "czech-8-plz-olo",
-      "league": "czech_first_league",
-      "matchday": 8,
-      "type": "conflict",
-      "priority": "low",
-      "note": "Plzen-Olomouc (12./13.9.) fehlt, Quellen widerspruechlich. Gespielt, nur Datum pruefbar.",
-      "sources_tried": "kicker.de",
-      "added": "2026-10-07"
-    },
-    {
       "id": "ekstraklasa-4",
       "league": "ekstraklasa",
       "matchday": 4,
@@ -112,16 +102,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "kicker-only-0710",
-      "league": "multiple",
-      "matchday": null,
-      "type": "single_source",
-      "priority": "high",
-      "note": "Nur durch kicker.de belegt, mit unverified markiert, offizielle Seite im Browser gegenpruefen: Challenger Pro League 7-13 (proleague.be/cpl-kalender), Griechenland 6-12, Sueper Lig 8-14, Schottland 10-16 (spfl.co.uk), Oesterreich 9-14 (bundesliga.at), Tschechien 10-14, Schweiz 13-16 (sfl.ch), La Liga 2 Spieltag 11 (laliga.com), Primeira Liga je ein Spiel in Spieltag 2 (Braga-Gil Vicente, 19.10.) und 12.",
-      "sources_tried": "kicker.de",
-      "added": "2026-10-07"
-    },
-    {
       "id": "poland-14",
       "league": "ekstraklasa",
       "matchday": 14,
@@ -152,16 +132,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "super_lig-15",
-      "league": "super_lig",
-      "matchday": 15,
-      "type": "missing",
-      "priority": "medium",
-      "note": "Spieltag 15 und folgende pruefen (bis Spieltag 14 eingetragen).",
-      "sources_tried": "",
-      "added": "2026-10-07"
-    },
-    {
       "id": "greece-7-missing",
       "league": "super_league_greece",
       "matchday": 7,
@@ -182,16 +152,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "scottish-past",
-      "league": "scottish_prem",
-      "matchday": null,
-      "type": "missing",
-      "priority": "low",
-      "note": "Spieltag 2, 3 und 6 unvollstaendig (gespielt).",
-      "sources_tried": "",
-      "added": "2026-10-07"
-    },
-    {
       "id": "youth_league",
       "league": "youth_league",
       "matchday": null,
@@ -199,6 +159,46 @@
       "priority": "low",
       "note": "Noch keine Spiele eingetragen, Spielplan der UEFA Youth League pruefen.",
       "sources_tried": "",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "official-check-open",
+      "league": "multiple",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "high",
+      "note": "Offizielle Seite noch nicht geprueft (nur kicker.de): Schweiz Spieltag 13-16 (sfl.ch laedt den Kalender dynamisch, Tab 'Calendrier' auf den Teamseiten), Griechenland 6-12 (slgr.gr liefert 403), Schottland Rest von Spieltag 12-16 (spfl.co.uk Vereinsseiten /clubs/<club>/fixtures laden teils unvollstaendig, mehrfach neu laden), Primeira Liga je ein Spiel in Spieltag 2 (Braga-Gil Vicente 19.10.) und 12 (ligaportugal.pt).",
+      "sources_tried": "kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "czech-12-14",
+      "league": "czech_first_league",
+      "matchday": 12,
+      "type": "not_scheduled",
+      "priority": "medium",
+      "note": "Offiziell (chanceliga.cz/rozpis-zapasu) sind nur Runde 10 und 11 angesetzt. Runde 12-14 stehen nur bei kicker.de, bleiben unverified bis der Verband sie veroeffentlicht.",
+      "sources_tried": "chanceliga.cz, kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "official-only",
+      "league": "multiple",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "Nur offizielle Quelle, kicker.de ohne Uhrzeit: La Liga Spieltag 6 (acht gespielte Spiele) und La Liga 2 Spieltag 12 (laliga.com). Mit kicker.de nachziehen, sobald Zeiten dort stehen.",
+      "sources_tried": "laliga.com",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "past-times",
+      "league": "multiple",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "low",
+      "note": "Gespielte Runden mit unverified (Oesterreich 2, Tschechien 2/3/8, Polen 2/3, Schweiz 2/3, La Liga 7): Paarung und Datum sind bei kicker.de bestaetigt, die Uhrzeit nicht mehr pruefbar.",
+      "sources_tried": "kicker.de",
       "added": "2026-10-07"
     }
   ]
