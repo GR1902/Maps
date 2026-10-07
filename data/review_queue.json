@@ -210,6 +210,16 @@
       "note": "Braga-Gil Vicente (19.10., Spieltag 2) und das fehlende Spiel von Spieltag 12 nur von kicker.de. ligaportugal.pt Kalender-URL nicht gefunden (404).",
       "sources_tried": "kicker.de",
       "added": "2026-10-07"
+    },
+    {
+      "id": "croatia-11",
+      "league": "croatian_hnl",
+      "matchday": 11,
+      "type": "not_scheduled",
+      "priority": "high",
+      "note": "Runde 10 (16.-18.10.) eingetragen (hnl.hr + kicker.de). Runde 11 bis 20 haben auf hnl.hr nur Daten ohne Uhrzeit (11: 24.10., 12: 31.10., 13: 7.11., 14: 21.11., 15: 28.11., 16: 5.12., 17: 12.12., 18: 19.12.), erst eintragen, wenn die HNL Uhrzeiten nennt. URL: hnl.hr/supersport-hnl/raspored-i-rezultati/ (kroatische Ortszeit, alle Runden auf einer Seite).",
+      "sources_tried": "hnl.hr, kicker.de",
+      "added": "2026-10-07"
     }
   ]
 }

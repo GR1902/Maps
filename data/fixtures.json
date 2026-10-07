@@ -26214,6 +26214,36 @@
       "away": "VAR",
       "start": "2026-10-11T13:00:00+00:00",
       "matchday": 9
+    },
+    {
+      "home": "RUD",
+      "away": "RIJ",
+      "start": "2026-10-16T16:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "LOK",
+      "away": "IST",
+      "start": "2026-10-17T13:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "OSI",
+      "away": "GOR",
+      "start": "2026-10-17T16:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "HAJ",
+      "away": "VAR",
+      "start": "2026-10-18T13:00:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "SLA",
+      "away": "DIN",
+      "start": "2026-10-18T16:00:00+00:00",
+      "matchday": 10
     }
   ],
   "champions_league": [
