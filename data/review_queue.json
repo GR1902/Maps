@@ -152,16 +152,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "youth_league",
-      "league": "youth_league",
-      "matchday": null,
-      "type": "missing",
-      "priority": "low",
-      "note": "Noch keine Spiele eingetragen, Spielplan der UEFA Youth League pruefen.",
-      "sources_tried": "",
-      "added": "2026-10-07"
-    },
-    {
       "id": "official-check-open",
       "league": "multiple",
       "matchday": null,
@@ -199,6 +189,26 @@
       "priority": "low",
       "note": "Gespielte Runden mit unverified (Oesterreich 2, Tschechien 2/3/8, Polen 2/3, Schweiz 2/3, La Liga 7): Paarung und Datum sind bei kicker.de bestaetigt, die Uhrzeit nicht mehr pruefbar.",
       "sources_tried": "kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "youth_league-conflicts",
+      "league": "youth_league",
+      "matchday": null,
+      "type": "conflict",
+      "priority": "medium",
+      "note": "Uhrzeit weicht zwischen uefa.com (Zeit im Browser, London) und kicker.de um 1 Stunde ab: Porto-Napoli 04.11. (UEFA 12:00 / kicker 12:00 MEZ), Arsenal-Dortmund und Man City-Napoli 24.11., Man Utd-Leipzig 08.12. Liverpool-Porto 09.12.: UEFA 'TBC', kicker 16:00. Gespeichert ist die UEFA-Zeit, markiert unverified. Dritte Quelle (Vereinsseite) suchen. Zeitzone der UEFA-Seite pruefen.",
+      "sources_tried": "uefa.com, kicker.de",
+      "added": "2026-10-07"
+    },
+    {
+      "id": "youth_league-r1",
+      "league": "youth_league",
+      "matchday": 1,
+      "type": "single_source",
+      "priority": "low",
+      "note": "Domestic Champions Path Runde 1: Rueckspiele (13./14.10.) und Dinamo Tbilisi-Dinamo-Minsk (10.10.) nur von uefa.com, kicker.de fuehrt sie nicht. Hinspiele (Sep) sind gespielt und nicht eingetragen. Spaetere K.o.-Runden (Playoffs ab Dez.) sind noch nicht terminiert. Matchday-Zaehlung: 1 = Runde 1, Ligaphase-Spieltag N = N+1.",
+      "sources_tried": "uefa.com",
       "added": "2026-10-07"
     }
   ]
