@@ -11715,6 +11715,60 @@
       "away": "HER",
       "start": "2026-11-22T12:30:00+00:00",
       "matchday": 12
+    },
+    {
+      "home": "HEI",
+      "away": "NUR",
+      "start": "2026-11-27T17:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "BOC",
+      "away": "DAR",
+      "start": "2026-11-27T17:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "HER",
+      "away": "KSC",
+      "start": "2026-11-28T12:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "DRE",
+      "away": "STP",
+      "start": "2026-11-28T12:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "KIE",
+      "away": "FCK",
+      "start": "2026-11-28T12:00:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "OSN",
+      "away": "H96",
+      "start": "2026-11-28T19:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "MAG",
+      "away": "COT",
+      "start": "2026-11-29T12:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "BRA",
+      "away": "WOB",
+      "start": "2026-11-29T12:30:00+00:00",
+      "matchday": 13
+    },
+    {
+      "home": "FUR",
+      "away": "BIE",
+      "start": "2026-11-29T12:30:00+00:00",
+      "matchday": 13
     }
   ],
   "serie_b": [
