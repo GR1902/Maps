@@ -1509,6 +1509,324 @@
       "away": "M05",
       "start": "2026-10-17T13:30:00+00:00",
       "matchday": 6
+    },
+    {
+      "home": "SGE",
+      "away": "KOE",
+      "start": "2026-10-16T18:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "UNI",
+      "away": "BVB",
+      "start": "2026-10-17T13:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "HSV",
+      "away": "VFB",
+      "start": "2026-10-17T13:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "SVW",
+      "away": "PAD",
+      "start": "2026-10-17T13:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "SVE",
+      "away": "FCA",
+      "start": "2026-10-17T13:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "BMU",
+      "away": "RBL",
+      "start": "2026-10-17T16:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "LEV",
+      "away": "SCF",
+      "start": "2026-10-18T13:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "BMG",
+      "away": "TSG",
+      "start": "2026-10-18T15:30:00+00:00",
+      "matchday": 6
+    },
+    {
+      "home": "VFB",
+      "away": "BMG",
+      "start": "2026-10-23T18:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "RBL",
+      "away": "SVE",
+      "start": "2026-10-24T13:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "FCA",
+      "away": "UNI",
+      "start": "2026-10-24T13:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "M05",
+      "away": "SVW",
+      "start": "2026-10-24T13:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "KOE",
+      "away": "SCH",
+      "start": "2026-10-24T13:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "PAD",
+      "away": "HSV",
+      "start": "2026-10-24T13:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "BVB",
+      "away": "SGE",
+      "start": "2026-10-24T16:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "TSG",
+      "away": "LEV",
+      "start": "2026-10-25T14:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "SCF",
+      "away": "BMU",
+      "start": "2026-10-25T16:30:00+00:00",
+      "matchday": 7
+    },
+    {
+      "home": "SVE",
+      "away": "M05",
+      "start": "2026-10-30T19:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "LEV",
+      "away": "VFB",
+      "start": "2026-10-31T14:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "FCA",
+      "away": "SCF",
+      "start": "2026-10-31T14:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "BMG",
+      "away": "PAD",
+      "start": "2026-10-31T14:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "SVW",
+      "away": "TSG",
+      "start": "2026-10-31T14:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "SCH",
+      "away": "RBL",
+      "start": "2026-10-31T14:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "BMU",
+      "away": "BVB",
+      "start": "2026-10-31T17:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "UNI",
+      "away": "KOE",
+      "start": "2026-11-01T14:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "SGE",
+      "away": "HSV",
+      "start": "2026-11-01T16:30:00+00:00",
+      "matchday": 8
+    },
+    {
+      "home": "HSV",
+      "away": "BMG",
+      "start": "2026-11-06T19:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "BVB",
+      "away": "SVE",
+      "start": "2026-11-07T14:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "RBL",
+      "away": "FCA",
+      "start": "2026-11-07T14:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "M05",
+      "away": "BMU",
+      "start": "2026-11-07T14:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "PAD",
+      "away": "SGE",
+      "start": "2026-11-07T14:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "VFB",
+      "away": "SVW",
+      "start": "2026-11-07T17:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "KOE",
+      "away": "LEV",
+      "start": "2026-11-08T14:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "SCF",
+      "away": "UNI",
+      "start": "2026-11-08T16:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "TSG",
+      "away": "SCH",
+      "start": "2026-11-08T18:30:00+00:00",
+      "matchday": 9
+    },
+    {
+      "home": "BMU",
+      "away": "KOE",
+      "start": "2026-11-20T19:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "LEV",
+      "away": "PAD",
+      "start": "2026-11-21T14:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "SGE",
+      "away": "TSG",
+      "start": "2026-11-21T14:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "UNI",
+      "away": "RBL",
+      "start": "2026-11-21T14:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "BMG",
+      "away": "BVB",
+      "start": "2026-11-21T14:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "SVE",
+      "away": "SCF",
+      "start": "2026-11-21T14:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "SCH",
+      "away": "VFB",
+      "start": "2026-11-21T17:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "FCA",
+      "away": "M05",
+      "start": "2026-11-22T14:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "SVW",
+      "away": "HSV",
+      "start": "2026-11-22T16:30:00+00:00",
+      "matchday": 10
+    },
+    {
+      "home": "SVW",
+      "away": "BMG",
+      "start": "2026-11-27T19:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "M05",
+      "away": "UNI",
+      "start": "2026-11-28T14:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "HSV",
+      "away": "BMU",
+      "start": "2026-11-28T14:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "KOE",
+      "away": "SVE",
+      "start": "2026-11-28T14:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "PAD",
+      "away": "SCH",
+      "start": "2026-11-28T14:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "VFB",
+      "away": "SGE",
+      "start": "2026-11-28T17:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "SCF",
+      "away": "RBL",
+      "start": "2026-11-29T14:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "TSG",
+      "away": "FCA",
+      "start": "2026-11-29T16:30:00+00:00",
+      "matchday": 11
+    },
+    {
+      "home": "BVB",
+      "away": "LEV",
+      "start": "2026-11-29T18:30:00+00:00",
+      "matchday": 11
     }
   ],
   "serie_a": [
