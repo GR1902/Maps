@@ -166,10 +166,16 @@ function refreshWatchStars(){
 
 // ----- Plan management (rename / switch / create / delete) -----
 // A plan can be assigned to one scout from data/scouts.json (plan.scout holds
-// the name, so a plan keeps its scout even if the roster changes later).
+// the name, so a plan keeps its scout even if the roster changes later), has
+// a status (plan.status; no value means "idea") and a free-text note.
+const PLAN_STATUSES = [['idea', 'Idea'], ['planned', 'Planned'], ['booked', 'Booked'], ['done', 'Done']];
+const PLAN_NOTE_MAX = 500;
+function planStatus(plan){ return PLAN_STATUSES.some(([k]) => k === plan.status) ? plan.status : 'idea'; }
+function planStatusLabel(plan){ return PLAN_STATUSES.find(([k]) => k === planStatus(plan))[1]; }
+
 function renderPlanToolbar(){
   const select = document.getElementById('plan-select');
-  const option = p => `<option value="${p.id}" ${p.id===activePlanId?'selected':''}>${escapeHtml(p.name)} (${p.items.length})${planHasFlags(p) ? ' ⟳' : ''}</option>`;
+  const option = p => `<option value="${p.id}" ${p.id===activePlanId?'selected':''}>${escapeHtml(p.name)} (${p.items.length})${planStatus(p) !== 'idea' ? ` · ${planStatusLabel(p)}` : ''}${planHasFlags(p) ? ' ⟳' : ''}</option>`;
   if(plans.some(p => p.scout)){
     // Grouped by scout (roster order first, then names no longer on the roster, then unassigned).
     const names = [...SCOUTS, ...plans.map(p => p.scout).filter(n => n && !SCOUTS.includes(n))];
@@ -187,6 +193,45 @@ function renderPlanToolbar(){
   const current = activePlan().scout || '';
   const roster = current && !SCOUTS.includes(current) ? [...SCOUTS, current] : SCOUTS;
   scoutSelect.innerHTML = `<option value="">No scout</option>` + roster.map(n => `<option value="${escapeHtml(n)}" ${n===current?'selected':''}>${escapeHtml(n)}</option>`).join('');
+
+  document.getElementById('plan-status-select').innerHTML = PLAN_STATUSES
+    .map(([k, label]) => `<option value="${k}" ${k === planStatus(activePlan()) ? 'selected' : ''}>${label}</option>`).join('');
+  // Re-rendering must never move the cursor while typing, so the field is only
+  // rewritten when another plan became active or when it is not being edited.
+  const noteEl = document.getElementById('plan-note');
+  const note = activePlan().note || '';
+  if(noteShownPlanId !== activePlan().id || (document.activeElement !== noteEl && noteEl.value !== note)){
+    noteEl.value = note;
+    noteShownPlanId = activePlan().id;
+  }
+}
+let noteShownPlanId = null;
+
+function setPlanStatus(value){
+  const plan = activePlan();
+  if(value && value !== 'idea' && PLAN_STATUSES.some(([k]) => k === value)) plan.status = value; else delete plan.status;
+  savePlans();
+  renderPlanToolbar();
+}
+
+// The note is saved shortly after typing stops and when the field loses
+// focus; the plan is captured when typing starts, so switching plans in
+// between never writes the text to the wrong one.
+let planNoteTimer = null;
+let planNotePending = null; // { plan, value }
+function onPlanNoteInput(value){
+  planNotePending = { plan: activePlan(), value };
+  clearTimeout(planNoteTimer);
+  planNoteTimer = setTimeout(flushPlanNote, 400);
+}
+function flushPlanNote(){
+  clearTimeout(planNoteTimer);
+  if(!planNotePending) return;
+  const { plan, value } = planNotePending;
+  planNotePending = null;
+  const text = value.slice(0, PLAN_NOTE_MAX);
+  if(text.trim()) plan.note = text; else delete plan.note;
+  savePlans();
 }
 
 function setPlanScout(name){
@@ -217,6 +262,8 @@ function decodeShareData(text){
 function buildPlanLink(plan = activePlan()){
   const data = { v: 1, n: plan.name, k: plan.items.map(w => w.key) };
   if(plan.scout) data.s = plan.scout;
+  if(planStatus(plan) !== 'idea') data.t = planStatus(plan);
+  if(plan.note) data.m = plan.note.slice(0, PLAN_NOTE_MAX);
   if(plan.start) data.p = { n: plan.start.name, a: +plan.start.lat.toFixed(4), o: +plan.start.lng.toFixed(4) };
   const base = /^https?:$/.test(location.protocol) ? location.origin + location.pathname : SHARE_BASE_URL;
   return `${base}#plan=${encodeShareData(data)}`;
@@ -231,6 +278,7 @@ function updateShareButton(){
 }
 
 async function sharePlan(){
+  flushPlanNote();
   const plan = activePlan();
   if(plan.items.length === 0) return;
   const url = buildPlanLink(plan);
@@ -272,8 +320,9 @@ function buildIcs(planList){
     const start = new Date(w.start);
     if(isNaN(start)) return;
     const end = new Date(start.getTime() + PLAN_MATCH_MINUTES * 60000);
-    const unconfirmed = isUnverifiedKey(w.key) || w.missing;
-    const notes = [`Plan: ${plan.name}`, plan.scout ? `Scout: ${plan.scout}` : null, `Competition: ${LEAGUE_LABELS[w.league] || w.league}`];
+    const unconfirmed = isUnverifiedKey(w.key) || w.missing || planStatus(plan) === 'idea';
+    const notes = [`Plan: ${plan.name}`, plan.scout ? `Scout: ${plan.scout}` : null, `Status: ${planStatusLabel(plan)}`, `Competition: ${LEAGUE_LABELS[w.league] || w.league}`];
+    if(plan.note) notes.push(`Note: ${plan.note}`);
     if(isUnverifiedKey(w.key)) notes.push('WARNING: kickoff not yet confirmed by two sources. Check before you travel.');
     if(w.missing) notes.push('WARNING: this game is no longer in the schedule.');
     if(w.changedFrom) notes.push(`Kickoff changed, it was ${fmtDate(w.changedFrom)}.`);
@@ -308,6 +357,7 @@ function downloadTextFile(filename, text, mime){
 function fileSlug(text){ return String(text).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50) || 'plan'; }
 
 function exportPlanIcs(){
+  flushPlanNote();
   const plan = activePlan();
   const { text, events } = buildIcs([plan]);
   if(!events){ alert('This plan has no games to export.'); return; }
@@ -349,15 +399,21 @@ function importSharedPlanFromUrl(){
   const text = v => typeof v === 'string' ? v.trim().slice(0, 80) : '';
   const name = text(data.n) || 'Shared plan';
   const scout = text(data.s);
+  const status = PLAN_STATUSES.some(([k]) => k === data.t) ? data.t : 'idea';
+  const note = typeof data.m === 'string' ? data.m.trim().slice(0, PLAN_NOTE_MAX) : '';
 
   let plan = findPlanWithSameGames(items);
   if(!plan){
     const lines = [name, `${items.length} ${items.length === 1 ? 'game' : 'games'}`];
     if(scout) lines.push(`Scout: ${scout}`);
+    if(status !== 'idea') lines.push(`Status: ${PLAN_STATUSES.find(([k]) => k === status)[1]}`);
+    if(note) lines.push(`Note: ${note.length > 120 ? note.slice(0, 120) + '…' : note}`);
     if(dropped) lines.push(`${dropped} ${dropped === 1 ? 'game is' : 'games are'} no longer in the schedule and will be left out.`);
     if(!confirm(`Add this shared plan?\n\n${lines.join('\n')}`)) return;
     plan = { id: uid(), name, items };
     if(scout) plan.scout = scout;
+    if(status !== 'idea') plan.status = status;
+    if(note) plan.note = note;
     const p = data.p;
     if(p && typeof p === 'object' && text(p.n) && Number.isFinite(p.a) && Math.abs(p.a) <= 90 && Number.isFinite(p.o) && Math.abs(p.o) <= 180){
       plan.start = { name: text(p.n), lat: p.a, lng: p.o };
@@ -377,6 +433,7 @@ function importSharedPlanFromUrl(){
 window.addEventListener('hashchange', () => { if(dataReady) importSharedPlanFromUrl(); });
 
 function switchPlan(id){
+  flushPlanNote();
   activePlanId = id;
   savePlans();
   renderWatchlist();
@@ -2615,6 +2672,7 @@ function jumpToFixtureFromCalendarCell(event, league, homeCode, matchday){
 // flagged, since that is a double booking.
 let calendarMode = 'games'; // 'games' | 'plans'
 let calendarScoutFilter = ''; // '' = all scouts, '__none__' = plans without a scout, else a scout name
+let calendarStatusFilter = ''; // '' = every status, else a PLAN_STATUSES key
 // Eight distinct colours for the eight scouts, deliberately without red or amber, which the app uses for warnings.
 const SCOUT_COLORS = ['#2563eb', '#7c3aed', '#0f766e', '#db2777', '#65a30d', '#78350f', '#0891b2', '#4338ca'];
 function scoutColor(name){
@@ -2626,9 +2684,10 @@ function scoutInitials(name){
 }
 
 function plansInCalendarScope(){
-  return plans.filter(p => calendarScoutFilter === '' ? true
+  return plans.filter(p => (calendarScoutFilter === '' ? true
     : calendarScoutFilter === '__none__' ? !p.scout
-    : p.scout === calendarScoutFilter);
+    : p.scout === calendarScoutFilter)
+    && (calendarStatusFilter === '' || planStatus(p) === calendarStatusFilter));
 }
 function planCalendarEntries(){
   const out = [];
@@ -2646,6 +2705,9 @@ function fillCalendarScoutFilter(){
   sel.innerHTML = `<option value="">All scouts</option>` + unique.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('') + `<option value="__none__">No scout</option>`;
   sel.value = calendarScoutFilter;
   if(sel.value !== calendarScoutFilter){ calendarScoutFilter = ''; sel.value = ''; }
+  const st = document.getElementById('calendar-status-filter');
+  st.innerHTML = `<option value="">All statuses</option>` + PLAN_STATUSES.map(([k, label]) => `<option value="${k}">${label}</option>`).join('');
+  st.value = calendarStatusFilter;
 }
 
 function setCalendarMode(mode){
@@ -2653,6 +2715,7 @@ function setCalendarMode(mode){
   document.getElementById('cal-mode-games').classList.toggle('active', mode === 'games');
   document.getElementById('cal-mode-plans').classList.toggle('active', mode === 'plans');
   document.getElementById('calendar-scout-filter').style.display = mode === 'plans' ? '' : 'none';
+  document.getElementById('calendar-status-filter').style.display = mode === 'plans' ? '' : 'none';
   document.getElementById('calendar-ics-btn').style.display = mode === 'plans' ? '' : 'none';
   if(mode === 'plans'){
     fillCalendarScoutFilter();
@@ -2672,13 +2735,19 @@ function onCalendarScoutFilter(value){
   calendarSelectedDate = null;
   renderCalendar();
 }
+function onCalendarStatusFilter(value){
+  calendarStatusFilter = value;
+  calendarSelectedDate = null;
+  renderCalendar();
+}
 
 function exportCalendarIcs(){
   const list = plansInCalendarScope();
   const { text, events } = buildIcs(list);
   if(!events){ alert('There are no planned games to export for this selection.'); return; }
   const who = calendarScoutFilter === '' ? 'all-scouts' : calendarScoutFilter === '__none__' ? 'unassigned' : fileSlug(calendarScoutFilter);
-  downloadTextFile(`scouting-plans-${who}.ics`, text, 'text/calendar;charset=utf-8');
+  const what = calendarStatusFilter ? `-${calendarStatusFilter}` : '';
+  downloadTextFile(`scouting-plans-${who}${what}.ics`, text, 'text/calendar;charset=utf-8');
 }
 
 // Same scout in two different plans on one day.
@@ -2696,7 +2765,7 @@ function renderPlansCalendar(){
   const grid = document.getElementById('calendar-grid');
   const detail = document.getElementById('calendar-day-detail');
   const year = calendarViewDate.getFullYear(), month = calendarViewDate.getMonth();
-  document.getElementById('calendar-range-note').textContent = 'Plans of all scouts, coloured per scout. The Dates range does not apply here.';
+  document.getElementById('calendar-range-note').textContent = 'Plans coloured per scout; dashed = idea, faded = done. The Dates range does not apply here.';
   const entries = planCalendarEntries();
   if(entries.length === 0){
     grid.innerHTML = `<div class="empty-note">No planned games for this selection yet. Star games on the map, or open a shared plan link.</div>`;
@@ -2728,7 +2797,7 @@ function renderPlansCalendar(){
     if(key === todayKey) classes.push('cal-today');
     if(key === calendarSelectedDate) classes.push('cal-selected');
     if(conflicts.length) classes.push('cal-conflict');
-    const lines = dayEntries.slice(0, 3).map(e => `<div class="cal-match-line" style="border-left-color:${scoutColor(e.plan.scout)}"><span class="cal-match-time">${fmtTimeOnly(e.start)}</span> <b>${escapeHtml(scoutInitials(e.plan.scout))}</b> ${escapeHtml(e.item.homeName.split(' ')[0])}–${escapeHtml(e.item.awayName.split(' ')[0])}</div>`).join('');
+    const lines = dayEntries.slice(0, 3).map(e => `<div class="cal-match-line status-${planStatus(e.plan)}" style="border-left-color:${scoutColor(e.plan.scout)}"><span class="cal-match-time">${fmtTimeOnly(e.start)}</span> <b>${escapeHtml(scoutInitials(e.plan.scout))}</b> ${escapeHtml(e.item.homeName.split(' ')[0])}–${escapeHtml(e.item.awayName.split(' ')[0])}</div>`).join('');
     const more = dayEntries.length > 3 ? `<div class="cal-match-more">+${dayEntries.length - 3} more</div>` : '';
     const tip = has ? `data-tooltip="${escapeHtml(dayEntries.slice(0, 6).map(e => `${fmtTimeOnly(e.start)}  ${e.item.homeName} – ${e.item.awayName} (${e.plan.scout || 'no scout'})`).join('\n'))}"` : '';
     cells += `
@@ -2771,7 +2840,8 @@ function renderPlansDayDetail(key, dayEntries){
         <span class="cal-scout-dot" style="background:${scoutColor(e.plan.scout)}" title="${escapeHtml(e.plan.scout || 'No scout')}">${escapeHtml(scoutInitials(e.plan.scout))}</span>
         <div class="crbody">
           <div class="crteams">${escapeHtml(w.homeName)} – ${escapeHtml(w.awayName)}</div>
-          <div class="crmeta">${fmtTimeOnly(e.start)}${unverifiedBadge(w.key)} · ${escapeHtml(w.city)} · ${escapeHtml(LEAGUE_LABELS[w.league] || w.league)} · Plan: ${escapeHtml(e.plan.name)}${e.plan.scout ? ` · ${escapeHtml(e.plan.scout)}` : ''}</div>
+          <div class="crmeta">${fmtTimeOnly(e.start)}${unverifiedBadge(w.key)} · ${escapeHtml(w.city)} · ${escapeHtml(LEAGUE_LABELS[w.league] || w.league)} · Plan: ${escapeHtml(e.plan.name)}${e.plan.scout ? ` · ${escapeHtml(e.plan.scout)}` : ''} <span class="status-pill status-${planStatus(e.plan)}">${planStatusLabel(e.plan)}</span></div>
+          ${e.plan.note ? `<div class="crnote">${escapeHtml(e.plan.note)}</div>` : ''}
           ${w.missing ? `<div class="wflag wflag-missing">No longer in the schedule. Check before you travel.</div>` : ''}
           ${w.changedFrom ? `<div class="wflag">⟳ Kickoff changed, was ${fmtDate(w.changedFrom)}</div>` : ''}
         </div>

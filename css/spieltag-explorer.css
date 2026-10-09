@@ -617,3 +617,32 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   color:#fff; font-size:0.62rem; font-weight:700;
 }
 #plan-actions-row{ display:flex; gap:6px; flex-wrap:wrap; padding:0 16px 8px 16px; }
+
+/* Plan status and note */
+#plan-scout-row #plan-status-select{ flex:0 0 96px; }
+#plan-scout-row label[for="plan-status-select"]{ margin-left:2px; }
+#plan-status-select{
+  font-family:inherit; font-size:0.74rem; padding:5px 8px; border:1px solid var(--line);
+  border-radius:var(--radius-sm); background:var(--paper); color:var(--ink);
+}
+#plan-note-row{ padding:0 16px 8px 16px; }
+#plan-note{
+  width:100%; box-sizing:border-box; resize:vertical; min-height:38px; max-height:160px;
+  font-family:inherit; font-size:0.74rem; line-height:1.4; padding:6px 8px;
+  border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper); color:var(--ink);
+}
+#plan-note:focus{ outline:2px solid var(--green); outline-offset:-1px; }
+#calendar-status-filter{
+  font-family:inherit; font-size:0.74rem; padding:5px 8px; border:1px solid var(--line);
+  border-radius:var(--radius-sm); background:var(--paper); color:var(--ink);
+}
+.cal-match-line.status-idea{ border-left-style:dashed; }
+.cal-match-line.status-done{ opacity:0.55; }
+.status-pill{
+  display:inline-block; font-size:0.62rem; font-weight:700; padding:0 7px; border-radius:999px;
+  background:var(--surface-strong); color:var(--text-muted); vertical-align:1px;
+}
+.status-pill.status-planned{ background:#dbeafe; color:#1e40af; }
+.status-pill.status-booked{ background:#dcfce7; color:#166534; }
+.status-pill.status-done{ background:var(--surface); color:var(--text-muted); text-decoration:line-through; }
+.calendar-row .crnote{ font-size:0.68rem; color:var(--ink); margin-top:3px; padding:3px 7px; background:var(--surface); border-radius:4px; white-space:pre-wrap; }

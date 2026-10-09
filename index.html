@@ -127,6 +127,7 @@
             <button type="button" id="cal-mode-plans" class="seg-btn" onclick="setCalendarMode('plans')">Plans</button>
           </div>
           <select id="calendar-scout-filter" onchange="onCalendarScoutFilter(this.value)" title="Show the plans of one scout" style="display:none;"></select>
+          <select id="calendar-status-filter" onchange="onCalendarStatusFilter(this.value)" title="Show only plans with this status" style="display:none;"></select>
           <button type="button" class="mini-btn" id="calendar-ics-btn" onclick="exportCalendarIcs()" title="Download the shown plans as a calendar file (.ics) for Google, Outlook or Apple Calendar" style="display:none;">Export .ics</button>
           <span id="calendar-range-note"></span>
           <button type="button" class="mini-btn" onclick="calendarJumpToday()">Today</button>
@@ -162,6 +163,11 @@
         <div id="plan-scout-row">
           <label for="plan-scout-select">Scout</label>
           <select id="plan-scout-select" onchange="setPlanScout(this.value)"></select>
+          <label for="plan-status-select">Status</label>
+          <select id="plan-status-select" onchange="setPlanStatus(this.value)"></select>
+        </div>
+        <div id="plan-note-row">
+          <textarea id="plan-note" rows="2" maxlength="500" placeholder="Note for this plan (hotel, who meets whom, reminders)" oninput="onPlanNoteInput(this.value)" onblur="flushPlanNote()"></textarea>
         </div>
         <div id="plan-actions-row">
           <button type="button" class="mini-btn" id="plan-share-btn" onclick="sharePlan()" title="Copy a link to this plan. Whoever opens it gets the games with the current kickoff times.">

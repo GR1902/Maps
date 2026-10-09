@@ -223,6 +223,13 @@ to refresh it; `dist/` isn't tracked in git.
   plans by scout, with "No scout" last. The name is stored on the plan, so it
   survives roster changes. Note that `data/scouts.json` is part of the public
   repo and site.
+  **Status and note per plan**: next to the Scout dropdown, a Status dropdown
+  (Idea, Planned, Booked, Done; no value means Idea) and a note field (up to
+  500 characters, saved while typing and when the field loses focus) for
+  things like hotel, who meets whom, or reminders. The plan switcher shows the
+  status behind the name ("Trip 10 Oct (3) · Booked"). Status and note travel
+  in the share link and appear in the .ics description; in the .ics an Idea
+  plan is "tentative", the others "confirmed".
   **Share a plan as a link**: "Copy link" (next to the Scout dropdown)
   copies an address like `.../Maps/#plan=...` that carries only the plan's
   name, scout, start point and the keys of its games, no kickoff times.
@@ -277,7 +284,10 @@ to refresh it; `dist/` isn't tracked in git.
   fixtures, regardless of the league selection and the Dates range, each
   game marked with the scout's initials and colour (eight fixed colours in
   roster order, grey for plans without a scout). A scout dropdown filters to
-  one scout or to plans without a scout, and a day on which the same scout is
+  one scout or to plans without a scout, a second one to one status (the
+  .ics export follows both filters), plans in Idea status are drawn with a
+  dashed accent and Done plans faded, the day list shows each plan's status
+  and note, and a day on which the same scout is
   in two different plans gets an amber ⚠ and a warning in the day list.
   Clicking a game in the day list opens that plan on the map. "Export .ics"
   downloads all plans in the current scout filter as one calendar file
