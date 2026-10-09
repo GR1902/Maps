@@ -4,7 +4,7 @@ Builds a single self-contained HTML file (dist/matchday-explorer-standalone.html
 with CSS, JS, and the team/fixture JSON data all inlined — no local server or
 fetch() to local files required, so it opens directly via file://.
 
-Leaflet, Leaflet Routing Machine, and the OSRM routing API are still loaded
+Leaflet and the OSRM routing API are still loaded
 from their CDNs / public endpoints, so an internet connection is still
 needed for the map tiles, routes, and combinable-trip calculations.
 
@@ -64,7 +64,6 @@ html = f"""<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matchday Explorer – Home Fixtures &amp; Scouting Routes</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.css" />
 <style>
 {css}
 </style>
@@ -72,7 +71,6 @@ html = f"""<!DOCTYPE html>
 <body>
 {body}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
 <script>
 {js}
 </script>

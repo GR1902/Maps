@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.css" />
 <link rel="stylesheet" href="css/variables.css" />
 <link rel="stylesheet" href="css/spieltag-explorer.css" />
 </head>
@@ -55,20 +54,6 @@
         </div>
       </div>
     </div>
-    <div id="route-picker" class="header-dropdown">
-      <button id="route-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('route-panel')">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="6" r="2.2" fill="currentColor" stroke="none"/><circle cx="19" cy="18" r="2.2" fill="currentColor" stroke="none"/><path d="M6.8 7.5C10 11 8 13 12 13s2-2 5.2 1.5" stroke-dasharray="2.2 2.6"/></svg>
-        Plan Route <span aria-hidden="true">▾</span>
-      </button>
-      <div id="route-panel" class="header-dropdown-panel">
-        <div id="route-hint">Open a popup → "Add to route". Optionally set a start point from an airport or the radius search.</div>
-        <div id="route-stops"></div>
-        <div id="route-summary"></div>
-        <div id="route-actions">
-          <button class="route-btn" id="clear-route-btn" onclick="clearRoute()" disabled>Clear</button>
-        </div>
-      </div>
-    </div>
     <div id="radius-picker" class="header-dropdown">
       <button id="radius-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('radius-panel')">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
@@ -91,7 +76,7 @@
           </button>
           <button class="route-btn" id="radius-use-start-btn" onclick="useRadiusPointAsStart()" style="width:100%; margin-top:6px;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h13l-3 4 3 4H5"/></svg>
-            Use as route start
+            Use as plan start
           </button>
           <div id="radius-status"></div>
           <div id="radius-results"></div>
@@ -172,7 +157,7 @@
               <span id="plan-route-btn-label">Show route</span>
             </button>
           </div>
-          <div id="watchlist-hint" class="empty-note">Drag a fixture here, or click ☆ on any game, to plan it. Drag rows below to set priority.</div>
+          <div id="watchlist-hint" class="empty-note">Drag a fixture here, or click ☆ on any game, to plan it. Drag rows to set the order. A start point comes from an airport (map) or Radius Search.</div>
         </div>
       </div>
       <div id="fixtures-container"></div>
@@ -225,7 +210,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
 <script src="js/spieltag-explorer.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 # Norwich City Scouting Map — Matchday Explorer
 
 A Leaflet-based tool for planning European scouting trips: league/matchday
-fixture browsing plus point-to-point route planning. Norwich City brand
+fixture browsing plus plans with real driving routes. Norwich City brand
 colors used as accents (canary yellow `#FFF200` / green `#00622F`) on a
 clean, flat, white/neutral-gray UI — Inter as the typeface throughout, and
 a small inline-SVG icon set (`ICONS` in `js/spieltag-explorer.js`, mirrored
@@ -30,8 +30,7 @@ norwich-scouting-map/
 └── fetch_league_logos.py      Fills in data/leagues.json's competition logos via Wikipedia (see below)
 ```
 
-Leaflet + Leaflet Routing Machine are loaded via CDN. Everything else is
-local.
+Leaflet is loaded via CDN. Everything else is local.
 
 > An earlier prototype ("Europa-Ligen-Karte", a static club map without
 > matchday filtering) was dropped — the Matchday Explorer covers the same
@@ -56,7 +55,7 @@ Run `python3 build_standalone.py` to produce
 `dist/matchday-explorer-standalone.html` — a single self-contained file with
 the CSS, JS, and current contents of `data/*.json` all inlined. No fetch to
 local files, so it opens directly by double-clicking, no server needed; just
-send that one file. It still loads Leaflet/Leaflet Routing Machine from CDN
+send that one file. It still loads Leaflet from CDN
 and calls the OSRM routing API live, so an internet connection is still
 required. It's a snapshot — re-run the build script after changing
 `data/*.json`, the CSS, `js/spieltag-explorer.js`, or `index.html`'s markup
@@ -84,20 +83,26 @@ to refresh it; `dist/` isn't tracked in git.
   the range covers, instead of one chosen matchday each (each league's
   fixture-list header shows the date range in place of the matchday
   dropdown while this mode is active). Defaults to today+14 days the first
-  time it's switched on, then stays exactly as edited. Combines for free
+  time it's switched on, then stays exactly as edited. Quick picks above the
+  dates set the range in one click ("This weekend" = Fri to Sun, "Next 7
+  days", "Next 30 days"). The same range drives the Calendar, which has no
+  range of its own. Combines for free
   with Combinable Trips' own candidate-pool date range below — that range
   auto-derives from whatever's currently anchored, so a wide date-range
   selection here naturally widens it too, the same way a matchday selection
   already did
+- **Data status** (right end of the control bar): "Fixtures checked <date>"
+  from `data/meta.json` (`{"checked": "YYYY-MM-DD"}`, set by the weekly
+  verification runs), turning amber after 10 days, plus the number of
+  upcoming kickoffs still flagged ⚠ (not yet confirmed by two sources)
 - Shows every selected league's home fixtures highlighted (own color per
   league); other clubs of the same league in a pale shade; unselected
   leagues' clubs in muted grey
 - "↺ Reset filters" (top control bar): puts leagues/matchdays, the airports
   layer, the cross-border toggle, any single-game trip focus, and the
   radius search all back to their defaults in one click. Deliberately
-  leaves route planning and the "My Plan" watchlist alone — those are
-  content you built on purpose, not a filter, and already have their own
-  Clear/rename/delete controls
+  leaves the "My Plan" plans alone — those are content you built on
+  purpose, not a filter, and have their own rename/delete controls
 - Club crests on this-matchday markers (hotlinked from Wikipedia, fetched
   per club by `data/teams.json`'s `logo` field — see below); falls back to
   the plain colored marker if a club has no crest on file or the image
@@ -111,7 +116,8 @@ to refresh it; `dist/` isn't tracked in git.
   league/matchday filters — handy for judging how reachable a fixture
   cluster is by air, not just by road. Off by default; click the button to
   show/hide, click a plane marker for the airport name, IATA code, city, and
-  a "🏁 Set as start point" button (see route planning below)
+  a "🏁 Set as start point" button (sets the start of the active plan, see
+  My Plan below)
 - Radius search ("📍 Radius Search" in the top control bar, opens as a
   dropdown like the league picker): enter an address, or click "📍 Pick point
   on map" and click anywhere on the map instead — either way, see every home
@@ -125,9 +131,9 @@ to refresh it; `dist/` isn't tracked in git.
   club-crest marker per match (same crest badge as the main fixture
   markers, with the same colored-swatch fallback), and both the map markers
   and each result row in the list show the crest; each result also supports
-  "+ Add to route" like any other marker. A "🏁 Use as route start" button
-  turns the searched/picked center point itself into the route's origin
-  (see route planning below). Geocoding (forward and reverse) via
+  "☆ Add to plan" like any other marker. A "🏁 Use as plan start" button
+  turns the searched/picked center point itself into the start point of the
+  active plan (see My Plan below). Geocoding (forward and reverse) via
   OpenStreetMap's free Nominatim API (same data source as the map tiles and
   OSRM routing already used elsewhere)
 - "Combinable trips" panel: for the selected league + matchday's home
@@ -172,9 +178,10 @@ to refresh it; `dist/` isn't tracked in git.
   vertical list; a "Scroll view" toggle next to the position readout flips
   it into several narrower cards visible side by side instead, for
   comparing trips at a glance rather than one at a time ("Swipe view" to
-  flip back); **clicking a trip card also loads it as your active route** (see
-  route planning below), so the map immediately shows the real driving
-  line, not just a bounding-box zoom. A "🔀 Suggest trip" button on any
+  flip back); **clicking a trip card opens it as a new plan** (see My Plan
+  below): the plan you were working on stays untouched, the new plan
+  inherits its start point, and the map immediately shows the real driving
+  route. Clicking the same card again just switches to that plan. A "🔀 Suggest trip" button on any
   single fixture (list row, radius result, marker popup, or Calendar row)
   pins the panel to trip suggestions built around just that one game,
   independent of whatever leagues/matchdays are currently toggled on. A
@@ -185,65 +192,50 @@ to refresh it; `dist/` isn't tracked in git.
   so a plan spanning several weeks produces multiple separate short trip
   clusters, not one long multi-week itinerary. Either kind of focus clears
   via "✕ Show all trips"
-- Point-to-point route planning (click marker → "+ Add to route" → real
-  driving route via OSRM, with distance/time). The button itself toggles:
-  once a fixture's on the route, the same button reads "✓ Remove from
-  route" (and turns red-bordered) — click it again to take that stop back
-  off without having to find it in the route panel; stops and the running
-  distance/time summary live under "🚗 Plan Route" in the top control bar,
-  same dropdown pattern as the league picker and radius search. Stops are
-  always ordered chronologically by kickoff time — the only sensible order
-  when games have fixed start times — and each leg between consecutive
-  stops shows its own driving time/distance (fetched the same way as
-  Combinable Trips' per-leg breakdown), not just the trip total. Optionally
-  set a 🏁 start point — from an airport's popup or the radius search's
-  "Use as route start" — so the route is driven from that origin (e.g. the
-  airport you're flying into) instead of starting at the first added
-  fixture; only one start point at a time, shown ahead of the numbered
-  stops and removable on its own without clearing the whole route. Every
-  fixture currently on the route is also marked directly on the map and in
-  every list it appears in (fixture list, radius search results) — its
-  marker gets a small gold numbered badge matching its position in the
-  route panel, plus a gold ring around the marker itself, and its list
-  row(s) get a matching gold left-border highlight — so it's clear at a
-  glance which games are already in the route without having to open the
-  route panel or a popup. Updates live as stops are added/removed/cleared,
-  without needing a full re-render of the map
-- "⭐ My Plan" watchlist (top of the side panel) — separate from the route
-  planner: this is for marking games you want to see, not for building a
-  drivable itinerary. Add a fixture by clicking its ☆ (fixture list, radius
-  results, or marker popup) or by dragging it into the panel; drag rows
-  within the panel to reorder — order = priority, shown as a rank number,
-  **and, once there are 2+ games, also the order driving time/distance is
-  computed against**: a driving-time/distance line appears between each
-  consecutive pair (fetched from OSRM, same as route planning's per-leg
-  breakdown), plus a total ("≈ X km · Y hr Z min total driving") once
-  everything's settled — unlike the route planner, which always forces
-  chronological order by kickoff time, My Plan keeps whatever manual order
-  you last dragged it into, and re-fetches the distances for that exact
-  order every time you reorder, add, or remove a game.
-  **Multiple named plans**: the dropdown at the top of the panel switches
-  between plans (e.g. one per scout/person), with buttons to rename, create,
-  or delete a plan (the last remaining plan can't be deleted — rename it
-  instead). Everything's persisted in the browser's `localStorage`, so it
-  survives reloads (but is local to one browser/device — there's no account
-  or sync between devices)
+- "⭐ My Plan" (top of the side panel): the one place to plan a trip. Add a
+  game with its ☆ (fixture list, radius results, Calendar rows), with the
+  "☆ Add to plan" button in any marker popup (also for clubs of leagues that
+  are not selected, via their next fixture), or by dragging it into the
+  panel; the same button reads "★ In plan (remove)" once it is in. Drag rows
+  to reorder: the order is yours and nothing is re-sorted. From 2 stops on, a
+  driving-time/distance line appears between consecutive stops plus a total
+  (OSRM). **Show route** draws the plan on the map: numbered stops with
+  kickoff, a chip with drive time and distance on every leg, and a red chip
+  where the next kickoff cannot be reached in time (previous kickoff + 2 h
+  match + drive) or the order runs backwards in time.
+  **Start point per plan**: "Set as start point" in an airport popup or
+  "Use as plan start" in Radius Search. It is the first row of the plan,
+  driven first, removable on its own. Every club with a game in the active
+  plan is marked on the map (gold numbered badge matching its position in the
+  plan, plus a gold ring) and in the lists (gold left border), live as the
+  plan changes.
+  **Multiple named plans**: the dropdown at the top switches between plans
+  (e.g. one per scout or trip), with buttons to rename, create, or delete a
+  plan (the last remaining plan can't be deleted, rename it instead).
+  Everything is persisted in the browser's `localStorage` (local to one
+  browser/device, no account or sync).
+  **Plans follow the data**: a plan stores a copy of each game, so on every
+  load each saved game is re-checked against `data/fixtures.json` by its key.
+  A moved kickoff is updated and flagged "Kickoff changed, was ..." with an OK
+  button, a game that is no longer in the schedule is flagged, and the plan
+  shows a ⟳ in the dropdown until everything is acknowledged
 - "📅 Calendar" (top control bar): a full-screen **month view** over the
   map area — header/controls bar stays visible and usable — for the
-  currently *selected* leagues, bounded by a **From/To date range** (a
-  ‹month year› header navigates month-to-month independently of that
-  range; days outside the range render but aren't clickable). Each day
+  currently *selected* leagues, following the **Date Selection range** (no
+  range of its own: without one it shows every game of the displayed month;
+  a ‹month year› header navigates month-to-month; days outside an active
+  range render but aren't clickable). Each day
   with fixtures shows a count badge and, directly in the tile, up to 3
   abbreviated matchups (e.g. "Arsenal–Coventry", "+2 more" if there are
   more) so you can read what's on at a glance without hovering or
   clicking — tiles size to fit this (no longer a fixed square).
   **Hovering a day still previews the full list** (time + matchup, up to
   6) in a tooltip; clicking opens the full list below the grid — this
-  doubles as search-by-date, since setting the range **is** the
-  filter. A day is auto-selected when you open the Calendar or change
+  doubles as search-by-date, since setting the Date Selection range
+  **is** the filter. A day is auto-selected when you open the Calendar or change
   month (today if it has games, else the first day that does), so the
   list below the grid is never empty by default. There's a "Today"
-  shortcut (resets to the current month and a 30-day range). Each row in
+  shortcut (jumps to the current month). Each row in
   the day list has the same
   ☆ star as everywhere else to add it to My Plan, and clicking a row jumps
   back to the map, switches that league to the right matchday, and centers

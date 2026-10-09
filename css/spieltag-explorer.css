@@ -19,7 +19,7 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 #snapshot-note{ font-size:0.65rem; color:var(--text-muted); margin-left:auto; text-align:right; }
 #snapshot-note.stale{ color:#b45309; font-weight:600; }
 
-/* Header dropdowns (Leagues / Plan Route / Radius Search): a button in
+/* Header dropdowns (Leagues / Dates / Radius Search): a button in
    #controls that opens a panel anchored directly below it. */
 .header-dropdown{ position:relative; }
 .ctrl-dropdown-btn,
@@ -108,25 +108,10 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .league-block h2 .league-range-note{ font-size:0.68rem; font-weight:400; color:var(--text-muted); text-transform:none; letter-spacing:normal; }
 .league-block h2 .count{ margin-left:auto; font-weight:400; color:var(--text-muted); text-transform:none; letter-spacing:normal; }
 
-/* Route panel */
-#route-panel{ width:250px; max-width:calc(100vw - 24px); padding-top:10px; }
-#route-hint{ font-size:0.68rem; color:var(--text-muted); padding:0 12px 4px 12px; line-height:1.4; }
-#route-stops{ padding:4px 12px; max-height:150px; overflow-y:auto; }
-.route-stop{ display:flex; align-items:center; gap:7px; font-size:0.76rem; padding:4px 0; color:var(--ink); }
-.route-stop .num{ width:16px; height:16px; border-radius:50%; background:var(--surface-strong); color:var(--ink); font-size:0.6rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.route-stop .name{ flex:1; }
-.route-stop .rm{ cursor:pointer; color:var(--text-muted); font-weight:600; font-size:0.85rem; padding:0 2px; line-height:1; }
-.route-stop .rm:hover{ color:var(--red); }
-.route-stop.route-start{ font-weight:700; }
-.route-stop.route-start .num{ background:var(--green-dark); color:#fff; }
 .route-leg{
   font-size:0.64rem; color:var(--text-muted); padding:2px 0 2px 24px;
   border-left:2px dotted var(--line); margin-left:7px;
 }
-.route-stop .start-flag{ width:16px; height:16px; border-radius:50%; background:var(--green-dark); color:#fff; display:flex; align-items:center; justify-content:center; }
-.route-stop .start-flag .icon{ width:9px; height:9px; }
-#route-summary{ padding:8px 12px 0 12px; font-size:0.7rem; color:var(--green-dark); font-weight:600; display:none; }
-#route-actions{ display:flex; gap:6px; padding:10px 12px 12px 12px; }
 .route-btn{
   flex:1; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; gap:6px;
   font-size:0.72rem; font-weight:600; padding:7px 10px; border-radius:var(--radius-sm);
@@ -167,17 +152,17 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 #radius-pick-btn.active{ background:var(--green-dark); border-color:var(--green-dark); color:#fff; font-weight:600; }
 #map.picking{ cursor:crosshair; }
 
-.add-stop-btn, .start-stop-btn, .watch-btn, .suggest-trip-btn{
+.start-stop-btn, .watch-btn, .suggest-trip-btn{
   font-family:inherit; display:inline-flex; align-items:center; gap:5px;
   font-size:0.7rem; font-weight:600; padding:5px 9px; border-radius:var(--radius-sm);
   cursor:pointer; margin-top:6px; margin-right:5px; border:1px solid var(--line); background:var(--paper); color:var(--ink);
   transition:background 0.1s;
 }
-.add-stop-btn:hover, .start-stop-btn:hover, .watch-btn:hover, .suggest-trip-btn:hover{ background:var(--surface); }
-.add-stop-btn{ background:var(--green-dark); border-color:var(--green-dark); color:#fff; }
-.add-stop-btn:hover{ background:#004d26; }
-.add-stop-btn.added{ background:var(--paper); border-color:var(--red); color:var(--red); }
-.add-stop-btn.added:hover{ background:var(--surface); }
+.start-stop-btn:hover, .watch-btn:hover, .suggest-trip-btn:hover{ background:var(--surface); }
+.watch-btn{ background:var(--green-dark); border-color:var(--green-dark); color:#fff; }
+.watch-btn:hover{ background:#004d26; }
+.watch-btn.in-plan{ background:var(--paper); border-color:var(--red); color:var(--red); }
+.watch-btn.in-plan:hover{ background:var(--surface); }
 .start-stop-btn{ background:var(--ink); border-color:var(--ink); color:#fff; }
 .start-stop-btn:hover{ background:#000; }
 
@@ -322,11 +307,11 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .fixture-item .teams{ font-weight:600; color:var(--ink); }
 .fixture-item .meta{ font-size:0.68rem; color:var(--text-muted); margin-top:2px; }
 
-/* A fixture that's currently a stop on the route planner — same gold accent
-   as the numbered marker badge on the map (see routeBadgeHtml), so the two
-   views read as the same thing. */
-.fixture-item.in-route{ border-left:3px solid var(--gold); background:var(--surface); padding-left:13px; }
-.radius-result.in-route{ border-left:3px solid var(--gold); background:var(--surface); padding-left:1px; }
+/* A fixture that's currently in the active plan — same gold accent as the
+   numbered marker badge on the map (see routeBadgeHtml), so the two views
+   read as the same thing. */
+.fixture-item.in-plan{ border-left:3px solid var(--gold); background:var(--surface); padding-left:13px; }
+.radius-result.in-plan{ border-left:3px solid var(--gold); background:var(--surface); padding-left:1px; }
 
 /* Watchlist ("My Plan") */
 #watchlist-heading .count{ font-weight:400; text-transform:none; letter-spacing:normal; font-size:0.68rem; opacity:0.8; }
@@ -524,7 +509,6 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 }
 .popup-pager-btn:hover{ background:var(--surface); }
 
-.leaflet-routing-container{ display:none; }
 .leaflet-popup-content-wrapper{ border-radius:var(--radius-sm); }
 .leaflet-container{ font-family:var(--font-sans); }
 
@@ -589,3 +573,13 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   font:700 0.62rem var(--font-sans); padding:0 8px; cursor:pointer;
 }
 .wflag-ok:hover{ background:#fde68a; }
+
+/* Start point of a plan (airport or searched address), first row of My Plan */
+.watch-start{ display:flex; align-items:center; gap:8px; padding:7px 16px; font-size:0.78rem; border-bottom:1px solid var(--line); }
+.watch-start .start-flag{ width:22px; height:22px; border-radius:50%; background:var(--green-dark); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.watch-start .start-flag .icon{ width:12px; height:12px; }
+.watch-start .wbody{ flex:1; min-width:0; cursor:pointer; }
+.watch-start .wteams{ font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.watch-start .wremove{ cursor:pointer; color:var(--text-muted); font-weight:600; font-size:0.85rem; padding:0 3px; flex-shrink:0; line-height:1; }
+.watch-start .wremove:hover{ color:var(--red); }
+.plan-stop-num.plan-stop-start .icon{ width:13px; height:13px; }

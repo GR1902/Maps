@@ -102,6 +102,37 @@ function acknowledgePlanChange(key){
 function watchKeyFor(league, homeCode, matchday){ return `${league}::${homeCode}::${matchday}`; }
 function isWatched(key){ return activePlan().items.some(w => w.key === key); }
 
+// A plan can have a start point (an airport or a searched address) that is
+// driven from first, ahead of its games: plan.start = { name, lat, lng }.
+// planPoints() is the full ordered list the route is built from; the start
+// has no kickoff, so it is never part of a timing check.
+function planPoints(plan = activePlan()){
+  return [...(plan.start ? [{ lat: plan.start.lat, lng: plan.start.lng, start: null }] : []), ...plan.items];
+}
+
+// Brings My Plan into view, e.g. after a start point was set from a map popup.
+function revealMyPlan(){
+  const side = document.getElementById('side');
+  if(side.classList.contains('panel-collapsed')) toggleSidePanel();
+  const body = document.getElementById('watchlist-body');
+  if(body.classList.contains('collapsed')) toggleSidePanelSection('watchlist-body', document.getElementById('watchlist-heading'));
+}
+
+function setPlanStart(point){
+  activePlan().start = { name: point.name, lat: point.lat, lng: point.lng };
+  savePlans();
+  renderWatchlist();
+  computeWatchlistLegs();
+  revealMyPlan();
+}
+
+function clearPlanStart(){
+  delete activePlan().start;
+  savePlans();
+  renderWatchlist();
+  computeWatchlistLegs();
+}
+
 function addToWatchlist(item){
   if(isWatched(item.key)) return;
   activePlan().items.push(item);
@@ -129,6 +160,7 @@ function refreshWatchStars(){
   document.querySelectorAll('.watch-star[data-key]').forEach(el => {
     el.textContent = isWatched(el.dataset.key) ? '★' : '☆';
   });
+  refreshPlanVisuals();
 }
 
 // ----- Plan management (rename / switch / create / delete) -----
@@ -144,6 +176,35 @@ function switchPlan(id){
   renderWatchlist();
   refreshWatchStars();
   computeWatchlistLegs();
+}
+
+// Opens a set of games (a Combinable Trips card) as a NEW plan, so nothing in
+// the plan the user is working on is overwritten. An identical plan that
+// already exists is reused instead of duplicated. The new plan inherits the
+// current start point, and its route is drawn straight away.
+function openGamesAsNewPlan(games){
+  const items = games.map(g => ({
+    key: watchKeyFor(g.league, g.homeCode, g.matchday), league: g.league, homeCode: g.homeCode,
+    homeName: g.home.name, awayName: g.awayName, city: g.home.city,
+    start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng
+  }));
+  const signature = list => list.map(i => i.key).sort().join('|');
+  let plan = plans.find(p => p.items.length === items.length && signature(p.items) === signature(items));
+  if(!plan){
+    plan = { id: uid(), name: `Trip ${fmtDateShort(games[0].start)} (${games.length} games)`, items };
+    const current = activePlan();
+    if(current.start) plan.start = { ...current.start };
+    plans.push(plan);
+  }
+  activePlanId = plan.id;
+  savePlans();
+  renderWatchlist();
+  refreshWatchStars();
+  planRouteActive = true;
+  updatePlanRouteButton();
+  drawPlanRoute(true);
+  computeWatchlistLegs();
+  revealMyPlan();
 }
 
 function renamePlan(){
@@ -184,15 +245,15 @@ function deletePlan(){
 }
 
 let watchDragIndex = null;
-// Per-leg {time,distance} between consecutive My Plan rows in their
-// CURRENT (possibly manually drag-reordered) order — unlike Plan Route,
-// which always forces chronological order, My Plan's order is whatever
-// the user dragged it into, so distances are computed against that.
+// Per-leg {time,distance} between consecutive points of the plan (start point
+// first, if there is one) in their CURRENT, possibly manually drag-reordered
+// order: the order is whatever the user dragged it into, so distances are
+// computed against that.
 let watchlistLegs = null;
 let watchlistLegsComputeId = 0;
 
 async function computeWatchlistLegs(){
-  const items = activePlan().items;
+  const items = planPoints();
   const computeId = ++watchlistLegsComputeId;
   if(items.length < 2){
     watchlistLegs = null;
@@ -216,7 +277,9 @@ async function computeWatchlistLegs(){
 
 function renderWatchlist(){
   renderPlanToolbar();
-  const items = activePlan().items;
+  const plan = activePlan();
+  const items = plan.items;
+  const startOffset = plan.start ? 1 : 0;
   const list = document.getElementById('watchlist-list');
   const summaryEl = document.getElementById('watchlist-summary');
   const dropzone = document.getElementById('watchlist-dropzone');
@@ -230,11 +293,24 @@ function renderWatchlist(){
   // order — only trusted when it matches this exact number of items;
   // stale otherwise (e.g. mid-drag, or a fetch still in flight), in which
   // case legs are simply omitted until computeWatchlistLegs() catches up.
-  const legsValid = watchlistLegs && watchlistLegs.length === items.length - 1;
+  const legsValid = watchlistLegs && watchlistLegs.length === items.length + startOffset - 1;
+
+  if(plan.start){
+    const startRow = document.createElement('div');
+    startRow.className = 'watch-start';
+    startRow.innerHTML = `
+      <span class="start-flag">${ICONS.flag}</span>
+      <div class="wbody"><div class="wteams">Start: ${escapeHtml(plan.start.name)}</div></div>
+      <span class="wremove" title="Remove start point">×</span>
+    `;
+    startRow.querySelector('.wbody').onclick = () => { map.setView([plan.start.lat, plan.start.lng], 10); };
+    startRow.querySelector('.wremove').onclick = clearPlanStart;
+    list.appendChild(startRow);
+  }
 
   items.forEach((w, idx) => {
-    if(idx > 0 && legsValid){
-      const leg = watchlistLegs[idx - 1];
+    if((idx > 0 || startOffset) && legsValid){
+      const leg = watchlistLegs[idx - 1 + startOffset];
       const legDiv = document.createElement('div');
       legDiv.className = 'route-leg';
       legDiv.textContent = `${fmtHM(leg.time)} · ${(leg.distance/1000).toFixed(0)} km`;
@@ -270,6 +346,7 @@ function renderWatchlist(){
     row.addEventListener('dragend', () => {
       row.classList.remove('dragging');
       savePlans();
+      refreshPlanVisuals(); // the numbers on the map follow the new order
       computeWatchlistLegs(); // order has settled — (re)fetch for the final order
     });
     row.addEventListener('dragover', (e) => {
@@ -286,7 +363,7 @@ function renderWatchlist(){
     list.appendChild(row);
   });
 
-  if(legsValid && items.length >= 2){
+  if(legsValid && items.length + startOffset >= 2){
     const totalTime = watchlistLegs.reduce((s,l) => s + l.time, 0);
     const totalKm = watchlistLegs.reduce((s,l) => s + l.distance, 0) / 1000;
     summaryEl.style.display = 'block';
@@ -318,9 +395,9 @@ function escapeHtml(str){
 function updatePlanRouteButton(){
   const btn = document.getElementById('plan-route-btn');
   if(!btn) return;
-  const n = activePlan().items.length;
+  const n = planPoints().length;
   btn.disabled = n < 2;
-  btn.title = n < 2 ? 'Add at least two games to My Plan to show a route' : 'Draw the planned games on the map as a route, in the order shown above';
+  btn.title = n < 2 ? 'Add two games, or a start point and a game, to show a route' : 'Draw the plan on the map as a route, in the order shown above';
   document.getElementById('plan-route-btn-label').textContent = planRouteActive ? 'Hide route' : 'Show route';
 }
 
@@ -398,37 +475,16 @@ function addLegChip(layer, coords, time, dist, estimated, startA, startB, legInd
   return warn;
 }
 
-// Chips for the manually built Plan Route (the yellow line itself is drawn by
-// Leaflet Routing Machine in computeRoute); same chips as "Show route" in My Plan.
-let manualRouteChipLayer = null;
-let manualRouteChipId = 0;
-function clearManualRouteChips(){
-  manualRouteChipId++;
-  if(manualRouteChipLayer){ map.removeLayer(manualRouteChipLayer); manualRouteChipLayer = null; }
-}
-async function drawManualRouteChips(points, starts){
-  const id = ++manualRouteChipId;
-  const fetched = await Promise.all(points.slice(1).map((_, i) => fetchPlanLeg(points[i], points[i+1])));
-  if(id !== manualRouteChipId) return; // route changed meanwhile
-  if(manualRouteChipLayer){ map.removeLayer(manualRouteChipLayer); manualRouteChipLayer = null; }
-  const layer = L.layerGroup().addTo(map);
-  manualRouteChipLayer = layer;
-  fetched.forEach((leg, i) => {
-    const a = points[i], b = points[i+1];
-    let coords, time, dist;
-    if(leg){ coords = leg.coords; time = leg.time; dist = leg.dist; }
-    else {
-      coords = [[a.lat, a.lng], [b.lat, b.lng]];
-      dist = haversine(a.lat, a.lng, b.lat, b.lng) * 1.3 * 1000;
-      time = dist / 1000 / 75 * 3600;
-    }
-    addLegChip(layer, coords, time, dist, !leg, starts[i], starts[i+1], i);
-  });
-}
+// fit is remembered until a draw actually finishes: a later redraw may
+// supersede the one that was asked to fit the map, and must still do it.
+let planRouteFitPending = false;
 
 async function drawPlanRoute(fit){
-  const items = activePlan().items;
+  const plan = activePlan();
+  const items = planPoints(plan);
+  const startOffset = plan.start ? 1 : 0;
   const drawId = ++planRouteDrawId;
+  if(fit) planRouteFitPending = true;
   if(items.length < 2){
     clearPlanRoute();
     planRouteActive = false;
@@ -458,14 +514,23 @@ async function drawPlanRoute(fit){
     totalTime += time; totalDist += dist;
     allCoords.push(...coords);
 
-    const warn = addLegChip(layer, coords, time, dist, estimated, a.start, b.start, i);
+    const warn = addLegChip(layer, coords, time, dist, estimated, a.start, b.start, i - startOffset);
     if(warn) warnCount++;
 
     L.polyline(coords, { color:'#00622F', weight:9, opacity:0.85, lineCap:'round', dashArray: estimated ? '2 12' : null }).addTo(layer);
     L.polyline(coords, { color:'#FFF200', weight:5, opacity:1, lineCap:'round', dashArray: estimated ? '2 12' : null }).addTo(layer);
   });
 
-  items.forEach((w, i) => {
+  if(plan.start){
+    L.marker([plan.start.lat, plan.start.lng], {
+      icon: L.divIcon({
+        className:'plan-stop-icon', iconSize:[0,0],
+        html:`<div class="plan-stop"><span class="plan-stop-num plan-stop-start">${ICONS.flag}</span><span class="plan-stop-label">Start<small>${escapeHtml(plan.start.name)}</small></span></div>`
+      }),
+      zIndexOffset: 1000
+    }).addTo(layer);
+  }
+  plan.items.forEach((w, i) => {
     L.marker([w.lat, w.lng], {
       icon: L.divIcon({
         className:'plan-stop-icon', iconSize:[0,0],
@@ -479,7 +544,7 @@ async function drawPlanRoute(fit){
     options: { position:'bottomleft' },
     onAdd(){
       const div = L.DomUtil.create('div', 'plan-route-summary');
-      div.innerHTML = `My Plan route · ${items.length} stops<br>${anyEstimate ? '≈ ' : ''}${fmtHM(totalTime)} · ${(totalDist / 1000).toFixed(0)} km driving`
+      div.innerHTML = `${escapeHtml(plan.name)} · ${plan.items.length} ${plan.items.length === 1 ? 'game' : 'games'}<br>${anyEstimate ? '≈ ' : ''}${fmtHM(totalTime)} · ${(totalDist / 1000).toFixed(0)} km driving`
         + (warnCount ? `<br><span class="warn-line">⚠ ${warnCount} timing ${warnCount === 1 ? 'conflict' : 'conflicts'}</span>` : '');
       L.DomEvent.disableClickPropagation(div);
       return div;
@@ -487,7 +552,10 @@ async function drawPlanRoute(fit){
   });
   planRouteSummaryControl = new SummaryControl().addTo(map);
 
-  if(fit) map.fitBounds(L.latLngBounds(allCoords), { padding:[70,70] });
+  if(planRouteFitPending){
+    planRouteFitPending = false;
+    map.fitBounds(L.latLngBounds(allCoords), { padding:[70,70] });
+  }
 }
 
 // Drop target for dragging a fixture in from the side list or radius
@@ -597,11 +665,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let currentMarkers = [];
 
-// A small numbered badge, overlaid on any marker whose stop is currently on
-// the route planner — the number matches that stop's position in the
-// #route-stops list (see renderStops), so the map and the route panel read
-// as the same ordering. null/undefined routeIndex means "not on the route",
-// which every icon factory below treats as "render normally".
+// A small numbered badge, overlaid on any marker whose club has a game in the
+// active plan — the number is that game's position in My Plan, so the map and
+// the plan read as the same ordering. null/undefined routeIndex means "not in
+// the plan", which every icon factory below treats as "render normally".
 function routeBadgeHtml(routeIndex){
   if(routeIndex == null) return '';
   return `<div style="position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;padding:0 3px;border-radius:50%;background:var(--gold);color:var(--green-dark);font-size:9px;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;border:1.5px solid #fffdf4;box-shadow:0 1px 2px rgba(0,0,0,0.35);">${routeIndex}</div>`;
@@ -937,7 +1004,7 @@ function toggleLeague(code, checked){
   if(calendarOpen) renderCalendar();
 }
 
-// Generic open/close for the header dropdowns (Leagues, Plan Route, Radius
+// Generic open/close for the header dropdowns (Leagues, Dates, Radius
 // Search) — opening one closes any other that's open, and clicking outside
 // a dropdown's own button+panel closes it.
 function toggleDropdown(panelId){
@@ -1026,16 +1093,20 @@ function renderAll(){
       const next = teamFixtures[0];
       const a = otherTeams[next.away];
       const stopKey = `${otherLeague}::${code}`;
-      const marker = L.marker([h.lat, h.lng], { icon: makeMutedIcon(routeIndexFor([stopKey])) });
-      marker._routeStopKeys = [stopKey];
+      const nextKey = watchKeyFor(otherLeague, code, next.matchday);
+      const nextItem = { key: nextKey, league: otherLeague, homeCode: code, homeName: h.name, awayName: a ? a.name : next.away, city: h.city, start: next.start, lat: h.lat, lng: h.lng };
+      const mutedIdx = planIndexFor([stopKey]);
+      const marker = L.marker([h.lat, h.lng], { icon: makeMutedIcon(mutedIdx) });
+      marker._planKeys = [stopKey];
+      marker._planIdx = mutedIdx;
       marker._iconBuilder = (idx) => makeMutedIcon(idx);
       const more = teamFixtures.length > 1 ? ` <span style="opacity:0.7;">(+${teamFixtures.length - 1} more this window)</span>` : '';
       marker.bindPopup(`
         <div class="popup-club">${h.name} vs ${a ? a.name : next.away}</div>
-        <div class="popup-meta">${h.city} · ${fmtDate(next.start)}${unverifiedBadge(watchKeyFor(otherLeague, code, next.matchday), true)} · ${COUNTRY_TAG[otherLeague] || h.country || ''}${more}</div>
-        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
+        <div class="popup-meta">${h.city} · ${fmtDate(next.start)}${unverifiedBadge(nextKey, true)} · ${COUNTRY_TAG[otherLeague] || h.country || ''}${more}</div>
+        <div><button class="watch-btn" data-key="${nextKey}">${watchButtonLabel(isWatched(nextKey))}</button></div>
       `);
-      bindStopButton(marker, stopKey, h, next.start);
+      bindWatchButton(marker, nextItem);
       marker.addTo(map);
       currentMarkers.push(marker);
     });
@@ -1073,16 +1144,16 @@ function renderAll(){
       if(homeThisWindow.has(code)) return;
       const t = teams[code];
       const stopKey = `${league}::${code}`;
-      const marker = L.marker([t.lat, t.lng], { icon: makeLeagueIcon(lightColor, 11, routeIndexFor([stopKey])) });
-      marker._routeStopKeys = [stopKey];
+      const paleIdx = planIndexFor([stopKey]);
+      const marker = L.marker([t.lat, t.lng], { icon: makeLeagueIcon(lightColor, 11, paleIdx) });
+      marker._planKeys = [stopKey];
+      marker._planIdx = paleIdx;
       marker._iconBuilder = (idx) => makeLeagueIcon(lightColor, 11, idx);
       marker.bindTooltip(t.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
       marker.bindPopup(`
         <div class="popup-club">${t.name}</div>
         <div class="popup-meta">${t.city} · no home fixture in this data window</div>
-        <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button></div>
       `);
-      bindStopButton(marker, stopKey, t);
       marker.addTo(map);
       currentMarkers.push(marker);
       bounds.push([t.lat, t.lng]);
@@ -1132,8 +1203,8 @@ function renderAll(){
       bounds.push([h.lat, h.lng]);
 
       const item = document.createElement('div');
-      item.className = 'fixture-item' + (routeIndexFor([stopKey]) !== null ? ' in-route' : '');
-      item.dataset.stop = stopKey;
+      item.className = 'fixture-item' + (isWatched(watchKey) ? ' in-plan' : '');
+      item.dataset.key = watchKey;
       item.innerHTML = `
         <span class="watch-star" data-key="${watchKey}">☆</span>
         <div class="fbody">
@@ -1164,8 +1235,10 @@ function renderAll(){
     const [lat, lng] = vKey.split(',').map(Number);
     const primary = games[0];
     const stopKeys = games.map(g => g.stopKey);
-    const marker = L.marker([lat, lng], { icon: makeIcon(primary.color, primary.h.logo, routeIndexFor(stopKeys)) });
-    marker._routeStopKeys = stopKeys;
+    const venueIdx = planIndexFor(stopKeys);
+    const marker = L.marker([lat, lng], { icon: makeIcon(primary.color, primary.h.logo, venueIdx) });
+    marker._planKeys = stopKeys;
+    marker._planIdx = venueIdx;
     marker._iconBuilder = (idx) => makeIcon(primary.color, primary.h.logo, idx);
     marker.bindTooltip(primary.h.name, { permanent:true, direction:'bottom', offset:[0,2], className:'club-label' });
     marker._venueGames = games;
@@ -1200,7 +1273,7 @@ function buildVenuePopupHtml(games, idx){
     ${pager}
     <div class="popup-club">${g.gameLabel}</div>
     <div class="popup-meta">${g.h.city} · ${fmtDate(g.f.start)}${unverifiedBadge(g.watchKey, true)}</div>
-    <div><button class="add-stop-btn" data-stop="${g.stopKey}">+ Add to route</button><button class="watch-btn" data-key="${g.watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${g.watchKey}">${ICONS.sparkle} Suggest trip</button></div>
+    <div><button class="watch-btn" data-key="${g.watchKey}">${watchButtonLabel(isWatched(g.watchKey))}</button><button class="suggest-trip-btn" data-key="${g.watchKey}">${ICONS.sparkle} Suggest trip</button></div>
   `;
 }
 
@@ -1214,12 +1287,10 @@ function bindVenuePopupHandlers(marker){
 function wireVenuePopupButtons(marker){
   const games = marker._venueGames;
   const g = games[marker._venueIndex];
-  const stopBtn = document.querySelector(`.add-stop-btn[data-stop="${CSS.escape(g.stopKey)}"]`);
-  if(stopBtn) updateStopButtonState(stopBtn, g.stopKey, g.h, g.f.start, () => marker.closePopup());
   const watchBtn = document.querySelector(`.watch-btn[data-key="${CSS.escape(g.watchKey)}"]`);
   if(watchBtn){
-    watchBtn.textContent = isWatched(g.watchKey) ? '★ Planned' : '☆ Plan';
-    watchBtn.onclick = () => { toggleWatch(g.watchItem); watchBtn.textContent = isWatched(g.watchKey) ? '★ Planned' : '☆ Plan'; };
+    setWatchButton(watchBtn, g.watchKey);
+    watchBtn.onclick = () => { toggleWatch(g.watchItem); setWatchButton(watchBtn, g.watchKey); };
   }
   const suggestBtn = document.querySelector(`.suggest-trip-btn[data-key="${CSS.escape(g.watchKey)}"]`);
   if(suggestBtn) suggestBtn.onclick = () => { suggestTripsFor(g.league, g.f.home, g.f.start, g.gameLabel); marker.closePopup(); };
@@ -1519,12 +1590,12 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
       <div class="combo-title">${crossBorder ? ICONS.globe + ' Cross-border trip' : 'Trip'} ${cIdx+1} · ${games.length} games</div>
       ${gamesHtml}
       <div class="combo-stats">≈ ${fmtHM(totalDriveSec)} · ${totalKm.toFixed(0)} km total driving · ${countries.join(' → ')}</div>
-      <div class="combo-load-hint">${ICONS.route} Click to load as your route</div>
+      <div class="combo-load-hint">${ICONS.route} Click to open as a new plan</div>
     `;
     card.onclick = () => {
       const bnds = games.map(g => [g.home.lat, g.home.lng]);
       map.fitBounds(bnds, { padding:[60,60] });
-      loadRouteFromGames(games);
+      openGamesAsNewPlan(games);
     };
     combosList.appendChild(card);
   });
@@ -1798,64 +1869,33 @@ function toggleSidePanel(){
   setTimeout(() => map.invalidateSize(), 150);
 }
 
-// ===== Point-to-point route planning =====
-// stopKey format: "league::teamCode" so any club, from any league, can be a stop.
-let routeStops = []; // array of {key, team}
-// Optional origin for the route — an airport or a radius-search center
-// point — always driven from first, ahead of every numbered stop.
-let routeStart = null; // { name, lat, lng } | null
-let routingControl = null;
-
-// Shared toggle behavior for every "+ Add to route" button: reflects
-// whether this stop is already on the route, and lets clicking it again
-// remove the stop instead of only ever being able to add one. Re-applied
-// every time a popup opens (and, for venue popups, every page-change)
-// since routeStops can have changed since the button's HTML was built.
-function updateStopButtonState(btn, stopKey, teamData, fixtureStart, afterClick){
-  const inRoute = routeStops.some(s => s.key === stopKey);
-  btn.textContent = inRoute ? '✓ Remove from route' : '+ Add to route';
-  btn.classList.toggle('added', inRoute);
-  btn.onclick = () => {
-    if(inRoute) removeStop(stopKey);
-    else addStop(stopKey, teamData, fixtureStart);
-    if(afterClick) afterClick();
-  };
-}
-
-function bindStopButton(marker, stopKey, teamData, fixtureStart){
-  marker.on('popupopen', () => {
-    const btn = document.querySelector(`.add-stop-btn[data-stop="${CSS.escape(stopKey)}"]`);
-    if(btn) updateStopButtonState(btn, stopKey, teamData, fixtureStart, () => marker.closePopup());
-  });
-}
-
-// Reusable "🏁 Set as start point" button binding for any marker with a
-// fixed lat/lng — airports today, potentially other reference points later.
+// ===== Plan helpers shared by the map popups =====
+// "Set as start point" on a marker (airports today): the point becomes the
+// start of the active plan, driven from first ahead of its games.
 function bindStartButton(marker, startKey, point){
   marker.on('popupopen', () => {
     const btn = document.querySelector(`.start-stop-btn[data-start="${CSS.escape(startKey)}"]`);
-    if(btn) btn.onclick = () => { setRouteStart(point); marker.closePopup(); };
+    if(btn) btn.onclick = () => { setPlanStart(point); marker.closePopup(); };
   });
 }
 
-function setRouteStart(point){
-  routeStart = point;
-  renderStops();
-  computeRoute();
+// One label and look for every "add to plan" popup button, so they all read
+// alike: green "Add to plan", red-outlined "In plan (remove)".
+function watchButtonLabel(inPlan){
+  return inPlan ? '★ In plan (remove)' : '☆ Add to plan';
 }
-
-function clearRouteStart(){
-  routeStart = null;
-  renderStops();
-  computeRoute();
+function setWatchButton(btn, key){
+  const inPlan = isWatched(key);
+  btn.textContent = watchButtonLabel(inPlan);
+  btn.classList.toggle('in-plan', inPlan);
 }
 
 function bindWatchButton(marker, watchItem){
   marker.on('popupopen', () => {
     const btn = document.querySelector(`.watch-btn[data-key="${CSS.escape(watchItem.key)}"]`);
     if(btn){
-      btn.textContent = isWatched(watchItem.key) ? '★ Planned' : '☆ Plan';
-      btn.onclick = () => { toggleWatch(watchItem); btn.textContent = isWatched(watchItem.key) ? '★ Planned' : '☆ Plan'; };
+      setWatchButton(btn, watchItem.key);
+      btn.onclick = () => { toggleWatch(watchItem); setWatchButton(btn, watchItem.key); };
     }
   });
 }
@@ -1869,193 +1909,31 @@ function bindSuggestButton(marker, key, league, homeCode, start, label){
   });
 }
 
-// The route keeps the order the stops were clicked in. It is only reordered
-// when that order is impossible because of the kickoff times, i.e. a stop
-// with a later kickoff sits before a stop with an earlier one. In that case
-// the timed stops are put into chronological order among THEIR OWN slots.
-// Stops with no specific fixture (e.g. a club added as a plain waypoint) are
-// never moved: they keep the position they were clicked into.
-function sortRouteStopsChronologically(){
-  const slots = [];
-  routeStops.forEach((s, i) => { if(s.start) slots.push(i); });
-  const timed = slots.map(i => routeStops[i]);
-  const inOrder = timed.every((s, i) => i === 0 || new Date(timed[i-1].start) <= new Date(s.start));
-  if(inOrder) return;
-  const ordered = timed.slice().sort((a,b) => new Date(a.start) - new Date(b.start));
-  slots.forEach((slotIdx, k) => { routeStops[slotIdx] = ordered[k]; });
+// Which My Plan position (1-based) the first game of any of these clubs has,
+// or null if none of them is in the active plan — drives the gold marker
+// badge (see routeBadgeHtml). stopKeys are "league::teamCode"; a venue marker
+// can stand for more than one club (a domestic and a UEFA fixture at the same
+// ground), and the first one that is in the plan wins.
+function planIndexFor(stopKeys){
+  const idx = activePlan().items.findIndex(w => stopKeys.includes(`${w.league}::${w.homeCode}`));
+  return idx === -1 ? null : idx + 1;
 }
 
-// Which route-panel position (1-based) a stop is currently at, or null if
-// it isn't on the route at all — drives both the gold marker badge (see
-// routeBadgeHtml) and the .in-route highlight on fixture/radius-result rows.
-// Takes an array since a venue-grouped marker (see renderAll's venueGroups)
-// can represent more than one stopKey at once (e.g. a club with both a
-// domestic and a UEFA fixture) — the first one that's actually on the route
-// wins.
-function routeIndexFor(stopKeys){
-  for(const k of stopKeys){
-    const idx = routeStops.findIndex(s => s.key === k);
-    if(idx !== -1) return idx + 1;
-  }
-  return null;
-}
-
-// Re-applies route-membership badges/highlights to already-rendered markers
-// and list rows without a full renderAll() — cheap enough to call on every
-// route change, and keeps map markers, the fixtures list, and radius
-// results all in sync with whatever's currently in the route panel. Markers
-// opt in by carrying _routeStopKeys + _iconBuilder (set at creation time in
-// renderAll/renderRadiusResults); anything else is left alone.
-function refreshRouteVisuals(){
+// Re-applies plan badges and highlights to already-rendered markers and list
+// rows without a full renderAll(). Markers opt in by carrying _planKeys +
+// _iconBuilder (set where they are created in renderAll / renderRadiusResults)
+// and only get a new icon when their number actually changed.
+function refreshPlanVisuals(){
   [...currentMarkers, ...radiusMarkers].forEach(m => {
-    if(!m._routeStopKeys || !m._iconBuilder) return;
-    m.setIcon(m._iconBuilder(routeIndexFor(m._routeStopKeys)));
+    if(!m._planKeys || !m._iconBuilder) return;
+    const idx = planIndexFor(m._planKeys);
+    if(m._planIdx === idx) return;
+    m._planIdx = idx;
+    m.setIcon(m._iconBuilder(idx));
   });
-  document.querySelectorAll('.fixture-item[data-stop], .radius-result[data-stop]').forEach(el => {
-    el.classList.toggle('in-route', routeIndexFor([el.dataset.stop]) !== null);
+  document.querySelectorAll('.fixture-item[data-key], .radius-result[data-key]').forEach(el => {
+    el.classList.toggle('in-plan', isWatched(el.dataset.key));
   });
-}
-
-function addStop(key, team, start){
-  if(routeStops.some(s => s.key === key)) return;
-  routeStops.push({ key, team, start: start || null });
-  sortRouteStopsChronologically();
-  renderStops();
-  computeRoute();
-  refreshRouteVisuals();
-}
-
-function removeStop(key){
-  routeStops = routeStops.filter(s => s.key !== key);
-  renderStops();
-  computeRoute();
-  refreshRouteVisuals();
-}
-
-function clearRoute(){
-  routeStops = [];
-  routeStart = null;
-  renderStops();
-  computeRoute();
-  refreshRouteVisuals();
-}
-
-// Replaces the whole route with a set of games in one shot — used when
-// loading a Combinable Trips suggestion. `games` entries need
-// {league, homeCode, home:{name,city,lat,lng}, start}; already
-// chronologically ordered by the trip-building algorithm, but sorted again
-// here for safety since this is a public entry point.
-function loadRouteFromGames(games){
-  routeStart = null;
-  routeStops = games.map(g => ({
-    key: `${g.league}::${g.homeCode}`,
-    team: g.home,
-    start: g.start instanceof Date ? g.start.toISOString() : g.start
-  }));
-  sortRouteStopsChronologically();
-  renderStops();
-  computeRoute();
-  refreshRouteVisuals();
-  document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
-  document.getElementById('route-panel').classList.add('open');
-}
-
-function renderStops(){
-  const container = document.getElementById('route-stops');
-  const clearBtn = document.getElementById('clear-route-btn');
-  const hint = document.getElementById('route-hint');
-  if(!routeStart && routeStops.length === 0){
-    container.innerHTML = '';
-    clearBtn.disabled = true;
-    hint.style.display = 'block';
-    return;
-  }
-  hint.style.display = 'none';
-  clearBtn.disabled = false;
-
-  const rows = [];
-  if(routeStart){
-    rows.push(`
-      <div class="route-stop route-start">
-        <span class="num start-flag">${ICONS.flag}</span>
-        <span class="name">${routeStart.name}</span>
-        <span class="rm" onclick="clearRouteStart()">×</span>
-      </div>
-    `);
-  }
-  routeStops.forEach((s,i) => {
-    rows.push(`
-      <div class="route-stop">
-        <span class="num">${i+1}</span>
-        <span class="name">${s.team.name}</span>
-        <span class="rm" onclick="removeStop('${s.key.replace(/'/g,"\\'")}')">×</span>
-      </div>
-    `);
-  });
-
-  const legsValid = routeLegs && routeLegs.length === rows.length - 1;
-  let html = rows[0];
-  for(let i=1;i<rows.length;i++){
-    if(legsValid){
-      const leg = routeLegs[i-1];
-      html += `<div class="route-leg">${fmtHM(leg.time)} · ${(leg.distance/1000).toFixed(0)} km</div>`;
-    }
-    html += rows[i];
-  }
-  container.innerHTML = html;
-}
-
-let routeLegs = null; // per-leg {time,distance}, matching the current points order, or null
-let routeComputeId = 0;
-
-async function computeRoute(){
-  const summary = document.getElementById('route-summary');
-  if(routingControl){ map.removeControl(routingControl); routingControl = null; }
-  const points = [...(routeStart ? [routeStart] : []), ...routeStops.map(s => s.team)];
-  const pointStarts = [...(routeStart ? [null] : []), ...routeStops.map(s => s.start || null)];
-  routeLegs = null;
-  const computeId = ++routeComputeId;
-  clearManualRouteChips();
-  if(points.length < 2){ summary.style.display='none'; summary.textContent=''; renderStops(); return; }
-  drawManualRouteChips(points, pointStarts);
-  const waypoints = points.map(p => L.latLng(p.lat, p.lng));
-  routingControl = L.Routing.control({
-    waypoints: waypoints,
-    lineOptions: { styles: [{ color:'#FFF200', weight:5, opacity:0.9 }] },
-    createMarker: () => null,
-    addWaypoints: false,
-    draggableWaypoints: false,
-    fitSelectedRoutes: true,
-    show: false,
-    router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' })
-  }).addTo(map);
-  routingControl.on('routesfound', (e) => {
-    const route = e.routes[0];
-    const km = (route.summary.totalDistance/1000).toFixed(0);
-    const hrs = route.summary.totalTime/3600;
-    const h = Math.floor(hrs); const m = Math.round((hrs-h)*60);
-    summary.style.display='block';
-    summary.textContent = `≈ ${km} km · ${h} hr ${m} min driving time`;
-  });
-  routingControl.on('routingerror', () => {
-    summary.style.display='block';
-    summary.textContent = 'Could not calculate a route (a ferry crossing may be required).';
-  });
-
-  // Per-leg time/distance, fetched the same way as Combinable Trips (a
-  // separate OSRM table lookup) since Leaflet Routing Machine's route
-  // object doesn't expose a reliable per-leg breakdown.
-  try{
-    const matrix = await fetchDurationMatrix(points.map(p => ({ lat:p.lat, lng:p.lng })));
-    if(computeId !== routeComputeId) return; // a newer route has since superseded this one
-    if(matrix){
-      routeLegs = points.slice(1).map((_, i) => ({
-        time: matrix.durations[i][i+1],
-        distance: matrix.distances[i][i+1]
-      }));
-      renderStops();
-    }
-  } catch(e){ /* leg breakdown is best-effort */ }
 }
 
 // ===== Radius search =====
@@ -2163,15 +2041,16 @@ function renderRadiusResults(point, radiusKm, fitView, includePast){
     const watchKey = watchKeyFor(g.league, g.homeCode, g.matchday);
     const watchItem = { key: watchKey, league: g.league, homeCode: g.homeCode, homeName: g.home.name, awayName: g.awayName, city: g.home.city, start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng };
     const gameLabel = `${g.home.name} vs ${g.awayName}`;
-    const marker = L.marker([g.home.lat, g.home.lng], { icon: makeIcon(LEAGUE_COLOR[g.league], g.home.logo, routeIndexFor([stopKey])) });
-    marker._routeStopKeys = [stopKey];
+    const radiusIdx = planIndexFor([stopKey]);
+    const marker = L.marker([g.home.lat, g.home.lng], { icon: makeIcon(LEAGUE_COLOR[g.league], g.home.logo, radiusIdx) });
+    marker._planKeys = [stopKey];
+    marker._planIdx = radiusIdx;
     marker._iconBuilder = (idx) => makeIcon(LEAGUE_COLOR[g.league], g.home.logo, idx);
     marker.bindPopup(`
       <div class="popup-club">${gameLabel}</div>
       <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())}${unverifiedBadge(watchKey, true)} · ${LEAGUE_LABELS[g.league] || g.league}</div>
-      <div><button class="add-stop-btn" data-stop="${stopKey}">+ Add to route</button><button class="watch-btn" data-key="${watchKey}">☆ Plan</button><button class="suggest-trip-btn" data-key="${watchKey}">${ICONS.sparkle} Suggest trip</button></div>
+      <div><button class="watch-btn" data-key="${watchKey}">${watchButtonLabel(isWatched(watchKey))}</button><button class="suggest-trip-btn" data-key="${watchKey}">${ICONS.sparkle} Suggest trip</button></div>
     `);
-    bindStopButton(marker, stopKey, g.home, g.start.toISOString());
     bindWatchButton(marker, watchItem);
     bindSuggestButton(marker, watchKey, g.league, g.homeCode, g.start.toISOString(), gameLabel);
     marker.addTo(map);
@@ -2179,8 +2058,8 @@ function renderRadiusResults(point, radiusKm, fitView, includePast){
     bounds.push([g.home.lat, g.home.lng]);
 
     const item = document.createElement('div');
-    item.className = 'radius-result' + (routeIndexFor([stopKey]) !== null ? ' in-route' : '');
-    item.dataset.stop = stopKey;
+    item.className = 'radius-result' + (isWatched(watchKey) ? ' in-plan' : '');
+    item.dataset.key = watchKey;
     item.innerHTML = `
       <span class="watch-star" data-key="${watchKey}">☆</span>
       ${resultLogoHtml(g.home.logo, LEAGUE_COLOR[g.league])}
@@ -2229,14 +2108,14 @@ async function runRadiusSearch(){
 }
 
 // Lets the radius search's center point (from an address search or a
-// map-pick) double as the route's start point, so a scouting trip can be
+// map-pick) double as the plan's start point, so a scouting trip can be
 // planned outward from "wherever I searched" as well as from an airport.
 function useRadiusPointAsStart(){
   if(!lastRadiusPoint){
     document.getElementById('radius-status').textContent = 'Search an address or pick a point first.';
     return;
   }
-  setRouteStart({
+  setPlanStart({
     name: lastRadiusPoint.label.split(',').slice(0,3).join(','),
     lat: lastRadiusPoint.lat, lng: lastRadiusPoint.lng
   });
@@ -2308,8 +2187,8 @@ map.on('click', async (e) => {
 
 // ===== Reset all filters =====
 // Deliberately scoped to *filters/view state*, not to content the user
-// built up on purpose — route planning (its own "Clear") and the "My Plan"
-// watchlist (its own rename/delete flow) are left untouched.
+// built up on purpose — the "My Plan" plans (their own rename/delete flow)
+// are left untouched.
 function resetAllFilters(){
   selectedLeagues = new Set(['epl']);
   leagueMatchday = {};
