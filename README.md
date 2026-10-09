@@ -214,6 +214,12 @@ to refresh it; `dist/` isn't tracked in git.
   plan (the last remaining plan can't be deleted, rename it instead).
   Everything is persisted in the browser's `localStorage` (local to one
   browser/device, no account or sync).
+  **Scout per plan**: a "Scout" dropdown under the plan switcher assigns the
+  plan to a person from the roster in `data/scouts.json` (a plain JSON list of
+  names; edit the file to add or remove scouts). The plan switcher then groups
+  plans by scout, with "No scout" last. The name is stored on the plan, so it
+  survives roster changes. Note that `data/scouts.json` is part of the public
+  repo and site.
   **Plans follow the data**: a plan stores a copy of each game, so on every
   load each saved game is re-checked against `data/fixtures.json` by its key.
   A moved kickoff is updated and flagged "Kickoff changed, was ..." with an OK

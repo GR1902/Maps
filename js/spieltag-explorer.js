@@ -4,6 +4,7 @@ let FIXTURES = {};
 let AIRPORTS = [];
 let LEAGUE_LOGO = {}; // league code -> competition logo URL, loaded from data/leagues.json
 let META = {};         // data/meta.json: { checked: 'YYYY-MM-DD' } = when the fixtures were last verified
+let SCOUTS = [];       // data/scouts.json: roster of scout names a plan can be assigned to
 
 // Small inline-SVG icon set (stroke-based, currentColor) used in place of
 // emoji throughout the UI — kept as plain template strings, mirrored in
@@ -164,10 +165,35 @@ function refreshWatchStars(){
 }
 
 // ----- Plan management (rename / switch / create / delete) -----
+// A plan can be assigned to one scout from data/scouts.json (plan.scout holds
+// the name, so a plan keeps its scout even if the roster changes later).
 function renderPlanToolbar(){
   const select = document.getElementById('plan-select');
-  select.innerHTML = plans.map(p => `<option value="${p.id}" ${p.id===activePlanId?'selected':''}>${p.name} (${p.items.length})${planHasFlags(p) ? ' ⟳' : ''}</option>`).join('');
+  const option = p => `<option value="${p.id}" ${p.id===activePlanId?'selected':''}>${escapeHtml(p.name)} (${p.items.length})${planHasFlags(p) ? ' ⟳' : ''}</option>`;
+  if(plans.some(p => p.scout)){
+    // Grouped by scout (roster order first, then names no longer on the roster, then unassigned).
+    const names = [...SCOUTS, ...plans.map(p => p.scout).filter(n => n && !SCOUTS.includes(n))];
+    const groups = [...new Set(names)].filter(n => plans.some(p => p.scout === n))
+      .map(n => `<optgroup label="${escapeHtml(n)}">${plans.filter(p => p.scout === n).map(option).join('')}</optgroup>`);
+    const open = plans.filter(p => !p.scout);
+    if(open.length) groups.push(`<optgroup label="No scout">${open.map(option).join('')}</optgroup>`);
+    select.innerHTML = groups.join('');
+  } else {
+    select.innerHTML = plans.map(option).join('');
+  }
   document.getElementById('plan-name-display').textContent = activePlan().name;
+
+  const scoutSelect = document.getElementById('plan-scout-select');
+  const current = activePlan().scout || '';
+  const roster = current && !SCOUTS.includes(current) ? [...SCOUTS, current] : SCOUTS;
+  scoutSelect.innerHTML = `<option value="">No scout</option>` + roster.map(n => `<option value="${escapeHtml(n)}" ${n===current?'selected':''}>${escapeHtml(n)}</option>`).join('');
+}
+
+function setPlanScout(name){
+  const plan = activePlan();
+  if(name) plan.scout = name; else delete plan.scout;
+  savePlans();
+  renderPlanToolbar();
 }
 
 function switchPlan(id){
@@ -2524,18 +2550,20 @@ function renderDataStatus(){
 
 // ===== Bootstrap: load data, then render =====
 async function loadData(){
-  const [teamsRes, fixturesRes, airportsRes, leaguesRes, metaRes] = await Promise.all([
+  const [teamsRes, fixturesRes, airportsRes, leaguesRes, metaRes, scoutsRes] = await Promise.all([
     fetch('data/teams.json'),
     fetch('data/fixtures.json'),
     fetch('data/airports.json'),
     fetch('data/leagues.json'),
-    fetch('data/meta.json').catch(() => null) // optional: the app works without it
+    fetch('data/meta.json').catch(() => null), // optional: the app works without it
+    fetch('data/scouts.json').catch(() => null) // optional as well
   ]);
   TEAMS = await teamsRes.json();
   FIXTURES = await fixturesRes.json();
   AIRPORTS = await airportsRes.json();
   LEAGUE_LOGO = await leaguesRes.json();
   try{ if(metaRes && metaRes.ok) META = await metaRes.json(); } catch(e){ /* keep the empty default */ }
+  try{ if(scoutsRes && scoutsRes.ok) SCOUTS = await scoutsRes.json(); } catch(e){ /* keep the empty default */ }
 
   reconcilePlans();
   renderDataStatus();

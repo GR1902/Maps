@@ -22,6 +22,7 @@ fixtures_json = (root / "data/fixtures.json").read_text()
 airports_json = (root / "data/airports.json").read_text()
 leagues_json = (root / "data/leagues.json").read_text()
 meta_json = (root / "data/meta.json").read_text()
+scouts_json = (root / "data/scouts.json").read_text()
 
 js = (root / "js/spieltag-explorer.js").read_text()
 
@@ -38,6 +39,10 @@ if n != 1:
 js, n = re.subn(r"^let META = \{\};.*$", lambda m: f"let META = {meta_json};", js, count=1, flags=re.M)
 if n != 1:
     raise SystemExit("Could not find the META declaration to replace — source file changed?")
+
+js, n = re.subn(r"^let SCOUTS = \[\];.*$", lambda m: f"let SCOUTS = {scouts_json};", js, count=1, flags=re.M)
+if n != 1:
+    raise SystemExit("Could not find the SCOUTS declaration to replace — source file changed?")
 
 js, n = re.subn(
     r"// ===== Bootstrap: load data, then render =====\nasync function loadData\(\)\{.*?\}\n\nloadData\(\);",
