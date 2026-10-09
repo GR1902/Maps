@@ -156,6 +156,10 @@
         <div id="plan-scout-row">
           <label for="plan-scout-select">Scout</label>
           <select id="plan-scout-select" onchange="setPlanScout(this.value)"></select>
+          <button type="button" class="mini-btn" id="plan-share-btn" onclick="sharePlan()" title="Copy a link to this plan. Whoever opens it gets the games with the current kickoff times.">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+            <span id="plan-share-label">Copy link</span>
+          </button>
         </div>
         <div id="watchlist-dropzone">
           <div id="watchlist-list"></div>

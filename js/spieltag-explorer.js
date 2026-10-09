@@ -196,6 +196,113 @@ function setPlanScout(name){
   renderPlanToolbar();
 }
 
+// ----- Share a plan as a link -----
+// The link carries only what cannot be looked up: the plan's name, scout, start
+// point and the keys of its games. Teams, venues and kickoff times are read
+// from the current data when the link is opened, so the receiver never gets a
+// stale copy of a time that has since been corrected.
+const SHARE_BASE_URL = 'https://gr1902.github.io/Maps/'; // used when the app runs from a file
+let dataReady = false; // set once the data is loaded, so a link in the URL can be resolved
+
+function encodeShareData(obj){
+  let bin = '';
+  new TextEncoder().encode(JSON.stringify(obj)).forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function decodeShareData(text){
+  const bin = atob(text.replace(/-/g, '+').replace(/_/g, '/'));
+  return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+}
+
+function buildPlanLink(plan = activePlan()){
+  const data = { v: 1, n: plan.name, k: plan.items.map(w => w.key) };
+  if(plan.scout) data.s = plan.scout;
+  if(plan.start) data.p = { n: plan.start.name, a: +plan.start.lat.toFixed(4), o: +plan.start.lng.toFixed(4) };
+  const base = /^https?:$/.test(location.protocol) ? location.origin + location.pathname : SHARE_BASE_URL;
+  return `${base}#plan=${encodeShareData(data)}`;
+}
+
+function updateShareButton(){
+  const btn = document.getElementById('plan-share-btn');
+  if(btn) btn.disabled = activePlan().items.length === 0;
+}
+
+async function sharePlan(){
+  const plan = activePlan();
+  if(plan.items.length === 0) return;
+  const url = buildPlanLink(plan);
+  const label = document.getElementById('plan-share-label');
+  try{
+    await navigator.clipboard.writeText(url);
+    label.textContent = 'Link copied';
+    setTimeout(() => { label.textContent = 'Copy link'; }, 1800);
+  } catch(e){
+    prompt('Copy this link and send it to the scout:', url);
+  }
+}
+
+// Rebuilds a plan item from a game key (league::home::matchday) using the
+// loaded data; null when that game is not in the schedule (any more).
+function itemFromKey(key){
+  const [league, home, matchday] = String(key).split('::');
+  if(!Object.prototype.hasOwnProperty.call(FIXTURES, league) || !Array.isArray(FIXTURES[league])) return null;
+  const teams = TEAMS[league];
+  const f = FIXTURES[league].find(g => g.home === home && String(g.matchday) === matchday);
+  const h = teams && Object.prototype.hasOwnProperty.call(teams, home) ? teams[home] : null;
+  if(!f || !h) return null;
+  const a = Object.prototype.hasOwnProperty.call(teams, f.away) ? teams[f.away] : null;
+  return { key: `${league}::${home}::${f.matchday}`, league, homeCode: home, homeName: h.name, awayName: a ? a.name : f.away, city: h.city, start: f.start, lat: h.lat, lng: h.lng };
+}
+
+// Opens a plan link (#plan=...) from the address bar as a new plan after the
+// user confirms it. The link is untrusted input: only games that exist in the
+// loaded data are taken over, texts are length-limited, coordinates validated.
+function importSharedPlanFromUrl(){
+  const m = /^#plan=([A-Za-z0-9_-]+)$/.exec(location.hash);
+  if(!m) return;
+  history.replaceState(null, '', location.pathname + location.search); // so a reload does not import it again
+  let data = null;
+  try{ data = decodeShareData(m[1]); } catch(e){ /* handled below */ }
+  if(!data || data.v !== 1 || !Array.isArray(data.k) || data.k.length === 0 || data.k.length > 60){
+    alert('This plan link could not be read. Ask for a new one.');
+    return;
+  }
+  const items = data.k.map(itemFromKey).filter(Boolean);
+  const dropped = data.k.length - items.length;
+  if(items.length === 0){
+    alert('None of the games in this plan link are in the current schedule.');
+    return;
+  }
+  const text = v => typeof v === 'string' ? v.trim().slice(0, 80) : '';
+  const name = text(data.n) || 'Shared plan';
+  const scout = text(data.s);
+
+  let plan = findPlanWithSameGames(items);
+  if(!plan){
+    const lines = [name, `${items.length} ${items.length === 1 ? 'game' : 'games'}`];
+    if(scout) lines.push(`Scout: ${scout}`);
+    if(dropped) lines.push(`${dropped} ${dropped === 1 ? 'game is' : 'games are'} no longer in the schedule and will be left out.`);
+    if(!confirm(`Add this shared plan?\n\n${lines.join('\n')}`)) return;
+    plan = { id: uid(), name, items };
+    if(scout) plan.scout = scout;
+    const p = data.p;
+    if(p && typeof p === 'object' && text(p.n) && Number.isFinite(p.a) && Math.abs(p.a) <= 90 && Number.isFinite(p.o) && Math.abs(p.o) <= 180){
+      plan.start = { name: text(p.n), lat: p.a, lng: p.o };
+    }
+    plans.push(plan);
+  }
+  activePlanId = plan.id;
+  savePlans();
+  renderWatchlist();
+  refreshWatchStars();
+  planRouteActive = true;
+  updatePlanRouteButton();
+  drawPlanRoute(true);
+  computeWatchlistLegs();
+  revealMyPlan();
+}
+window.addEventListener('hashchange', () => { if(dataReady) importSharedPlanFromUrl(); });
+
 function switchPlan(id){
   activePlanId = id;
   savePlans();
@@ -208,14 +315,18 @@ function switchPlan(id){
 // the plan the user is working on is overwritten. An identical plan that
 // already exists is reused instead of duplicated. The new plan inherits the
 // current start point, and its route is drawn straight away.
+function findPlanWithSameGames(items){
+  const signature = list => list.map(i => i.key).sort().join('|');
+  return plans.find(p => p.items.length === items.length && signature(p.items) === signature(items));
+}
+
 function openGamesAsNewPlan(games){
   const items = games.map(g => ({
     key: watchKeyFor(g.league, g.homeCode, g.matchday), league: g.league, homeCode: g.homeCode,
     homeName: g.home.name, awayName: g.awayName, city: g.home.city,
     start: g.start.toISOString(), lat: g.home.lat, lng: g.home.lng
   }));
-  const signature = list => list.map(i => i.key).sort().join('|');
-  let plan = plans.find(p => p.items.length === items.length && signature(p.items) === signature(items));
+  let plan = findPlanWithSameGames(items);
   if(!plan){
     plan = { id: uid(), name: `Trip ${fmtDateShort(games[0].start)} (${games.length} games)`, items };
     const current = activePlan();
@@ -313,6 +424,7 @@ function renderWatchlist(){
   countEl.textContent = `(${items.length})`;
   dropzone.classList.toggle('empty', items.length === 0);
   updatePlanRouteButton();
+  updateShareButton();
   list.innerHTML = '';
 
   // Per-leg drive time/distance between consecutive rows in their CURRENT
@@ -2603,6 +2715,8 @@ async function loadData(){
   renderWatchlist();
   computeWatchlistLegs(); // covers a returning user's plan already having 2+ saved games
   renderAll();
+  dataReady = true;
+  importSharedPlanFromUrl();
 }
 
 loadData();

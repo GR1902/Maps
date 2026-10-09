@@ -47,7 +47,7 @@ if n != 1:
 js, n = re.subn(
     r"// ===== Bootstrap: load data, then render =====\nasync function loadData\(\)\{.*?\}\n\nloadData\(\);",
     "// ===== Bootstrap: data is embedded above, render immediately =====\n"
-    "reconcilePlans();\nrenderDataStatus();\nbuildLeaguePanel();\nrenderWatchlist();\ncomputeWatchlistLegs();\nrenderAll();",
+    "reconcilePlans();\nrenderDataStatus();\nbuildLeaguePanel();\nrenderWatchlist();\ncomputeWatchlistLegs();\nrenderAll();\ndataReady = true;\nimportSharedPlanFromUrl();",
     js,
     count=1,
     flags=re.S,

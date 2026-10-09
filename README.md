@@ -223,6 +223,20 @@ to refresh it; `dist/` isn't tracked in git.
   plans by scout, with "No scout" last. The name is stored on the plan, so it
   survives roster changes. Note that `data/scouts.json` is part of the public
   repo and site.
+  **Share a plan as a link**: "Copy link" (next to the Scout dropdown)
+  copies an address like `.../Maps/#plan=...` that carries only the plan's
+  name, scout, start point and the keys of its games, no kickoff times.
+  Whoever opens it (the coordinator sending a plan to a scout, say) gets a
+  confirmation ("Add this shared plan? 3 games, Scout: ..."), then the plan
+  appears as a new plan with its route drawn; the teams, venues and times
+  come from the data the receiver loads, so they are always current. Games
+  that no longer exist in the schedule are left out and counted in the
+  confirmation; a plan with identical games is just switched to instead of
+  duplicated; a link that cannot be read shows a message. The address bar
+  is cleaned after opening, so a reload does not import it again. A link is
+  one-way and a snapshot of the game list: send a new one after changing
+  the plan. When the app runs from the standalone file, links point to
+  https://gr1902.github.io/Maps/.
   **Plans follow the data**: a plan stores a copy of each game, so on every
   load each saved game is re-checked against `data/fixtures.json` by its key.
   A moved kickoff is updated and flagged "Kickoff changed, was ..." with an OK
