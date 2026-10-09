@@ -122,6 +122,12 @@
           <button type="button" onclick="calendarShiftMonth(1)" aria-label="Next month">›</button>
         </div>
         <div id="calendar-range">
+          <div id="calendar-mode" role="group" aria-label="Calendar content">
+            <button type="button" id="cal-mode-games" class="seg-btn active" onclick="setCalendarMode('games')">Games</button>
+            <button type="button" id="cal-mode-plans" class="seg-btn" onclick="setCalendarMode('plans')">Plans</button>
+          </div>
+          <select id="calendar-scout-filter" onchange="onCalendarScoutFilter(this.value)" title="Show the plans of one scout" style="display:none;"></select>
+          <button type="button" class="mini-btn" id="calendar-ics-btn" onclick="exportCalendarIcs()" title="Download the shown plans as a calendar file (.ics) for Google, Outlook or Apple Calendar" style="display:none;">Export .ics</button>
           <span id="calendar-range-note"></span>
           <button type="button" class="mini-btn" onclick="calendarJumpToday()">Today</button>
         </div>
@@ -156,9 +162,15 @@
         <div id="plan-scout-row">
           <label for="plan-scout-select">Scout</label>
           <select id="plan-scout-select" onchange="setPlanScout(this.value)"></select>
+        </div>
+        <div id="plan-actions-row">
           <button type="button" class="mini-btn" id="plan-share-btn" onclick="sharePlan()" title="Copy a link to this plan. Whoever opens it gets the games with the current kickoff times.">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
             <span id="plan-share-label">Copy link</span>
+          </button>
+          <button type="button" class="mini-btn" id="plan-ics-btn" onclick="exportPlanIcs()" title="Download this plan as a calendar file (.ics) for Google, Outlook or Apple Calendar">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+            Add to calendar (.ics)
           </button>
         </div>
         <div id="watchlist-dropzone">

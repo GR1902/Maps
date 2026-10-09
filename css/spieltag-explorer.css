@@ -595,3 +595,25 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   flex:1; min-width:0; font-family:inherit; font-size:0.74rem; padding:5px 8px; border:1px solid var(--line);
   border-radius:var(--radius-sm); background:var(--paper); color:var(--ink);
 }
+
+/* Calendar: plans mode */
+#calendar-mode{ display:inline-flex; }
+#calendar-mode .seg-btn{ font-size:0.72rem; padding:5px 10px; }
+#calendar-scout-filter{
+  font-family:inherit; font-size:0.74rem; padding:5px 8px; border:1px solid var(--line);
+  border-radius:var(--radius-sm); background:var(--paper); color:var(--ink);
+}
+.cal-match-line b{ font-weight:700; color:var(--ink); }
+.cal-cell.cal-selected .cal-match-line b{ color:#fff; }
+.cal-cell.cal-conflict{ border-color:#d97706; }
+.cal-conflict-mark{ color:#b45309; font-size:0.85rem; margin-left:auto; }
+.cal-cell.cal-selected .cal-conflict-mark{ color:var(--gold); }
+.cal-conflict-note{
+  margin:6px 4px 2px 4px; padding:7px 10px; font-size:0.74rem; font-weight:600; color:#92400e;
+  background:#fef3c7; border:1px solid #fcd34d; border-radius:var(--radius-sm);
+}
+.cal-scout-dot{
+  width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:0.62rem; font-weight:700;
+}
+#plan-actions-row{ display:flex; gap:6px; flex-wrap:wrap; padding:0 16px 8px 16px; }

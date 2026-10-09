@@ -223,8 +223,11 @@ function buildPlanLink(plan = activePlan()){
 }
 
 function updateShareButton(){
-  const btn = document.getElementById('plan-share-btn');
-  if(btn) btn.disabled = activePlan().items.length === 0;
+  const empty = activePlan().items.length === 0;
+  ['plan-share-btn', 'plan-ics-btn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if(btn) btn.disabled = empty;
+  });
 }
 
 async function sharePlan(){
@@ -239,6 +242,76 @@ async function sharePlan(){
   } catch(e){
     prompt('Copy this link and send it to the scout:', url);
   }
+}
+
+// ----- Calendar file (.ics) -----
+// One event per planned game (kickoff in UTC, 2 h long), with a stable UID per
+// plan and game so importing a fresh export later updates the events instead
+// of duplicating them in most calendar apps. A snapshot: export again after
+// the plan or a kickoff changed.
+function icsEscape(text){
+  return String(text).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+}
+function icsFold(line){ // content lines are limited to 75 octets
+  const enc = new TextEncoder();
+  let out = '', cur = '', bytes = 0;
+  for(const ch of line){
+    const b = enc.encode(ch).length;
+    if(bytes + b > 75){ out += cur + '\r\n'; cur = ' '; bytes = 1; }
+    cur += ch; bytes += b;
+  }
+  return out + cur;
+}
+function icsDate(d){ return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
+
+function buildIcs(planList){
+  const stamp = icsDate(new Date());
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Matchday Explorer//Scouting plans//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Matchday Explorer'];
+  let events = 0;
+  planList.forEach(plan => plan.items.forEach(w => {
+    const start = new Date(w.start);
+    if(isNaN(start)) return;
+    const end = new Date(start.getTime() + PLAN_MATCH_MINUTES * 60000);
+    const unconfirmed = isUnverifiedKey(w.key) || w.missing;
+    const notes = [`Plan: ${plan.name}`, plan.scout ? `Scout: ${plan.scout}` : null, `Competition: ${LEAGUE_LABELS[w.league] || w.league}`];
+    if(isUnverifiedKey(w.key)) notes.push('WARNING: kickoff not yet confirmed by two sources. Check before you travel.');
+    if(w.missing) notes.push('WARNING: this game is no longer in the schedule.');
+    if(w.changedFrom) notes.push(`Kickoff changed, it was ${fmtDate(w.changedFrom)}.`);
+    lines.push(
+      'BEGIN:VEVENT',
+      `UID:${(plan.id + '-' + w.key).replace(/[^A-Za-z0-9._-]/g, '-')}@matchday-explorer`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART:${icsDate(start)}`,
+      `DTEND:${icsDate(end)}`,
+      `SUMMARY:${icsEscape(`${w.homeName} v ${w.awayName}${plan.scout ? ` (${plan.scout})` : ''}`)}`,
+      `LOCATION:${icsEscape(w.city)}`,
+      `GEO:${w.lat};${w.lng}`,
+      `DESCRIPTION:${icsEscape(notes.filter(Boolean).join('\n'))}`,
+      `STATUS:${unconfirmed ? 'TENTATIVE' : 'CONFIRMED'}`,
+      'END:VEVENT'
+    );
+    events++;
+  }));
+  lines.push('END:VCALENDAR');
+  return { text: lines.map(icsFold).join('\r\n') + '\r\n', events };
+}
+
+function downloadTextFile(filename, text, mime){
+  const url = URL.createObjectURL(new Blob([text], { type: mime }));
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function fileSlug(text){ return String(text).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50) || 'plan'; }
+
+function exportPlanIcs(){
+  const plan = activePlan();
+  const { text, events } = buildIcs([plan]);
+  if(!events){ alert('This plan has no games to export.'); return; }
+  downloadTextFile(`${fileSlug(plan.name)}.ics`, text, 'text/calendar;charset=utf-8');
 }
 
 // Rebuilds a plan item from a game key (league::home::matchday) using the
@@ -2535,7 +2608,197 @@ function jumpToFixtureFromCalendarCell(event, league, homeCode, matchday){
   jumpToFixtureOnMap(league, matchday, h.lat, h.lng, `${h.name}, ${h.city}`);
 }
 
+// ----- Calendar: plans mode -----
+// "Games" (default) shows every game of the selected leagues; "Plans" shows
+// the games of the saved plans instead, coloured per scout, regardless of the
+// league selection. A scout who is in two different plans on the same day is
+// flagged, since that is a double booking.
+let calendarMode = 'games'; // 'games' | 'plans'
+let calendarScoutFilter = ''; // '' = all scouts, '__none__' = plans without a scout, else a scout name
+// Eight distinct colours for the eight scouts, deliberately without red or amber, which the app uses for warnings.
+const SCOUT_COLORS = ['#2563eb', '#7c3aed', '#0f766e', '#db2777', '#65a30d', '#78350f', '#0891b2', '#4338ca'];
+function scoutColor(name){
+  const i = name ? SCOUTS.indexOf(name) : -1;
+  return i >= 0 ? SCOUT_COLORS[i % SCOUT_COLORS.length] : '#6b7280';
+}
+function scoutInitials(name){
+  return name ? name.split(/\s+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase() : '·';
+}
+
+function plansInCalendarScope(){
+  return plans.filter(p => calendarScoutFilter === '' ? true
+    : calendarScoutFilter === '__none__' ? !p.scout
+    : p.scout === calendarScoutFilter);
+}
+function planCalendarEntries(){
+  const out = [];
+  plansInCalendarScope().forEach(plan => plan.items.forEach(item => {
+    const start = new Date(item.start);
+    if(!isNaN(start)) out.push({ plan, item, start });
+  }));
+  return out;
+}
+
+function fillCalendarScoutFilter(){
+  const sel = document.getElementById('calendar-scout-filter');
+  const names = [...SCOUTS, ...plans.map(p => p.scout).filter(n => n && !SCOUTS.includes(n))];
+  const unique = [...new Set(names)];
+  sel.innerHTML = `<option value="">All scouts</option>` + unique.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('') + `<option value="__none__">No scout</option>`;
+  sel.value = calendarScoutFilter;
+  if(sel.value !== calendarScoutFilter){ calendarScoutFilter = ''; sel.value = ''; }
+}
+
+function setCalendarMode(mode){
+  calendarMode = mode;
+  document.getElementById('cal-mode-games').classList.toggle('active', mode === 'games');
+  document.getElementById('cal-mode-plans').classList.toggle('active', mode === 'plans');
+  document.getElementById('calendar-scout-filter').style.display = mode === 'plans' ? '' : 'none';
+  document.getElementById('calendar-ics-btn').style.display = mode === 'plans' ? '' : 'none';
+  if(mode === 'plans'){
+    fillCalendarScoutFilter();
+    // Start at the next planned game, so the first thing on screen is a plan.
+    const now = Date.now();
+    const upcoming = planCalendarEntries().filter(e => e.start.getTime() >= now).sort((a, b) => a.start - b.start)[0];
+    if(upcoming) calendarViewDate = new Date(upcoming.start.getFullYear(), upcoming.start.getMonth(), 1);
+    calendarSelectedDate = null;
+  } else {
+    syncCalendarToDateRange();
+  }
+  renderCalendar();
+}
+
+function onCalendarScoutFilter(value){
+  calendarScoutFilter = value;
+  calendarSelectedDate = null;
+  renderCalendar();
+}
+
+function exportCalendarIcs(){
+  const list = plansInCalendarScope();
+  const { text, events } = buildIcs(list);
+  if(!events){ alert('There are no planned games to export for this selection.'); return; }
+  const who = calendarScoutFilter === '' ? 'all-scouts' : calendarScoutFilter === '__none__' ? 'unassigned' : fileSlug(calendarScoutFilter);
+  downloadTextFile(`scouting-plans-${who}.ics`, text, 'text/calendar;charset=utf-8');
+}
+
+// Same scout in two different plans on one day.
+function calendarConflicts(dayEntries){
+  const byScout = new Map();
+  dayEntries.forEach(e => {
+    if(!e.plan.scout) return;
+    if(!byScout.has(e.plan.scout)) byScout.set(e.plan.scout, new Set());
+    byScout.get(e.plan.scout).add(e.plan.name);
+  });
+  return [...byScout.entries()].filter(([, names]) => names.size > 1).map(([scout, names]) => ({ scout, plans: [...names] }));
+}
+
+function renderPlansCalendar(){
+  const grid = document.getElementById('calendar-grid');
+  const detail = document.getElementById('calendar-day-detail');
+  const year = calendarViewDate.getFullYear(), month = calendarViewDate.getMonth();
+  document.getElementById('calendar-range-note').textContent = 'Plans of all scouts, coloured per scout. The Dates range does not apply here.';
+  const entries = planCalendarEntries();
+  if(entries.length === 0){
+    grid.innerHTML = `<div class="empty-note">No planned games for this selection yet. Star games on the map, or open a shared plan link.</div>`;
+    detail.innerHTML = '';
+    return;
+  }
+
+  const byDay = {};
+  entries.forEach(e => {
+    if(e.start.getFullYear() !== year || e.start.getMonth() !== month) return;
+    (byDay[localDateKey(e.start)] = byDay[localDateKey(e.start)] || []).push(e);
+  });
+  const gameDays = Object.keys(byDay).sort();
+  const todayKey = localDateKey(new Date());
+  if(!calendarSelectedDate || !byDay[calendarSelectedDate]){
+    calendarSelectedDate = gameDays.includes(todayKey) ? todayKey : (gameDays[0] || null);
+  }
+
+  const startOffset = (new Date(year, month, 1).getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let cells = '';
+  for(let i = 0; i < startOffset; i++) cells += `<div class="cal-cell cal-pad"></div>`;
+  for(let d = 1; d <= daysInMonth; d++){
+    const key = localDateKey(new Date(year, month, d));
+    const dayEntries = (byDay[key] || []).slice().sort((a, b) => a.start - b.start);
+    const has = dayEntries.length > 0;
+    const conflicts = has ? calendarConflicts(dayEntries) : [];
+    const classes = ['cal-cell', has ? 'cal-has-games' : 'cal-empty'];
+    if(key === todayKey) classes.push('cal-today');
+    if(key === calendarSelectedDate) classes.push('cal-selected');
+    if(conflicts.length) classes.push('cal-conflict');
+    const lines = dayEntries.slice(0, 3).map(e => `<div class="cal-match-line" style="border-left-color:${scoutColor(e.plan.scout)}"><span class="cal-match-time">${fmtTimeOnly(e.start)}</span> <b>${escapeHtml(scoutInitials(e.plan.scout))}</b> ${escapeHtml(e.item.homeName.split(' ')[0])}–${escapeHtml(e.item.awayName.split(' ')[0])}</div>`).join('');
+    const more = dayEntries.length > 3 ? `<div class="cal-match-more">+${dayEntries.length - 3} more</div>` : '';
+    const tip = has ? `data-tooltip="${escapeHtml(dayEntries.slice(0, 6).map(e => `${fmtTimeOnly(e.start)}  ${e.item.homeName} – ${e.item.awayName} (${e.plan.scout || 'no scout'})`).join('\n'))}"` : '';
+    cells += `
+      <div class="${classes.join(' ')}" ${has ? `onclick="calendarSelectDay('${key}')"` : ''} ${tip}>
+        <div class="cal-cell-top">
+          <span class="cal-daynum">${d}</span>
+          ${conflicts.length ? `<span class="cal-conflict-mark" title="A scout is in two plans this day">⚠</span>` : ''}
+          ${has ? `<span class="cal-badge">${dayEntries.length}</span>` : ''}
+        </div>
+        ${has ? `<div class="cal-matches">${lines}${more}</div>` : ''}
+      </div>`;
+  }
+  const trailing = (7 - ((startOffset + daysInMonth) % 7)) % 7;
+  for(let i = 0; i < trailing; i++) cells += `<div class="cal-cell cal-pad"></div>`;
+  grid.innerHTML = `
+    <div class="cal-weekday-row"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>
+    <div class="cal-grid">${cells}</div>`;
+
+  if(calendarSelectedDate && byDay[calendarSelectedDate]){
+    renderPlansDayDetail(calendarSelectedDate, byDay[calendarSelectedDate]);
+  } else {
+    calendarSelectedDate = null;
+    detail.innerHTML = `<div class="empty-note">No planned games in this month. Use the arrows to look at another month.</div>`;
+  }
+}
+
+function renderPlansDayDetail(key, dayEntries){
+  const detail = document.getElementById('calendar-day-detail');
+  const [y, m, d] = key.split('-').map(Number);
+  const dayLabel = new Date(y, m - 1, d).toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  const sorted = dayEntries.slice().sort((a, b) => a.start - b.start);
+  let html = `<div class="calendar-day-header">${dayLabel}</div>`;
+  calendarConflicts(sorted).forEach(c => {
+    html += `<div class="cal-conflict-note">⚠ ${escapeHtml(c.scout)} is in ${c.plans.length} plans on this day: ${c.plans.map(escapeHtml).join(', ')}.</div>`;
+  });
+  sorted.forEach((e, i) => {
+    const w = e.item;
+    html += `
+      <div class="calendar-row" data-i="${i}">
+        <span class="cal-scout-dot" style="background:${scoutColor(e.plan.scout)}" title="${escapeHtml(e.plan.scout || 'No scout')}">${escapeHtml(scoutInitials(e.plan.scout))}</span>
+        <div class="crbody">
+          <div class="crteams">${escapeHtml(w.homeName)} – ${escapeHtml(w.awayName)}</div>
+          <div class="crmeta">${fmtTimeOnly(e.start)}${unverifiedBadge(w.key)} · ${escapeHtml(w.city)} · ${escapeHtml(LEAGUE_LABELS[w.league] || w.league)} · Plan: ${escapeHtml(e.plan.name)}${e.plan.scout ? ` · ${escapeHtml(e.plan.scout)}` : ''}</div>
+          ${w.missing ? `<div class="wflag wflag-missing">No longer in the schedule. Check before you travel.</div>` : ''}
+          ${w.changedFrom ? `<div class="wflag">⟳ Kickoff changed, was ${fmtDate(w.changedFrom)}</div>` : ''}
+        </div>
+      </div>`;
+  });
+  detail.innerHTML = html;
+  detail.querySelectorAll('.calendar-row').forEach(row => {
+    const e = sorted[Number(row.dataset.i)];
+    row.querySelector('.crbody').onclick = () => openPlanFromCalendar(e.plan.id, e.item);
+  });
+}
+
+// Back to the map with that plan active and its route shown.
+function openPlanFromCalendar(planId, item){
+  setView('map');
+  switchPlan(planId);
+  revealMyPlan();
+  map.setView([item.lat, item.lng], 9);
+}
+
 function renderCalendar(){
+  if(calendarMode === 'plans'){
+    document.getElementById('calendar-month-label').textContent =
+      calendarViewDate.toLocaleDateString('en-GB', { month:'long', year:'numeric' });
+    renderPlansCalendar();
+    return;
+  }
   const grid = document.getElementById('calendar-grid');
   const detail = document.getElementById('calendar-day-detail');
   const year = calendarViewDate.getFullYear(), month = calendarViewDate.getMonth();
@@ -2555,8 +2818,8 @@ function renderCalendar(){
   const noteEl = document.getElementById('calendar-range-note');
   if(noteEl){
     noteEl.textContent = range && (range.from || range.to)
-      ? `Date Selection: ${range.from ? fmtDateShort(range.from) : 'open'} to ${range.to ? fmtDateShort(range.to) : 'open'}`
-      : 'Showing every game this month. Use Date Selection to limit it.';
+      ? `Dates: ${range.from ? fmtDateShort(range.from) : 'open'} to ${range.to ? fmtDateShort(range.to) : 'open'}`
+      : 'Showing every game this month. Use Dates to limit it.';
   }
 
   // Fixtures for the displayed month only, grouped by local day.

@@ -237,6 +237,13 @@ to refresh it; `dist/` isn't tracked in git.
   one-way and a snapshot of the game list: send a new one after changing
   the plan. When the app runs from the standalone file, links point to
   https://gr1902.github.io/Maps/.
+  **Calendar file (.ics)**: "Add to calendar (.ics)" next to "Copy link"
+  downloads the active plan as a calendar file: one event per game (kickoff
+  in UTC, 2 h long, venue city and coordinates, plan and scout in the
+  description, status "tentative" for unconfirmed or vanished games). Event
+  IDs are stable per plan and game, so importing a newer export updates the
+  events in most calendar apps instead of duplicating them. It is a snapshot,
+  not a live feed: export again after a plan or a kickoff changed.
   **Plans follow the data**: a plan stores a copy of each game, so on every
   load each saved game is re-checked against `data/fixtures.json` by its key.
   A moved kickoff is updated and flagged "Kickoff changed, was ..." with an OK
@@ -265,6 +272,16 @@ to refresh it; `dist/` isn't tracked in git.
   on the fixture. Deliberately an in-app overlay rather than a real second
   page/URL, so it shares all in-memory state (loaded data, league
   selection, plan) instead of duplicating it
+  **Plans mode**: a Games | Plans switch in the calendar header swaps the
+  content. "Plans" shows the games of the saved plans instead of the league
+  fixtures, regardless of the league selection and the Dates range, each
+  game marked with the scout's initials and colour (eight fixed colours in
+  roster order, grey for plans without a scout). A scout dropdown filters to
+  one scout or to plans without a scout, and a day on which the same scout is
+  in two different plans gets an amber ⚠ and a warning in the day list.
+  Clicking a game in the day list opens that plan on the map. "Export .ics"
+  downloads all plans in the current scout filter as one calendar file
+  (see "Calendar file" under My Plan)
 
 ### How "Combinable Trips" works
 
