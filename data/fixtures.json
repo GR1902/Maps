@@ -29372,8 +29372,7 @@
       "home": "DTB",
       "away": "DMI",
       "start": "2026-10-10T15:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "LRI",
@@ -29385,64 +29384,55 @@
       "home": "KAI",
       "away": "MLA",
       "start": "2026-10-14T10:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "BAL",
       "away": "HJK",
       "start": "2026-10-14T12:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "PAR",
       "away": "VAL",
       "start": "2026-10-14T12:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "DMI",
       "away": "DTB",
       "start": "2026-10-14T12:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "BRS",
       "away": "SNC",
       "start": "2026-10-14T12:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "SNO",
       "away": "CLI",
       "start": "2026-10-14T15:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "ZAV",
       "away": "THO",
       "start": "2026-10-14T16:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "UNA",
       "away": "CDM",
       "start": "2026-10-14T17:30:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     },
     {
       "home": "HBT",
       "away": "FLO",
       "start": "2026-10-14T18:00:00+00:00",
-      "matchday": 1,
-      "unverified": true
+      "matchday": 1
     }
   ]
 }

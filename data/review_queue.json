@@ -142,13 +142,13 @@
       "added": "2026-10-07"
     },
     {
-      "id": "youth_league-r1",
+      "id": "youth_league-knockouts",
       "league": "youth_league",
       "matchday": 1,
-      "type": "single_source",
+      "type": "not_scheduled",
       "priority": "low",
-      "note": "Domestic Champions Path Runde 1: Rueckspiele (13./14.10.) und Dinamo Tbilisi-Dinamo-Minsk (10.10.) nur von uefa.com, kicker.de fuehrt sie nicht (Stand 9.10.: alle 10 Zeiten mit uefa.com erneut abgeglichen, keine Abweichung). Zweite unabhaengige Quelle fehlt noch (fotmob.com/Vereinsseiten). Hinspiele (Sep) sind gespielt und nicht eingetragen. Spaetere K.o.-Runden (Playoffs ab Dez.) sind noch nicht terminiert. Matchday-Zaehlung: 1 = Runde 1, Ligaphase-Spieltag N = N+1. Hinweis: Die uefa.com-Liste war bei fuenf Spielen eine Stunde zu spaet (gegen kicker.de und fotmob.com geprueft), die Zeiten der uefa.com-Liste daher bei kicker.de gegenpruefen. uefa.com zeigt die Zeit der Betrachter-Zeitzone.",
-      "sources_tried": "uefa.com, kicker.de",
+      "note": "Domestic Champions Path Runde 1 (10 Spiele, 10.-14.10.) am 9.10. bestaetigt: uefa.com, fotmob.com (UTC, leagues/9741) und futboltotal.futbol (JSON-LD startDate) stimmen ueberein, kicker.de fuehrt die Runde nicht. Spaetere K.o.-Runden (Playoffs ab Dez.) sind noch nicht terminiert. Matchday-Zaehlung: 1 = Runde 1, Ligaphase-Spieltag N = N+1. Hinweis: uefa.com zeigt die Zeit der Betrachter-Zeitzone und war frueher bei fuenf Spielen eine Stunde zu spaet, daher immer mit fotmob.com (UTC) gegenpruefen.",
+      "sources_tried": "uefa.com, fotmob.com, futboltotal.futbol, kicker.de",
       "added": "2026-10-07"
     },
     {
