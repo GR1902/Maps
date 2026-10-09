@@ -27,7 +27,7 @@
       "matchday": 12,
       "type": "placeholder",
       "priority": "high",
-      "note": "Spieltag 12 (8.11.) und 13 (22.11.): bei Kicker stehen alle 10 Spiele auf 17:00, Platzhalter. Erst eintragen, wenn laliga.com echte Zeiten nennt (ca. 10 Tage vorher).",
+      "note": "Spieltag 12 (8.11.) und 13 (22.11.): bei Kicker stehen alle 10 Spiele auf 17:00, Platzhalter (Stand 9.10. unveraendert). Erst eintragen, wenn laliga.com echte Zeiten nennt (ca. 10 Tage vorher).",
       "sources_tried": "kicker.de",
       "added": "2026-10-07"
     },
@@ -92,16 +92,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "serie_b-19",
-      "league": "serie_b",
-      "matchday": 19,
-      "type": "missing",
-      "priority": "high",
-      "note": "Giornata 12 bis 18 sind eingetragen (legab.it + kicker.de). Giornata 19 und folgende auf legab.it/seriebkt/calendario/2026-2027/stagione-regolare/N pruefen, sobald Zeiten stehen.",
-      "sources_tried": "legab.it, kicker.de",
-      "added": "2026-10-07"
-    },
-    {
       "id": "poland-14",
       "league": "ekstraklasa",
       "matchday": 14,
@@ -122,16 +112,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "la_liga_2-12",
-      "league": "la_liga_2",
-      "matchday": 12,
-      "type": "not_scheduled",
-      "priority": "medium",
-      "note": "Spieltag 12 ohne Zeiten bei kicker.de.",
-      "sources_tried": "kicker.de",
-      "added": "2026-10-07"
-    },
-    {
       "id": "czech-9",
       "league": "czech_first_league",
       "matchday": 9,
@@ -142,23 +122,13 @@
       "added": "2026-10-07"
     },
     {
-      "id": "czech-12-14",
-      "league": "czech_first_league",
-      "matchday": 12,
-      "type": "not_scheduled",
-      "priority": "medium",
-      "note": "Offiziell (chanceliga.cz/rozpis-zapasu) sind nur Runde 10 und 11 angesetzt. Runde 12-14 stehen nur bei kicker.de, bleiben unverified bis der Verband sie veroeffentlicht.",
-      "sources_tried": "chanceliga.cz, kicker.de",
-      "added": "2026-10-07"
-    },
-    {
       "id": "official-only",
       "league": "multiple",
       "matchday": null,
       "type": "single_source",
       "priority": "medium",
-      "note": "Nur offizielle Quelle, kicker.de ohne Uhrzeit: La Liga Spieltag 6 (acht gespielte Spiele) und La Liga 2 Spieltag 12 (laliga.com). Mit kicker.de nachziehen, sobald Zeiten dort stehen.",
-      "sources_tried": "laliga.com",
+      "note": "La Liga Spieltag 6: sieben bereits gespielte Spiele nur von laliga.com (kicker.de zeigt keine Uhrzeit mehr). Nur gespielte Spiele, ohne Wirkung auf die Anzeige.",
+      "sources_tried": "laliga.com, kicker.de",
       "added": "2026-10-07"
     },
     {
@@ -177,18 +147,8 @@
       "matchday": 1,
       "type": "single_source",
       "priority": "low",
-      "note": "Domestic Champions Path Runde 1: Rueckspiele (13./14.10.) und Dinamo Tbilisi-Dinamo-Minsk (10.10.) nur von uefa.com, kicker.de fuehrt sie nicht. Hinspiele (Sep) sind gespielt und nicht eingetragen. Spaetere K.o.-Runden (Playoffs ab Dez.) sind noch nicht terminiert. Matchday-Zaehlung: 1 = Runde 1, Ligaphase-Spieltag N = N+1. Hinweis: Die uefa.com-Liste war bei fuenf Spielen eine Stunde zu spaet (gegen kicker.de und fotmob.com geprueft), die Zeiten der uefa.com-Liste daher bei kicker.de gegenpruefen.",
-      "sources_tried": "uefa.com",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "greece-official",
-      "league": "super_league_greece",
-      "matchday": null,
-      "type": "single_source",
-      "priority": "high",
-      "note": "Offizielle Seite slgr.gr ist hinter einer Cloudflare-Bot-Pruefung, wird nicht umgangen. Uhrzeiten Spieltag 6-12 nur von kicker.de (unverified). Paarungen Spieltag 7-10 durch naftemporiki.gr bestaetigt. Spieltag 7: Atromitos-AEK fehlt (7. Spiel), Uhrzeit nirgends gefunden. Alternative: Vereinsseiten oder Presse mit Uhrzeiten (sport24.gr, gazzetta.gr).",
-      "sources_tried": "kicker.de, naftemporiki.gr",
+      "note": "Domestic Champions Path Runde 1: Rueckspiele (13./14.10.) und Dinamo Tbilisi-Dinamo-Minsk (10.10.) nur von uefa.com, kicker.de fuehrt sie nicht (Stand 9.10.: alle 10 Zeiten mit uefa.com erneut abgeglichen, keine Abweichung). Zweite unabhaengige Quelle fehlt noch (fotmob.com/Vereinsseiten). Hinspiele (Sep) sind gespielt und nicht eingetragen. Spaetere K.o.-Runden (Playoffs ab Dez.) sind noch nicht terminiert. Matchday-Zaehlung: 1 = Runde 1, Ligaphase-Spieltag N = N+1. Hinweis: Die uefa.com-Liste war bei fuenf Spielen eine Stunde zu spaet (gegen kicker.de und fotmob.com geprueft), die Zeiten der uefa.com-Liste daher bei kicker.de gegenpruefen. uefa.com zeigt die Zeit der Betrachter-Zeitzone.",
+      "sources_tried": "uefa.com, kicker.de",
       "added": "2026-10-07"
     },
     {
@@ -197,18 +157,8 @@
       "matchday": null,
       "type": "single_source",
       "priority": "medium",
-      "note": "spfl.co.uk zeigt offiziell nur TV-gewaehlte Spiele und je Verein die naechsten drei Spiele. Verifiziert sind 29 Spiele (Spieltag 8-15 teilweise). Restliche Spiele von Spieltag 12-16 bleiben bei kicker.de-Zeit (unverified), bis die SPFL sie in der Vereinsliste fuehrt.",
-      "sources_tried": "spfl.co.uk, kicker.de",
-      "added": "2026-10-07"
-    },
-    {
-      "id": "primeira-official",
-      "league": "primeira_liga",
-      "matchday": null,
-      "type": "single_source",
-      "priority": "medium",
-      "note": "Braga-Gil Vicente (19.10., Spieltag 2) und das fehlende Spiel von Spieltag 12 nur von kicker.de. ligaportugal.pt Kalender-URL nicht gefunden (404).",
-      "sources_tried": "kicker.de",
+      "note": "spfl.co.uk zeigt je Verein nur die naechsten drei Spiele (Stand 9.10.: bis 24./25.10., alle mit unseren Daten abgeglichen). Spieltag 11-16 stammen von kicker.de und bleiben unverified, bis die SPFL sie fuehrt. BBC Sport (Vereinsseiten, britische Zeit) stuetzt 28.10. (19:45, Hearts-Rangers 20:00) und 31.10. (Kilmarnock-St Johnstone und Motherwell-St Mirren 15:00); Dundee United-Hearts (31.10.) hat dort noch keine Uhrzeit. Kicker setzt fuer Samstage vermutlich 15:00 britische Zeit als Standard, TV-Auswahl kann das noch aendern.",
+      "sources_tried": "spfl.co.uk, kicker.de, bbc.com/sport",
       "added": "2026-10-07"
     },
     {
@@ -220,6 +170,46 @@
       "note": "Runde 10 (16.-18.10.) eingetragen (hnl.hr + kicker.de). Runde 11 bis 20 haben auf hnl.hr nur Daten ohne Uhrzeit (11: 24.10., 12: 31.10., 13: 7.11., 14: 21.11., 15: 28.11., 16: 5.12., 17: 12.12., 18: 19.12.), erst eintragen, wenn die HNL Uhrzeiten nennt. URL: hnl.hr/supersport-hnl/raspored-i-rezultati/ (kroatische Ortszeit, alle Runden auf einer Seite).",
       "sources_tried": "hnl.hr, kicker.de",
       "added": "2026-10-07"
+    },
+    {
+      "id": "scottish-numbering",
+      "league": "scottish_prem",
+      "matchday": 9,
+      "type": "info",
+      "priority": "low",
+      "note": "Spieltag-Nummern: Unsere Runden 7/8/9 (10./11., 17./18., 24./25.10.) sind bei kicker.de und nach SPFL-Rundenzaehlung die Runden 8/9/10. Ab Spieltag 11 stimmen die Nummern ueberein. Die doppelten Spieltag-10-Eintraege vom 24./25.10. wurden am 9.10. entfernt (gleiche sechs Spiele wie Spieltag 9). Eine Umnummerierung braeuchte eine Schluessel-Migration fuer gespeicherte Plaene (meta.json keyAliases), wurde nicht gemacht.",
+      "sources_tried": "kicker.de, spfl.co.uk",
+      "added": "2026-10-09"
+    },
+    {
+      "id": "scottish-cup-sf",
+      "league": "scottish_prem",
+      "matchday": 12,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "Rangers-Aberdeen am 31.10. 17:30 ist laut BBC Sport das League-Cup-Halbfinale, kein Ligaspiel. Das Ligaspiel (Spieltag 12) steht bei kicker.de am 24.11. 21:00 MEZ (20:00 UTC) und ist mit unverified eingetragen. Hibs-Dundee (24.11.) liegt ebenfalls dort. SPFL fuehrt beide noch nicht.",
+      "sources_tried": "bbc.com/sport, kicker.de",
+      "added": "2026-10-09"
+    },
+    {
+      "id": "greece-md7-missing",
+      "league": "super_league_greece",
+      "matchday": 7,
+      "type": "missing",
+      "priority": "medium",
+      "note": "Spieltag 7 hat auf slgr.gr/en/schedule und bei kicker.de nur 6 von 7 Spielen. Das 7. Spiel (Atromitos-AEK) ist noch nicht angesetzt. Spieltag 6-12 sonst offiziell (slgr.gr) und mit kicker.de abgeglichen.",
+      "sources_tried": "slgr.gr, kicker.de, naftemporiki.gr",
+      "added": "2026-10-09"
+    },
+    {
+      "id": "serie_b-21",
+      "league": "serie_b",
+      "matchday": 21,
+      "type": "not_scheduled",
+      "priority": "medium",
+      "note": "Giornata 19 (26./27.12.) und 20 (9./10.1.) sind eingetragen (legab.it + kicker.de gleich). Giornata 21 (16.1.) zeigt auf legab.it den Platzhalter 01:00, noch nicht terminiert.",
+      "sources_tried": "legab.it, kicker.de",
+      "added": "2026-10-09"
     }
   ]
 }
