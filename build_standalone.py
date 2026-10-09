@@ -21,6 +21,7 @@ teams_json = (root / "data/teams.json").read_text()
 fixtures_json = (root / "data/fixtures.json").read_text()
 airports_json = (root / "data/airports.json").read_text()
 leagues_json = (root / "data/leagues.json").read_text()
+meta_json = (root / "data/meta.json").read_text()
 
 js = (root / "js/spieltag-explorer.js").read_text()
 
@@ -34,10 +35,14 @@ js, n = re.subn(
 if n != 1:
     raise SystemExit("Could not find the TEAMS/FIXTURES declaration to replace — source file changed?")
 
+js, n = re.subn(r"^let META = \{\};.*$", lambda m: f"let META = {meta_json};", js, count=1, flags=re.M)
+if n != 1:
+    raise SystemExit("Could not find the META declaration to replace — source file changed?")
+
 js, n = re.subn(
     r"// ===== Bootstrap: load data, then render =====\nasync function loadData\(\)\{.*?\}\n\nloadData\(\);",
     "// ===== Bootstrap: data is embedded above, render immediately =====\n"
-    "buildLeaguePanel();\nrenderWatchlist();\ncomputeWatchlistLegs();\nrenderAll();",
+    "reconcilePlans();\nrenderDataStatus();\nbuildLeaguePanel();\nrenderWatchlist();\ncomputeWatchlistLegs();\nrenderAll();",
     js,
     count=1,
     flags=re.S,

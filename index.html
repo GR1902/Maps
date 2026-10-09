@@ -43,9 +43,14 @@
           <button type="button" class="mode-tab active" data-mode="matchday" onclick="setFilterMode('matchday')">By matchday</button>
           <button type="button" class="mode-tab" data-mode="range" onclick="setFilterMode('range')">By date range</button>
         </div>
+        <div id="quick-range-row">
+          <button type="button" class="mini-btn" onclick="setQuickRange('weekend')">This weekend</button>
+          <button type="button" class="mini-btn" onclick="setQuickRange('7days')">Next 7 days</button>
+          <button type="button" class="mini-btn" onclick="setQuickRange('30days')">Next 30 days</button>
+        </div>
         <div id="map-daterange-row" style="display:none;">
-          <label>From <input type="date" id="map-date-from" onchange="renderAll()"></label>
-          <label>To <input type="date" id="map-date-to" onchange="renderAll()"></label>
+          <label>From <input type="date" id="map-date-from" onchange="onMapDateChange()"></label>
+          <label>To <input type="date" id="map-date-to" onchange="onMapDateChange()"></label>
           <button type="button" class="mini-btn" id="map-date-clear" onclick="clearMapDateRange()" title="Clear both dates">Clear</button>
         </div>
       </div>
@@ -105,7 +110,7 @@
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
       Calendar
     </button>
-    <span id="snapshot-note">All 33 leagues: matchdays with officially confirmed kickoff times, via official/press sources</span>
+    <span id="snapshot-note"></span>
   </div>
   <div id="body">
     <div id="map-wrap">
@@ -127,8 +132,7 @@
           <button type="button" onclick="calendarShiftMonth(1)" aria-label="Next month">›</button>
         </div>
         <div id="calendar-range">
-          <label>From <input type="date" id="calendar-date-from" onchange="renderCalendar()"></label>
-          <label>To <input type="date" id="calendar-date-to" onchange="renderCalendar()"></label>
+          <span id="calendar-range-note"></span>
           <button type="button" class="mini-btn" onclick="calendarJumpToday()">Today</button>
         </div>
       </div>

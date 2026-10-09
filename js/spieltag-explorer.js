@@ -3,6 +3,7 @@ let TEAMS = {};
 let FIXTURES = {};
 let AIRPORTS = [];
 let LEAGUE_LOGO = {}; // league code -> competition logo URL, loaded from data/leagues.json
+let META = {};         // data/meta.json: { checked: 'YYYY-MM-DD' } = when the fixtures were last verified
 
 // Small inline-SVG icon set (stroke-based, currentColor) used in place of
 // emoji throughout the UI — kept as plain template strings, mirrored in
@@ -49,6 +50,55 @@ let activePlanId = null;
 function activePlan(){ return plans.find(p => p.id === activePlanId) || plans[0]; }
 function savePlans(){ localStorage.setItem(PLANS_STORAGE_KEY, JSON.stringify({ plans, activePlanId })); }
 
+// A plan stores a copy of each game so it can render without a lookup. That
+// copy goes stale when a kickoff is corrected or a game is dropped from the
+// data. After every data load, each saved game is re-checked against FIXTURES
+// by its key (league::home::matchday): times and names are refreshed, a moved
+// kickoff is flagged with the time the user last saw (changedFrom), and a game
+// that no longer exists is flagged (missing). Flags stay until acknowledged.
+function reconcilePlans(){
+  const index = new Map();
+  Object.keys(FIXTURES).forEach(lg => (FIXTURES[lg] || []).forEach(f => {
+    index.set(`${lg}::${f.home}::${f.matchday}`, f);
+  }));
+  if(index.size === 0) return; // data did not load, so there is nothing to compare with
+  let touched = false;
+  plans.forEach(plan => plan.items.forEach(w => {
+    const f = index.get(w.key);
+    if(!f){
+      if(!w.missing){ w.missing = true; touched = true; }
+      return;
+    }
+    if(w.missing){ delete w.missing; touched = true; }
+    if(new Date(f.start).getTime() !== new Date(w.start).getTime()){
+      if(!w.changedFrom) w.changedFrom = w.start;
+      w.start = f.start;
+      touched = true;
+    }
+    if(w.changedFrom && new Date(w.changedFrom).getTime() === new Date(w.start).getTime()){
+      delete w.changedFrom; // moved back to the time the user already knew
+      touched = true;
+    }
+    const teams = TEAMS[w.league] || {};
+    const home = teams[f.home], away = teams[f.away];
+    if(home && (w.homeName !== home.name || w.city !== home.city || w.lat !== home.lat || w.lng !== home.lng)){
+      Object.assign(w, { homeName: home.name, city: home.city, lat: home.lat, lng: home.lng });
+      touched = true;
+    }
+    if(away && w.awayName !== away.name){ w.awayName = away.name; touched = true; }
+  }));
+  if(touched) savePlans();
+}
+function planHasFlags(plan){ return plan.items.some(w => w.changedFrom || w.missing); }
+function acknowledgePlanChange(key){
+  const w = activePlan().items.find(x => x.key === key);
+  if(!w) return;
+  delete w.changedFrom;
+  savePlans();
+  renderWatchlist();
+  computeWatchlistLegs();
+}
+
 function watchKeyFor(league, homeCode, matchday){ return `${league}::${homeCode}::${matchday}`; }
 function isWatched(key){ return activePlan().items.some(w => w.key === key); }
 
@@ -84,7 +134,7 @@ function refreshWatchStars(){
 // ----- Plan management (rename / switch / create / delete) -----
 function renderPlanToolbar(){
   const select = document.getElementById('plan-select');
-  select.innerHTML = plans.map(p => `<option value="${p.id}" ${p.id===activePlanId?'selected':''}>${p.name} (${p.items.length})</option>`).join('');
+  select.innerHTML = plans.map(p => `<option value="${p.id}" ${p.id===activePlanId?'selected':''}>${p.name} (${p.items.length})${planHasFlags(p) ? ' ⟳' : ''}</option>`).join('');
   document.getElementById('plan-name-display').textContent = activePlan().name;
 }
 
@@ -199,11 +249,15 @@ function renderWatchlist(){
       <div class="wbody">
         <div class="wteams">${w.homeName} – ${w.awayName}</div>
         <div class="wmeta">${w.city} · ${fmtDate(w.start)}${unverifiedBadge(w.key)} · ${LEAGUE_LABELS[w.league] || w.league}</div>
+        ${w.missing ? `<div class="wflag wflag-missing">No longer in the schedule. Check before you travel.</div>` : ''}
+        ${w.changedFrom ? `<div class="wflag">⟳ Kickoff changed, was ${fmtDate(w.changedFrom)} <button type="button" class="wflag-ok" title="Got it, hide this note">OK</button></div>` : ''}
       </div>
       <span class="wremove" title="Remove">×</span>
     `;
     row.querySelector('.wbody').onclick = () => { map.setView([w.lat, w.lng], 10); };
     row.querySelector('.wremove').onclick = () => removeFromWatchlist(w.key);
+    const okBtn = row.querySelector('.wflag-ok');
+    if(okBtn) okBtn.onclick = (e) => { e.stopPropagation(); acknowledgePlanChange(w.key); };
 
     // Drag-to-reorder within the list = set priority (and, now, the order
     // distances are computed against).
@@ -737,21 +791,49 @@ function getActiveDateRange(){
   };
 }
 
-function setFilterMode(mode){
+function setFilterMode(mode, presetRange){
   filterMode = mode;
   document.querySelectorAll('#filter-mode-row .mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   document.getElementById('map-daterange-row').style.display = mode === 'range' ? 'flex' : 'none';
   if(mode === 'range'){
     const fromEl = document.getElementById('map-date-from');
     const toEl = document.getElementById('map-date-to');
-    if(!fromEl.value && !toEl.value){
+    if(presetRange){
+      fromEl.value = presetRange.from;
+      toEl.value = presetRange.to;
+    } else if(!fromEl.value && !toEl.value){
       const today = new Date();
       fromEl.value = localDateKey(today);
       toEl.value = localDateKey(new Date(today.getTime() + 14 * 24 * 3600 * 1000));
     }
   }
   renderAll();
-  if(calendarOpen) renderCalendar();
+  if(calendarOpen){ syncCalendarToDateRange(); renderCalendar(); }
+}
+
+// One date range drives both the map (in 'range' mode) and the calendar, so
+// there is a single place to say "which days am I looking at".
+function onMapDateChange(){
+  renderAll();
+  if(calendarOpen){ syncCalendarToDateRange(); renderCalendar(); }
+}
+
+// Shortcuts for the ranges scouts ask for most. Football weekends run
+// Fri to Sun; on a Saturday or Sunday the range starts today.
+function setQuickRange(kind){
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  let from = today, to = today;
+  if(kind === '7days') to = addDays(today, 6);
+  else if(kind === '30days') to = addDays(today, 29);
+  else {
+    const dow = today.getDay(); // 0=Sun..6=Sat
+    if(dow === 6){ to = addDays(today, 1); }
+    else if(dow === 0){ to = today; }
+    else { from = addDays(today, (5 - dow + 7) % 7); to = addDays(from, 2); }
+  }
+  setFilterMode('range', { from: localDateKey(from), to: localDateKey(to) });
 }
 
 // If a league has a competition logo, show it as a small badge; otherwise
@@ -835,8 +917,7 @@ function clearRadiusAddress(){
 function clearMapDateRange(){
   document.getElementById('map-date-from').value = '';
   document.getElementById('map-date-to').value = '';
-  renderAll();
-  if(calendarOpen) renderCalendar();
+  onMapDateChange();
 }
 
 // Shows the inline ✕ only while its field has text.
@@ -2286,18 +2367,24 @@ function toggleCalendarView(){
   document.getElementById('calendar-view').classList.toggle('open', calendarOpen);
   document.getElementById('calendar-toggle-btn').classList.toggle('active', calendarOpen);
   if(calendarOpen){
-    const fromInput = document.getElementById('calendar-date-from');
-    if(!fromInput.value) calendarJumpToday();
-    else renderCalendar();
+    syncCalendarToDateRange();
+    renderCalendar();
+  }
+}
+
+// The calendar has no range of its own: it follows the Date Selection range
+// (only active in 'range' mode). When one is set, jump to its first month;
+// otherwise the whole displayed month is shown.
+function syncCalendarToDateRange(){
+  const range = getActiveDateRange();
+  if(range && range.from){
+    calendarViewDate = new Date(range.from.getFullYear(), range.from.getMonth(), 1);
+    calendarSelectedDate = null;
   }
 }
 
 function calendarJumpToday(){
   const today = new Date();
-  document.getElementById('calendar-date-from').value = localDateKey(today);
-  const to = new Date(today);
-  to.setDate(to.getDate() + 30);
-  document.getElementById('calendar-date-to').value = localDateKey(to);
   calendarViewDate = new Date(today.getFullYear(), today.getMonth(), 1);
   calendarSelectedDate = null;
   renderCalendar();
@@ -2413,10 +2500,15 @@ function renderCalendar(){
     return;
   }
 
-  const fromVal = document.getElementById('calendar-date-from').value;
-  const toVal = document.getElementById('calendar-date-to').value;
-  const fromDate = fromVal ? new Date(fromVal + 'T00:00:00') : null;
-  const toDate = toVal ? new Date(toVal + 'T23:59:59') : null;
+  const range = getActiveDateRange();
+  const fromDate = range ? range.from : null;
+  const toDate = range ? range.to : null;
+  const noteEl = document.getElementById('calendar-range-note');
+  if(noteEl){
+    noteEl.textContent = range && (range.from || range.to)
+      ? `Date Selection: ${range.from ? fmtDateShort(range.from) : 'open'} to ${range.to ? fmtDateShort(range.to) : 'open'}`
+      : 'Showing every game this month. Use Date Selection to limit it.';
+  }
 
   // Fixtures for the displayed month only, grouped by local day.
   const byDay = {};
@@ -2526,19 +2618,48 @@ function renderCalendarDayDetail(key, dayFixtures){
   });
 }
 
+// ===== Data status line (header) =====
+// Replaces a fixed claim with what is actually known: when the fixtures were
+// last verified (data/meta.json) and how many upcoming kickoffs still lack a
+// second source. Turns amber when the check is more than 10 days old.
+const DATA_STALE_DAYS = 10;
+function renderDataStatus(){
+  const el = document.getElementById('snapshot-note');
+  if(!el) return;
+  const parts = [];
+  let stale = false;
+  if(META && META.checked){
+    const checked = new Date(META.checked + 'T12:00:00');
+    const days = Math.floor((Date.now() - checked.getTime()) / 86400000);
+    stale = days > DATA_STALE_DAYS;
+    const label = checked.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+    parts.push(`Fixtures checked <b>${label}</b>${stale ? ` (${days} days ago)` : ''}`);
+  }
+  const now = Date.now();
+  let open = 0;
+  Object.keys(FIXTURES).forEach(lg => FIXTURES[lg].forEach(f => { if(f.unverified && new Date(f.start).getTime() > now) open++; }));
+  if(open > 0) parts.push(`<span class="unverified-badge">⚠</span> ${open} kickoff${open === 1 ? '' : 's'} not yet confirmed by two sources`);
+  el.innerHTML = parts.join(' · ');
+  el.classList.toggle('stale', stale);
+}
+
 // ===== Bootstrap: load data, then render =====
 async function loadData(){
-  const [teamsRes, fixturesRes, airportsRes, leaguesRes] = await Promise.all([
+  const [teamsRes, fixturesRes, airportsRes, leaguesRes, metaRes] = await Promise.all([
     fetch('data/teams.json'),
     fetch('data/fixtures.json'),
     fetch('data/airports.json'),
-    fetch('data/leagues.json')
+    fetch('data/leagues.json'),
+    fetch('data/meta.json').catch(() => null) // optional: the app works without it
   ]);
   TEAMS = await teamsRes.json();
   FIXTURES = await fixturesRes.json();
   AIRPORTS = await airportsRes.json();
   LEAGUE_LOGO = await leaguesRes.json();
+  try{ if(metaRes && metaRes.ok) META = await metaRes.json(); } catch(e){ /* keep the empty default */ }
 
+  reconcilePlans();
+  renderDataStatus();
   buildLeaguePanel();
   renderWatchlist();
   computeWatchlistLegs(); // covers a returning user's plan already having 2+ saved games
