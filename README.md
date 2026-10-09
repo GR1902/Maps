@@ -240,9 +240,18 @@ to refresh it; `dist/` isn't tracked in git.
   that no longer exist in the schedule are left out and counted in the
   confirmation; a plan with identical games is just switched to instead of
   duplicated; a link that cannot be read shows a message. The address bar
-  is cleaned after opening, so a reload does not import it again. A link is
-  one-way and a snapshot of the game list: send a new one after changing
-  the plan. When the app runs from the standalone file, links point to
+  is cleaned after opening, so a reload does not import it again. **Updating over a link**: a plan gets a stable share id the first time it
+  is shared, and whoever imports it keeps that id. Opening a newer link for
+  the same plan does not create another plan: it asks "Update <plan> with
+  this version?" and lists what changes (name, scout, status, note, start
+  point, games added or removed, order), then replaces the imported copy.
+  Extra warnings: the link is OLDER than the version you already have (each
+  link carries its creation time), and you changed the plan on this device
+  since the last sync (those changes are replaced; nothing is replaced if you
+  decline). Opening the same link again says the plan is already up to date.
+  A plan with identical games and no share id yet adopts the id of an
+  arriving link so later updates find it. Links are still one-way snapshots
+  of the plan, there is no automatic sync. When the app runs from the standalone file, links point to
   https://gr1902.github.io/Maps/.
   **Calendar file (.ics)**: "Add to calendar (.ics)" next to "Copy link"
   downloads the active plan as a calendar file: one event per game (kickoff

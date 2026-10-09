@@ -259,8 +259,25 @@ function decodeShareData(text){
   return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
 }
 
+// Every plan gets a stable share id the first time it is shared; whoever
+// imports it keeps that id. A newer link for the same plan can then update the
+// imported copy instead of creating another one. sharedAt is the time of the
+// link the plan's state came from, and syncSig fingerprints the content at that
+// moment, so local changes made since can be detected before they are replaced.
+function planSig(plan){
+  return JSON.stringify([
+    plan.name, plan.scout || '', planStatus(plan), plan.note || '',
+    plan.start ? [plan.start.name, +plan.start.lat.toFixed(4), +plan.start.lng.toFixed(4)] : null,
+    plan.items.map(i => i.key)
+  ]);
+}
+
 function buildPlanLink(plan = activePlan()){
-  const data = { v: 1, n: plan.name, k: plan.items.map(w => w.key) };
+  if(!plan.shareId) plan.shareId = uid();
+  plan.sharedAt = Date.now();
+  plan.syncSig = planSig(plan);
+  savePlans();
+  const data = { v: 1, i: plan.shareId, u: plan.sharedAt, n: plan.name.slice(0, 80), k: plan.items.map(w => w.key) };
   if(plan.scout) data.s = plan.scout;
   if(planStatus(plan) !== 'idea') data.t = planStatus(plan);
   if(plan.note) data.m = plan.note.slice(0, PLAN_NOTE_MAX);
@@ -377,49 +394,48 @@ function itemFromKey(key){
   return { key: `${league}::${home}::${f.matchday}`, league, homeCode: home, homeName: h.name, awayName: a ? a.name : f.away, city: h.city, start: f.start, lat: h.lat, lng: h.lng };
 }
 
-// Opens a plan link (#plan=...) from the address bar as a new plan after the
-// user confirms it. The link is untrusted input: only games that exist in the
-// loaded data are taken over, texts are length-limited, coordinates validated.
-function importSharedPlanFromUrl(){
-  const m = /^#plan=([A-Za-z0-9_-]+)$/.exec(location.hash);
-  if(!m) return;
-  history.replaceState(null, '', location.pathname + location.search); // so a reload does not import it again
-  let data = null;
-  try{ data = decodeShareData(m[1]); } catch(e){ /* handled below */ }
-  if(!data || data.v !== 1 || !Array.isArray(data.k) || data.k.length === 0 || data.k.length > 60){
-    alert('This plan link could not be read. Ask for a new one.');
-    return;
-  }
+// Reads and validates what a plan link carries. The link is untrusted input:
+// only games that exist in the loaded data are taken over, texts are
+// length-limited, coordinates validated. Returns null for an unusable link.
+function parseSharedPlan(data){
+  if(!data || data.v !== 1 || !Array.isArray(data.k) || data.k.length === 0 || data.k.length > 60) return null;
   const items = data.k.map(itemFromKey).filter(Boolean);
-  const dropped = data.k.length - items.length;
-  if(items.length === 0){
-    alert('None of the games in this plan link are in the current schedule.');
-    return;
-  }
   const text = v => typeof v === 'string' ? v.trim().slice(0, 80) : '';
-  const name = text(data.n) || 'Shared plan';
-  const scout = text(data.s);
-  const status = PLAN_STATUSES.some(([k]) => k === data.t) ? data.t : 'idea';
-  const note = typeof data.m === 'string' ? data.m.trim().slice(0, PLAN_NOTE_MAX) : '';
+  const p = data.p;
+  const start = p && typeof p === 'object' && text(p.n) && Number.isFinite(p.a) && Math.abs(p.a) <= 90 && Number.isFinite(p.o) && Math.abs(p.o) <= 180
+    ? { name: text(p.n), lat: p.a, lng: p.o } : null;
+  return {
+    items, dropped: data.k.length - items.length, start,
+    name: text(data.n) || 'Shared plan',
+    scout: text(data.s),
+    status: PLAN_STATUSES.some(([k]) => k === data.t) ? data.t : 'idea',
+    note: typeof data.m === 'string' ? data.m.trim().slice(0, PLAN_NOTE_MAX) : '',
+    shareId: typeof data.i === 'string' && /^[a-z0-9]{6,32}$/.test(data.i) ? data.i : '',
+    sentAt: Number.isFinite(data.u) ? data.u : 0
+  };
+}
 
-  let plan = findPlanWithSameGames(items);
-  if(!plan){
-    const lines = [name, `${items.length} ${items.length === 1 ? 'game' : 'games'}`];
-    if(scout) lines.push(`Scout: ${scout}`);
-    if(status !== 'idea') lines.push(`Status: ${PLAN_STATUSES.find(([k]) => k === status)[1]}`);
-    if(note) lines.push(`Note: ${note.length > 120 ? note.slice(0, 120) + '…' : note}`);
-    if(dropped) lines.push(`${dropped} ${dropped === 1 ? 'game is' : 'games are'} no longer in the schedule and will be left out.`);
-    if(!confirm(`Add this shared plan?\n\n${lines.join('\n')}`)) return;
-    plan = { id: uid(), name, items };
-    if(scout) plan.scout = scout;
-    if(status !== 'idea') plan.status = status;
-    if(note) plan.note = note;
-    const p = data.p;
-    if(p && typeof p === 'object' && text(p.n) && Number.isFinite(p.a) && Math.abs(p.a) <= 90 && Number.isFinite(p.o) && Math.abs(p.o) <= 180){
-      plan.start = { name: text(p.n), lat: p.a, lng: p.o };
-    }
-    plans.push(plan);
-  }
+// Human-readable list of what a newer version changes in a local plan.
+function describePlanChanges(local, next){
+  const lines = [];
+  const statusLabel = k => PLAN_STATUSES.find(([key]) => key === k)[1];
+  if(local.name !== next.name) lines.push(`Name: ${local.name} → ${next.name}`);
+  if((local.scout || '') !== next.scout) lines.push(`Scout: ${local.scout || 'none'} → ${next.scout || 'none'}`);
+  if(planStatus(local) !== next.status) lines.push(`Status: ${statusLabel(planStatus(local))} → ${statusLabel(next.status)}`);
+  if((local.note || '') !== next.note) lines.push('Note changed');
+  const startSig = st => st ? `${st.name}|${st.lat.toFixed(4)}|${st.lng.toFixed(4)}` : '';
+  if(startSig(local.start) !== startSig(next.start)) lines.push(`Start point: ${local.start ? local.start.name : 'none'} → ${next.start ? next.start.name : 'none'}`);
+  const localKeys = local.items.map(i => i.key), nextKeys = next.items.map(i => i.key);
+  const added = nextKeys.filter(k => !localKeys.includes(k)).length;
+  const removed = localKeys.filter(k => !nextKeys.includes(k)).length;
+  const games = n => `${n} ${n === 1 ? 'game' : 'games'}`;
+  if(added) lines.push(`${games(added)} added`);
+  if(removed) lines.push(`${games(removed)} removed`);
+  if(!added && !removed && localKeys.join('|') !== nextKeys.join('|')) lines.push('Order of the games changed');
+  return lines;
+}
+
+function showImportedPlan(plan){
   activePlanId = plan.id;
   savePlans();
   renderWatchlist();
@@ -429,6 +445,83 @@ function importSharedPlanFromUrl(){
   drawPlanRoute(true);
   computeWatchlistLegs();
   revealMyPlan();
+}
+
+// Opens a plan link (#plan=...) from the address bar: as a new plan, or, when
+// a plan with the same share id is already here, as an update of it. Both ask
+// for confirmation first.
+function importSharedPlanFromUrl(){
+  const m = /^#plan=([A-Za-z0-9_-]+)$/.exec(location.hash);
+  if(!m) return;
+  history.replaceState(null, '', location.pathname + location.search); // so a reload does not import it again
+  let data = null;
+  try{ data = decodeShareData(m[1]); } catch(e){ /* handled below */ }
+  const next = parseSharedPlan(data);
+  if(!next){
+    alert('This plan link could not be read. Ask for a new one.');
+    return;
+  }
+  if(next.items.length === 0){
+    alert('None of the games in this plan link are in the current schedule.');
+    return;
+  }
+  const droppedNote = next.dropped
+    ? `${next.dropped} ${next.dropped === 1 ? 'game is' : 'games are'} no longer in the schedule and will be left out.` : '';
+
+  // An update of a plan that came from the same link family.
+  const existing = next.shareId ? plans.find(p => p.shareId === next.shareId) : null;
+  if(existing){
+    const changes = describePlanChanges(existing, next);
+    if(!changes.length){
+      alert(`"${existing.name}" is already up to date.`);
+      showImportedPlan(existing);
+      return;
+    }
+    const lines = [`Update "${existing.name}" with this version?`, '', ...changes.map(c => `• ${c}`)];
+    if(next.sentAt && existing.sharedAt && next.sentAt < existing.sharedAt) lines.push('', 'This link is OLDER than the version you already have.');
+    if(existing.syncSig && existing.syncSig !== planSig(existing)) lines.push('', 'You changed this plan on this device since it was last synced. Those changes will be replaced.');
+    if(droppedNote) lines.push('', droppedNote);
+    if(!confirm(lines.join('\n'))) return;
+    existing.name = next.name;
+    ['scout', 'note'].forEach(k => { if(next[k]) existing[k] = next[k]; else delete existing[k]; });
+    if(next.status !== 'idea') existing.status = next.status; else delete existing.status;
+    if(next.start) existing.start = next.start; else delete existing.start;
+    existing.items = next.items;
+    existing.sharedAt = next.sentAt || Date.now();
+    existing.syncSig = planSig(existing);
+    showImportedPlan(existing);
+    return;
+  }
+
+  let plan = findPlanWithSameGames(next.items);
+  if(plan){
+    // Same games already here, e.g. from an older link: keep it, but link it to
+    // this plan family so later updates find it.
+    if(next.shareId && !plan.shareId){
+      plan.shareId = next.shareId;
+      plan.sharedAt = next.sentAt || Date.now();
+      plan.syncSig = planSig(plan);
+    }
+  } else {
+    const lines = [next.name, `${next.items.length} ${next.items.length === 1 ? 'game' : 'games'}`];
+    if(next.scout) lines.push(`Scout: ${next.scout}`);
+    if(next.status !== 'idea') lines.push(`Status: ${PLAN_STATUSES.find(([k]) => k === next.status)[1]}`);
+    if(next.note) lines.push(`Note: ${next.note.length > 120 ? next.note.slice(0, 120) + '…' : next.note}`);
+    if(droppedNote) lines.push(droppedNote);
+    if(!confirm(`Add this shared plan?\n\n${lines.join('\n')}`)) return;
+    plan = { id: uid(), name: next.name, items: next.items };
+    if(next.scout) plan.scout = next.scout;
+    if(next.status !== 'idea') plan.status = next.status;
+    if(next.note) plan.note = next.note;
+    if(next.start) plan.start = next.start;
+    if(next.shareId){
+      plan.shareId = next.shareId;
+      plan.sharedAt = next.sentAt || Date.now();
+      plan.syncSig = planSig(plan);
+    }
+    plans.push(plan);
+  }
+  showImportedPlan(plan);
 }
 window.addEventListener('hashchange', () => { if(dataReady) importSharedPlanFromUrl(); });
 
