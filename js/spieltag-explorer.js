@@ -35,7 +35,7 @@ let activePlanId = null;
     const saved = JSON.parse(localStorage.getItem(PLANS_STORAGE_KEY) || 'null');
     if(saved && Array.isArray(saved.plans) && saved.plans.length){
       plans = saved.plans;
-      activePlanId = saved.activePlanId && plans.some(p => p.id === activePlanId) ? saved.activePlanId : plans[0].id;
+      activePlanId = saved.activePlanId && plans.some(p => p.id === saved.activePlanId) ? saved.activePlanId : plans[0].id;
       return;
     }
   } catch(e){ /* fall through to migration/default below */ }
@@ -49,7 +49,83 @@ let activePlanId = null;
 })();
 
 function activePlan(){ return plans.find(p => p.id === activePlanId) || plans[0]; }
-function savePlans(){ localStorage.setItem(PLANS_STORAGE_KEY, JSON.stringify({ plans, activePlanId })); }
+// Saving also records when the active plan was last used (the scout view opens
+// a scout's most recently used plan) and drops the "auto" mark of a plan the
+// app created for a scout once it has real content.
+function savePlans(){
+  const p = activePlan();
+  if(p){
+    p.lastUsed = Date.now();
+    if(p.auto && !isBlankPlan(p)) delete p.auto;
+  }
+  localStorage.setItem(PLANS_STORAGE_KEY, JSON.stringify({ plans, activePlanId }));
+}
+
+// ----- Scout view -----
+// Which plans the My Plan area shows: '' = all scouts, '__none__' = plans
+// without a scout, otherwise one scout's name. Choosing a scout switches the
+// list to that scout's plan straight away. Invariant: the active plan is
+// always inside the current view. The view is remembered in the browser, so a
+// scout who opens the tool lands on their own plans.
+let scoutView = '';
+const SCOUT_VIEW_KEY = 'scoutingScoutView';
+function saveScoutView(){ try{ localStorage.setItem(SCOUT_VIEW_KEY, scoutView); } catch(e){ /* not essential */ } }
+function planInView(plan, view = scoutView){
+  return view === '' ? true : view === '__none__' ? !plan.scout : plan.scout === view;
+}
+function visiblePlans(){ return plans.filter(p => planInView(p)); }
+function mostRecentPlan(list){ return list.slice().sort((a, b) => (b.lastUsed || 0) - (a.lastUsed || 0))[0]; }
+function isBlankPlan(p){ return !p.items.length && !p.note && !p.start && planStatus(p) === 'idea'; }
+
+(function initScoutView(){
+  try{ scoutView = localStorage.getItem(SCOUT_VIEW_KEY) || ''; } catch(e){ scoutView = ''; }
+  if(scoutView && !plans.some(p => planInView(p))) scoutView = ''; // that scout has no plan any more
+  if(!planInView(activePlan())) activePlanId = mostRecentPlan(plans.filter(p => planInView(p))).id;
+})();
+
+// A scout with no plan yet gets an empty one, ready to fill, instead of an
+// empty screen; it is removed again if it is left untouched (see below).
+function newViewPlan(){
+  const named = scoutView && scoutView !== '__none__';
+  const plan = { id: uid(), name: named ? `${scoutView} plan` : `Plan ${plans.length + 1}`, items: [], auto: true };
+  if(named) plan.scout = scoutView;
+  plans.push(plan);
+  return plan;
+}
+
+// Plans the app created on its own that are still empty disappear when the
+// user moves on, so clicking through the scouts leaves no clutter behind.
+function pruneEmptyAutoPlans(keepId){
+  const stale = plans.filter(p => p.auto && isBlankPlan(p) && p.id !== keepId);
+  if(!stale.length || stale.length >= plans.length) return; // never remove every plan
+  plans = plans.filter(p => !stale.includes(p));
+}
+
+// Makes a plan the active one. If the current view would hide it, the view
+// follows the plan (to its scout), so it never ends up on a plan it cannot show.
+function activatePlan(plan){
+  flushPlanNote();
+  if(!planInView(plan)){ scoutView = plan.scout || ''; saveScoutView(); }
+  activePlanId = plan.id;
+  pruneEmptyAutoPlans(plan.id);
+}
+
+function setScoutView(value){
+  flushPlanNote();
+  scoutView = value;
+  saveScoutView();
+  let target = activePlan();
+  if(!planInView(target)){
+    const candidates = visiblePlans();
+    target = candidates.length ? mostRecentPlan(candidates) : newViewPlan();
+  }
+  activePlanId = target.id;
+  pruneEmptyAutoPlans(target.id);
+  savePlans();
+  renderWatchlist();
+  refreshWatchStars();
+  computeWatchlistLegs();
+}
 
 // A plan stores a copy of each game so it can render without a lookup. That
 // copy goes stale when a kickoff is corrected or a game is dropped from the
@@ -174,18 +250,27 @@ function planStatus(plan){ return PLAN_STATUSES.some(([k]) => k === plan.status)
 function planStatusLabel(plan){ return PLAN_STATUSES.find(([k]) => k === planStatus(plan))[1]; }
 
 function renderPlanToolbar(){
+  const viewSelect = document.getElementById('plan-scout-view');
+  const viewNames = [...new Set([...SCOUTS, ...plans.map(p => p.scout).filter(n => n && !SCOUTS.includes(n))])];
+  const countFor = n => plans.filter(p => p.scout === n).length;
+  viewSelect.innerHTML = `<option value="">All scouts (${plans.length})</option>`
+    + viewNames.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}${countFor(n) ? ` (${countFor(n)})` : ''}</option>`).join('')
+    + `<option value="__none__">No scout (${plans.filter(p => !p.scout).length})</option>`;
+  viewSelect.value = scoutView;
+
   const select = document.getElementById('plan-select');
+  const shown = visiblePlans();
   const option = p => `<option value="${p.id}" ${p.id===activePlanId?'selected':''}>${escapeHtml(p.name)} (${p.items.length})${planStatus(p) !== 'idea' ? ` · ${planStatusLabel(p)}` : ''}${planHasFlags(p) ? ' ⟳' : ''}</option>`;
-  if(plans.some(p => p.scout)){
-    // Grouped by scout (roster order first, then names no longer on the roster, then unassigned).
-    const names = [...SCOUTS, ...plans.map(p => p.scout).filter(n => n && !SCOUTS.includes(n))];
-    const groups = [...new Set(names)].filter(n => plans.some(p => p.scout === n))
-      .map(n => `<optgroup label="${escapeHtml(n)}">${plans.filter(p => p.scout === n).map(option).join('')}</optgroup>`);
-    const open = plans.filter(p => !p.scout);
+  if(scoutView === '' && shown.some(p => p.scout)){
+    // All scouts: grouped by scout (roster order first, then names no longer on the roster, then unassigned).
+    const names = [...SCOUTS, ...shown.map(p => p.scout).filter(n => n && !SCOUTS.includes(n))];
+    const groups = [...new Set(names)].filter(n => shown.some(p => p.scout === n))
+      .map(n => `<optgroup label="${escapeHtml(n)}">${shown.filter(p => p.scout === n).map(option).join('')}</optgroup>`);
+    const open = shown.filter(p => !p.scout);
     if(open.length) groups.push(`<optgroup label="No scout">${open.map(option).join('')}</optgroup>`);
     select.innerHTML = groups.join('');
   } else {
-    select.innerHTML = plans.map(option).join('');
+    select.innerHTML = shown.map(option).join('');
   }
   document.getElementById('plan-name-display').textContent = activePlan().name;
 
@@ -234,11 +319,15 @@ function flushPlanNote(){
   savePlans();
 }
 
+// Assigns the active plan to a scout. The view follows the plan, so it stays
+// on screen instead of vanishing from a view that no longer matches it.
 function setPlanScout(name){
   const plan = activePlan();
   if(name) plan.scout = name; else delete plan.scout;
+  if(!planInView(plan)){ scoutView = name || ''; saveScoutView(); }
+  pruneEmptyAutoPlans(plan.id);
   savePlans();
-  renderPlanToolbar();
+  renderWatchlist();
 }
 
 // ----- Share a plan as a link -----
@@ -436,7 +525,7 @@ function describePlanChanges(local, next){
 }
 
 function showImportedPlan(plan){
-  activePlanId = plan.id;
+  activatePlan(plan); // switches the view to the plan's scout if the current one would hide it
   savePlans();
   renderWatchlist();
   refreshWatchStars();
@@ -526,8 +615,9 @@ function importSharedPlanFromUrl(){
 window.addEventListener('hashchange', () => { if(dataReady) importSharedPlanFromUrl(); });
 
 function switchPlan(id){
-  flushPlanNote();
-  activePlanId = id;
+  const target = plans.find(p => p.id === id);
+  if(!target) return;
+  activatePlan(target);
   savePlans();
   renderWatchlist();
   refreshWatchStars();
@@ -554,9 +644,10 @@ function openGamesAsNewPlan(games){
     plan = { id: uid(), name: `Trip ${fmtDateShort(games[0].start)} (${games.length} games)`, items };
     const current = activePlan();
     if(current.start) plan.start = { ...current.start };
+    if(scoutView && scoutView !== '__none__') plan.scout = scoutView;
     plans.push(plan);
   }
-  activePlanId = plan.id;
+  activatePlan(plan);
   savePlans();
   renderWatchlist();
   refreshWatchStars();
@@ -579,13 +670,14 @@ function renamePlan(){
 }
 
 function newPlan(){
-  const name = prompt('Name for the new plan (e.g. a person\'s name):', `Plan ${plans.length + 1}`);
+  const name = prompt('Name for the new plan:', `Plan ${plans.length + 1}`);
   if(name === null) return;
   const trimmed = name.trim();
   if(!trimmed) return;
   const plan = { id: uid(), name: trimmed, items: [] };
+  if(scoutView && scoutView !== '__none__') plan.scout = scoutView; // belongs to the scout whose view is open
   plans.push(plan);
-  activePlanId = plan.id;
+  activatePlan(plan);
   savePlans();
   renderWatchlist();
   refreshWatchStars();
@@ -597,7 +689,9 @@ function deletePlan(){
   const plan = activePlan();
   if(!confirm(`Delete "${plan.name}" and its ${plan.items.length} planned game(s)? This can't be undone.`)) return;
   plans = plans.filter(p => p.id !== plan.id);
-  activePlanId = plans[0].id;
+  const remaining = visiblePlans();
+  if(!remaining.length){ scoutView = ''; saveScoutView(); } // that scout has no plan left: back to all
+  activePlanId = mostRecentPlan(visiblePlans()).id;
   savePlans();
   renderWatchlist();
   refreshWatchStars();

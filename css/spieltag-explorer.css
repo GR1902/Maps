@@ -590,8 +590,8 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .plan-stop-num.plan-stop-start .icon{ width:13px; height:13px; }
 
 /* Scout a plan is assigned to */
-#plan-scout-row{ display:flex; align-items:center; gap:8px; padding:0 16px 8px 16px; font-size:0.72rem; color:var(--text-muted); font-weight:600; }
-#plan-scout-select{
+#plan-view-row, #plan-scout-row{ display:flex; align-items:center; gap:8px; padding:0 16px 8px 16px; font-size:0.72rem; color:var(--text-muted); font-weight:600; }
+#plan-scout-view, #plan-scout-select{
   flex:1; min-width:0; font-family:inherit; font-size:0.74rem; padding:5px 8px; border:1px solid var(--line);
   border-radius:var(--radius-sm); background:var(--paper); color:var(--ink);
 }

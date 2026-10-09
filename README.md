@@ -217,12 +217,22 @@ to refresh it; `dist/` isn't tracked in git.
   plan (the last remaining plan can't be deleted, rename it instead).
   Everything is persisted in the browser's `localStorage` (local to one
   browser/device, no account or sync).
-  **Scout per plan**: a "Scout" dropdown under the plan switcher assigns the
-  plan to a person from the roster in `data/scouts.json` (a plain JSON list of
-  names; edit the file to add or remove scouts). The plan switcher then groups
-  plans by scout, with "No scout" last. The name is stored on the plan, so it
-  survives roster changes. Note that `data/scouts.json` is part of the public
-  repo and site.
+  **Scouts**: a "Scout" dropdown at the top of My Plan is a **view switch**:
+  choosing a scout switches the list straight to that scout's plan (their
+  most recently used one) and narrows the plan switcher to their plans;
+  "All scouts" shows everything grouped by scout, "No scout" the unassigned
+  plans, and the counts are shown behind each name. A scout who has no plan
+  yet gets an empty one named "<scout> plan"; it disappears again if it is
+  left untouched. A plan created while a scout's view is open (New, a
+  Combinable Trips card) belongs to that scout. The view is remembered in the
+  browser, so a scout who opens the tool lands on their own plans. Opening a
+  plan link, a plan from the calendar, or assigning a plan to another scout
+  moves the view to that plan's scout, so the plan is never hidden by the
+  view. **Assigning** is separate: the "Assigned to" dropdown (next to Status)
+  sets who the active plan belongs to. The roster is `data/scouts.json` (a
+  plain JSON list of names; edit the file to add or remove scouts); the name
+  is stored on the plan, so it survives roster changes. Note that
+  `data/scouts.json` is part of the public repo and site.
   **Status and note per plan**: next to the Scout dropdown, a Status dropdown
   (Idea, Planned, Booked, Done; no value means Idea) and a note field (up to
   500 characters, saved while typing and when the field loses focus) for
