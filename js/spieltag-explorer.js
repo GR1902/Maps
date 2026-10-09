@@ -854,6 +854,7 @@ function toggleAirports(){
   showAirports = !showAirports;
   document.getElementById('airports-toggle-btn').classList.toggle('active', showAirports);
   renderAirports();
+  updatePlaceButton();
 }
 
 // ===== League picker (multi-select) =====
@@ -900,6 +901,7 @@ function setFilterMode(mode, presetRange){
       toEl.value = localDateKey(new Date(today.getTime() + 14 * 24 * 3600 * 1000));
     }
   }
+  updateDateButtonLabel();
   renderAll();
   if(calendarOpen){ syncCalendarToDateRange(); renderCalendar(); }
 }
@@ -907,6 +909,7 @@ function setFilterMode(mode, presetRange){
 // One date range drives both the map (in 'range' mode) and the calendar, so
 // there is a single place to say "which days am I looking at".
 function onMapDateChange(){
+  updateDateButtonLabel();
   renderAll();
   if(calendarOpen){ syncCalendarToDateRange(); renderCalendar(); }
 }
@@ -949,6 +952,7 @@ function buildLeaguePanel(){
   `).join('');
   const search = document.getElementById('league-search');
   if(search && search.value) filterLeagues(search.value);
+  updateLeagueButtonLabel();
 }
 
 // Country names (English + German) so "austria", "osterreich" or "spanien" find
@@ -1004,6 +1008,7 @@ function clearRadiusAddress(){
   document.getElementById('radius-address').value = '';
   document.getElementById('radius-status').textContent = '';
   updateSearchClearButtons();
+  updatePlaceButton();
   document.getElementById('radius-address').focus();
 }
 
@@ -1021,8 +1026,26 @@ function updateSearchClearButtons(){
   });
 }
 
+// The header buttons say what is active: "Leagues (3)", "Dates: 09 Oct to 11 Oct".
+function updateLeagueButtonLabel(){
+  document.getElementById('league-picker-label').textContent = `Leagues (${selectedLeagues.size})`;
+}
+function updateDateButtonLabel(){
+  const range = getActiveDateRange();
+  document.getElementById('date-picker-label').textContent = range && (range.from || range.to)
+    ? `Dates: ${range.from ? fmtDateShort(range.from) : '…'} to ${range.to ? fmtDateShort(range.to) : '…'}`
+    : 'Dates';
+}
+// Place covers the radius search, the plan start and the airports layer; it is
+// highlighted while a searched point or the airports layer is active, since
+// both live inside the panel and would otherwise be easy to forget.
+function updatePlaceButton(){
+  document.getElementById('place-picker-btn').classList.toggle('has-active', !!(showAirports || lastRadiusPoint));
+}
+
 function toggleLeague(code, checked){
   if(checked) selectedLeagues.add(code); else selectedLeagues.delete(code);
+  updateLeagueButtonLabel();
   renderAll();
   // The League picker stays reachable while the Calendar overlay is open
   // (it lives in the header, not #body) — keep the grid in sync instead of
@@ -2029,6 +2052,7 @@ function resultLogoHtml(logoUrl, color){
 // search, on the other hand, always excludes past games (see below).
 function renderRadiusResults(point, radiusKm, fitView, includePast){
   clearRadiusSearch();
+  updatePlaceButton();
   const status = document.getElementById('radius-status');
 
   // Search across ALL leagues currently loaded — not just the leagues
@@ -2247,6 +2271,8 @@ function resetAllFilters(){
   document.getElementById('radius-status').textContent = '';
   setRadiusSlider(100, false);
   updateSearchClearButtons();
+  updateDateButtonLabel();
+  updatePlaceButton();
 
   document.querySelectorAll('.header-dropdown-panel.open').forEach(p => p.classList.remove('open'));
 
@@ -2270,7 +2296,8 @@ let calendarSelectedDate = null;   // 'YYYY-MM-DD' of the day shown in the detai
 function toggleCalendarView(){
   calendarOpen = !calendarOpen;
   document.getElementById('calendar-view').classList.toggle('open', calendarOpen);
-  document.getElementById('calendar-toggle-btn').classList.toggle('active', calendarOpen);
+  document.getElementById('view-map-btn').classList.toggle('active', !calendarOpen);
+  document.getElementById('view-calendar-btn').classList.toggle('active', calendarOpen);
   if(calendarOpen){
     syncCalendarToDateRange();
     renderCalendar();
@@ -2286,6 +2313,11 @@ function syncCalendarToDateRange(){
     calendarViewDate = new Date(range.from.getFullYear(), range.from.getMonth(), 1);
     calendarSelectedDate = null;
   }
+}
+
+// Map | Calendar switch in the header.
+function setView(view){
+  if((view === 'calendar') !== calendarOpen) toggleCalendarView();
 }
 
 function calendarJumpToday(){

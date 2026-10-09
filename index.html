@@ -35,7 +35,7 @@
     </div>
     <div id="date-picker" class="header-dropdown">
       <button id="date-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('date-panel')">
-        <span id="date-picker-label">Date Selection</span> <span aria-hidden="true">▾</span>
+        <span id="date-picker-label">Dates</span> <span aria-hidden="true">▾</span>
       </button>
       <div id="date-panel" class="header-dropdown-panel">
         <div id="filter-mode-row">
@@ -54,10 +54,10 @@
         </div>
       </div>
     </div>
-    <div id="radius-picker" class="header-dropdown">
-      <button id="radius-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('radius-panel')">
+    <div id="place-picker" class="header-dropdown">
+      <button id="place-picker-btn" class="ctrl-dropdown-btn" type="button" onclick="toggleDropdown('radius-panel')" title="Search around an address, set a plan start point, show airports">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-        Radius Search <span aria-hidden="true">▾</span>
+        Place <span aria-hidden="true">▾</span>
       </button>
       <div id="radius-panel" class="header-dropdown-panel">
         <div id="radius-body">
@@ -78,22 +78,27 @@
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h13l-3 4 3 4H5"/></svg>
             Use as plan start
           </button>
+          <button class="route-btn" id="airports-toggle-btn" type="button" onclick="toggleAirports()" style="width:100%; margin-top:6px;">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L11 13"/><path d="M21 3l-7 18-4-8-8-4 19-6z"/></svg>
+            Show airports on the map
+          </button>
           <div id="radius-status"></div>
           <div id="radius-results"></div>
         </div>
       </div>
     </div>
-    <button id="airports-toggle-btn" type="button" onclick="toggleAirports()">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L11 13"/><path d="M21 3l-7 18-4-8-8-4 19-6z"/></svg>
-      Airports
-    </button>
-    <button id="reset-filters-btn" type="button" onclick="resetAllFilters()" title="Reset leagues, matchdays, airports, radius search, and trip filters back to defaults">
+    <div id="view-toggle" role="group" aria-label="View">
+      <button id="view-map-btn" class="seg-btn active" type="button" onclick="setView('map')">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
+        Map
+      </button>
+      <button id="view-calendar-btn" class="seg-btn" type="button" onclick="setView('calendar')">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+        Calendar
+      </button>
+    </div>
+    <button id="reset-filters-btn" type="button" onclick="resetAllFilters()" title="Reset filters: leagues, matchdays, dates, place and airports back to defaults" aria-label="Reset filters">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4"/><path d="M21 12a9 9 0 0 1-15.3 6.4"/><path d="M18.5 3v4.5H14"/><path d="M5.5 21v-4.5H10"/></svg>
-      Reset filters
-    </button>
-    <button id="calendar-toggle-btn" type="button" onclick="toggleCalendarView()">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
-      Calendar
     </button>
     <span id="snapshot-note"></span>
   </div>
@@ -161,7 +166,7 @@
               <span id="plan-route-btn-label">Show route</span>
             </button>
           </div>
-          <div id="watchlist-hint" class="empty-note">Drag a fixture here, or click ☆ on any game, to plan it. Drag rows to set the order. A start point comes from an airport (map) or Radius Search.</div>
+          <div id="watchlist-hint" class="empty-note">Drag a fixture here, or click ☆ on any game, to plan it. Drag rows to set the order. A start point comes from an airport (map) or from Place.</div>
         </div>
       </div>
       <div id="fixtures-container"></div>

@@ -91,6 +91,9 @@ to refresh it; `dist/` isn't tracked in git.
   auto-derives from whatever's currently anchored, so a wide date-range
   selection here naturally widens it too, the same way a matchday selection
   already did
+- **Control bar** (one row on desktop): **Leagues (n)**, **Dates** (shows the
+  active range, e.g. "Dates: 09 Oct to 11 Oct"), **Place**, the **Map |
+  Calendar** switch, the reset icon, and on the right the data status below
 - **Data status** (right end of the control bar): "Fixtures checked <date>"
   from `data/meta.json` (`{"checked": "YYYY-MM-DD"}`, set by the weekly
   verification runs), turning amber after 10 days, plus the number of
@@ -98,7 +101,7 @@ to refresh it; `dist/` isn't tracked in git.
 - Shows every selected league's home fixtures highlighted (own color per
   league); other clubs of the same league in a pale shade; unselected
   leagues' clubs in muted grey
-- "↺ Reset filters" (top control bar): puts leagues/matchdays, the airports
+- "↺" reset button (top control bar, icon only, tooltip "Reset filters"): puts leagues/matchdays, the airports
   layer, the cross-border toggle, any single-game trip focus, and the
   radius search all back to their defaults in one click. Deliberately
   leaves the "My Plan" plans alone — those are content you built on
@@ -111,14 +114,14 @@ to refresh it; `dist/` isn't tracked in git.
   league in the picker checklist and at the top of that league's fixture
   block in the side panel; falls back to the plain color swatch/dot if a
   logo is missing or fails to load
-- "✈️ Airports" toggle (top control bar): overlays ~60 major European
+- "Show airports on the map" (button inside the **Place** dropdown): overlays ~60 major European
   airports (`data/airports.json`) as a reference layer, independent of the
   league/matchday filters — handy for judging how reachable a fixture
   cluster is by air, not just by road. Off by default; click the button to
   show/hide, click a plane marker for the airport name, IATA code, city, and
   a "🏁 Set as start point" button (sets the start of the active plan, see
   My Plan below)
-- Radius search ("📍 Radius Search" in the top control bar, opens as a
+- Radius search (inside the **Place** dropdown of the top control bar, which also holds the airports toggle and the plan start; the Place button is outlined while a searched point or the airports layer is active; opens as a
   dropdown like the league picker): enter an address, or click "📍 Pick point
   on map" and click anywhere on the map instead — either way, see every home
   fixture within a radius of that point, across *all* 33 leagues and every
@@ -204,7 +207,7 @@ to refresh it; `dist/` isn't tracked in git.
   where the next kickoff cannot be reached in time (previous kickoff + 2 h
   match + drive) or the order runs backwards in time.
   **Start point per plan**: "Set as start point" in an airport popup or
-  "Use as plan start" in Radius Search. It is the first row of the plan,
+  "Use as plan start" in Place. It is the first row of the plan,
   driven first, removable on its own. Every club with a game in the active
   plan is marked on the map (gold numbered badge matching its position in the
   plan, plus a gold ring) and in the lists (gold left border), live as the
@@ -225,9 +228,9 @@ to refresh it; `dist/` isn't tracked in git.
   A moved kickoff is updated and flagged "Kickoff changed, was ..." with an OK
   button, a game that is no longer in the schedule is flagged, and the plan
   shows a ⟳ in the dropdown until everything is acknowledged
-- "📅 Calendar" (top control bar): a full-screen **month view** over the
+- "📅 Calendar" (Map | Calendar switch in the top control bar): a full-screen **month view** over the
   map area — header/controls bar stays visible and usable — for the
-  currently *selected* leagues, following the **Date Selection range** (no
+  currently *selected* leagues, following the **Dates range** (no
   range of its own: without one it shows every game of the displayed month;
   a ‹month year› header navigates month-to-month; days outside an active
   range render but aren't clickable). Each day
@@ -237,7 +240,7 @@ to refresh it; `dist/` isn't tracked in git.
   clicking — tiles size to fit this (no longer a fixed square).
   **Hovering a day still previews the full list** (time + matchup, up to
   6) in a tooltip; clicking opens the full list below the grid — this
-  doubles as search-by-date, since setting the Date Selection range
+  doubles as search-by-date, since setting the Dates range
   **is** the filter. A day is auto-selected when you open the Calendar or change
   month (today if it has games, else the first day that does), so the
   list below the grid is never empty by default. There's a "Today"
