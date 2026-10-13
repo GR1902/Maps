@@ -22,13 +22,13 @@
       "added": "2026-10-07"
     },
     {
-      "id": "la_liga-12-13",
+      "id": "la_liga-13",
       "league": "la_liga",
-      "matchday": 12,
+      "matchday": 13,
       "type": "placeholder",
       "priority": "high",
-      "note": "Spieltag 12 (8.11.) und 13 (22.11.): bei Kicker stehen alle 10 Spiele auf 17:00, Platzhalter (Stand 9.10. unveraendert). Erst eintragen, wenn laliga.com echte Zeiten nennt (ca. 10 Tage vorher).",
-      "sources_tried": "kicker.de",
+      "note": "Spieltag 12 (6.-8.11.) am 13.10. bestaetigt (laliga.com + kicker.de) und eingetragen. Spieltag 13 (22.11.): alle 10 Spiele einheitlich 16:00 UTC bei kicker.de, Platzhalter. Erst eintragen, wenn laliga.com echte Zeiten nennt.",
+      "sources_tried": "kicker.de, laliga.com",
       "added": "2026-10-07"
     },
     {
@@ -219,6 +219,16 @@
       "priority": "medium",
       "note": "Spieltag 13 (Mi 2.12.): premierleague.com zeigt alle 10 Spiele um 21:00 MEZ (Platzhalter). Erst eintragen, wenn echte Zeiten da sind. Spieltag 12: Leeds-Coventry und Man Utd-Brentford 16:00 MEZ laut premierleague.com, kicker.de 17:30; premierleague.com uebernommen.",
       "sources_tried": "premierleague.com, kicker.de",
+      "added": "2026-10-13"
+    },
+    {
+      "id": "official-missing-2026-10-13",
+      "league": "multiple",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "Kicker.de nennt echte Zeiten, die offizielle Seite war nicht lesbar oder fuehrt die Runde noch nicht: Ligue 2 Spieltag 13 (20.-23.11., ligue1.com rendert nicht), Challenger Pro League Spieltag 14 (11.-13.12., proleague.be blaettert nur bis Spieltag 8), Schweiz 17/18 (12./13. und 19./20.12., sfl.ch 404), Oesterreich 15 (4.-6.12., bundesliga.at nur bis Runde 14), Polen 14 (6.-8.11., ekstraklasa.org 404), Tschechien 15 (21./22.11., chanceliga.cz nur bis Runde 12), Daenemark 17 (5.-7.12., superliga.dk nicht geprueft). Nicht eingetragen.",
+      "sources_tried": "kicker.de, offizielle Seiten",
       "added": "2026-10-13"
     }
   ]
