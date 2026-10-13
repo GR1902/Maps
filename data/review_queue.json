@@ -230,6 +230,16 @@
       "note": "Kicker.de nennt echte Zeiten, die offizielle Seite war nicht lesbar oder fuehrt die Runde noch nicht: Ligue 2 Spieltag 13 (20.-23.11., ligue1.com rendert nicht), Challenger Pro League Spieltag 14 (11.-13.12., proleague.be blaettert nur bis Spieltag 8), Schweiz 17/18 (12./13. und 19./20.12., sfl.ch 404), Oesterreich 15 (4.-6.12., bundesliga.at nur bis Runde 14), Polen 14 (6.-8.11., ekstraklasa.org 404), Tschechien 15 (21./22.11., chanceliga.cz nur bis Runde 12), Daenemark 17 (5.-7.12., superliga.dk nicht geprueft). Nicht eingetragen.",
       "sources_tried": "kicker.de, offizielle Seiten",
       "added": "2026-10-13"
+    },
+    {
+      "id": "official-only-2026-10-13",
+      "league": "multiple",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "Nur offizielle Quelle, als unverified eingetragen: Super Lig Spieltag 15/16 (tff.org, kicker fuehrt die Liga nicht), HNL Spieltag 11-13 (hnl.hr, kicker zeigt nur Platzhalter 22:00/23:00 UTC). Nicht pruefbar: Super League Greece (slgr.gr hinter Cloudflare-Pruefung), Ligue 2, Allsvenskan/Eliteserien/Veikkausliiga/Superliga/La Liga 2 Spieltag-Abgleich mit Verbandsseiten steht aus. Youth League Liverpool-Porto (9.12.): UEFA ohne Uhrzeit, fotmob 15:00.",
+      "sources_tried": "tff.org, hnl.hr, kicker.de, uefa.com, fotmob.com",
+      "added": "2026-10-13"
     }
   ]
 }
