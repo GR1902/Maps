@@ -1500,6 +1500,26 @@ document.addEventListener('click', (e) => {
   });
 });
 
+// A matchday counts as past once its last kickoff is more than 3 hours ago.
+// The dropdown hides past matchdays unless "Show past matchdays" is on.
+const PAST_GRACE_MS = 3 * 3600 * 1000;
+let showPastMatchdays = false;
+function leagueMatchdays(league){
+  const last = new Map();
+  FIXTURES[league].forEach(f => {
+    const t = new Date(f.start).getTime();
+    if(!last.has(f.matchday) || t > last.get(f.matchday)) last.set(f.matchday, t);
+  });
+  const all = [...last.keys()].sort((a,b)=>a-b);
+  if(showPastMatchdays) return all;
+  const upcoming = all.filter(md => last.get(md) + PAST_GRACE_MS > Date.now());
+  return upcoming.length ? upcoming : all.slice(-1);
+}
+function toggleShowPast(on){
+  showPastMatchdays = !!on;
+  renderAll();
+}
+
 function changeLeagueMatchday(league, md){
   leagueMatchday[league] = parseInt(md, 10);
   renderAll();
@@ -1536,8 +1556,7 @@ function renderAll(){
 
   orderedSelected.forEach(league => {
     if(!(league in leagueMatchday)){
-      const mds = [...new Set(FIXTURES[league].map(f => f.matchday))].sort((a,b)=>a-b);
-      leagueMatchday[league] = mds[0];
+      leagueMatchday[league] = leagueMatchdays(league)[0];
     }
   });
 
@@ -1641,7 +1660,8 @@ function renderAll(){
     // matchday picker; in range mode the matchday concept doesn't apply per
     // league (fixtures can span several matchdays at once), so a plain date
     // label replaces the dropdown.
-    const mds = [...new Set(FIXTURES[league].map(f => f.matchday))].sort((a,b)=>a-b);
+    const mds = leagueMatchdays(league);
+    if(!useRange && !mds.includes(selectedMd)){ mds.push(selectedMd); mds.sort((a,b)=>a-b); }
     const rangeNote = mapRangeFrom || mapRangeTo
       ? `${mapRangeFrom ? fmtDateShort(mapRangeFrom) : '…'}–${mapRangeTo ? fmtDateShort(mapRangeTo) : '…'}`
       : 'all loaded fixtures';
@@ -2671,6 +2691,9 @@ map.on('click', async (e) => {
 function resetAllFilters(){
   selectedLeagues = new Set(['epl']);
   leagueMatchday = {};
+  showPastMatchdays = false;
+  const showPastBox = document.getElementById('show-past-toggle');
+  if(showPastBox) showPastBox.checked = false;
   document.getElementById('league-search').value = '';
   buildLeaguePanel();
   filterLeagues('');

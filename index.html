@@ -42,6 +42,9 @@
           <button type="button" class="mode-tab active" data-mode="matchday" onclick="setFilterMode('matchday')">By matchday</button>
           <button type="button" class="mode-tab" data-mode="range" onclick="setFilterMode('range')">By date range</button>
         </div>
+        <label id="show-past-row" style="display:block;margin:6px 0;font-size:13px;">
+          <input type="checkbox" id="show-past-toggle" onchange="toggleShowPast(this.checked)" /> Show past matchdays
+        </label>
         <div id="quick-range-row">
           <button type="button" class="mini-btn" onclick="setQuickRange('weekend')">This weekend</button>
           <button type="button" class="mini-btn" onclick="setQuickRange('7days')">Next 7 days</button>
