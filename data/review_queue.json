@@ -210,6 +210,16 @@
       "note": "Giornata 19 (26./27.12.) und 20 (9./10.1.) sind eingetragen (legab.it + kicker.de gleich). Giornata 21 (16.1.) zeigt auf legab.it den Platzhalter 01:00, noch nicht terminiert.",
       "sources_tried": "legab.it, kicker.de",
       "added": "2026-10-09"
+    },
+    {
+      "id": "epl-13",
+      "league": "epl",
+      "matchday": 13,
+      "type": "placeholder",
+      "priority": "medium",
+      "note": "Spieltag 13 (Mi 2.12.): premierleague.com zeigt alle 10 Spiele um 21:00 MEZ (Platzhalter). Erst eintragen, wenn echte Zeiten da sind. Spieltag 12: Leeds-Coventry und Man Utd-Brentford 16:00 MEZ laut premierleague.com, kicker.de 17:30; premierleague.com uebernommen.",
+      "sources_tried": "premierleague.com, kicker.de",
+      "added": "2026-10-13"
     }
   ]
 }

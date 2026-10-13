@@ -659,6 +659,66 @@
       "away": "EVE",
       "start": "2026-11-23T20:00:00+00:00",
       "matchday": 11
+    },
+    {
+      "home": "NFO",
+      "away": "CFC",
+      "start": "2026-11-27T20:00:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "LEE",
+      "away": "COV",
+      "start": "2026-11-28T15:00:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "MUN",
+      "away": "BRE",
+      "start": "2026-11-28T15:00:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "IPS",
+      "away": "AVL",
+      "start": "2026-11-28T17:30:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "EVE",
+      "away": "LFC",
+      "start": "2026-11-29T12:00:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "BRI",
+      "away": "NEW",
+      "start": "2026-11-29T14:05:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "CRY",
+      "away": "HUL",
+      "start": "2026-11-29T14:05:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "FUL",
+      "away": "BOU",
+      "start": "2026-11-29T14:05:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "SUN",
+      "away": "TOT",
+      "start": "2026-11-29T14:05:00+00:00",
+      "matchday": 12
+    },
+    {
+      "home": "ARS",
+      "away": "MCI",
+      "start": "2026-11-29T16:30:00+00:00",
+      "matchday": 12
     }
   ],
   "la_liga": [
@@ -21972,22 +22032,19 @@
       "home": "STJ",
       "away": "MOT",
       "start": "2026-10-28T19:45:00+00:00",
-      "matchday": 11,
-      "unverified": true
+      "matchday": 11
     },
     {
       "home": "STM",
       "away": "HIB",
       "start": "2026-10-28T19:45:00+00:00",
-      "matchday": 11,
-      "unverified": true
+      "matchday": 11
     },
     {
       "home": "HEA",
       "away": "RAN",
       "start": "2026-10-28T20:00:00+00:00",
-      "matchday": 11,
-      "unverified": true
+      "matchday": 11
     },
     {
       "home": "DUT",
