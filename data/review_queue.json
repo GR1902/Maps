@@ -240,6 +240,26 @@
       "note": "Nur offizielle Quelle, als unverified eingetragen: Super Lig Spieltag 15/16 (tff.org, kicker fuehrt die Liga nicht), HNL Spieltag 11-13 (hnl.hr, kicker zeigt nur Platzhalter 22:00/23:00 UTC). Nicht pruefbar: Super League Greece (slgr.gr hinter Cloudflare-Pruefung), Ligue 2, Allsvenskan/Eliteserien/Veikkausliiga/Superliga/La Liga 2 Spieltag-Abgleich mit Verbandsseiten steht aus. Youth League Liverpool-Porto (9.12.): UEFA ohne Uhrzeit, fotmob 15:00.",
       "sources_tried": "tff.org, hnl.hr, kicker.de, uefa.com, fotmob.com",
       "added": "2026-10-13"
+    },
+    {
+      "id": "eliteserien-numbering",
+      "league": "eliteserien",
+      "matchday": 25,
+      "type": "conflict",
+      "priority": "high",
+      "note": "eliteserien.no und kicker.de fuehren die Spiele vom 24./25.10. als Runde 12 (nachgeholt), bei uns stehen sie als Spieltag 25. Echte Runde 25 (30.10.-1.11.) sowie 26-29 (7.11.-6.12.) fehlen, beide Quellen stimmen ueberein. Eintragen erfordert Umnummerierung 25->12 (gespeicherte Plaene mit Key ...::25 wuerden als missing markiert). Entscheidung des Besitzers noetig. BOG-VAL am 24.10. 14:00 UTC wurde korrigiert.",
+      "sources_tried": "eliteserien.no, kicker.de",
+      "added": "2026-10-13"
+    },
+    {
+      "id": "veikkausliiga-mestaruussarja",
+      "league": "veikkausliiga",
+      "matchday": null,
+      "type": "missing",
+      "priority": "medium",
+      "note": "veikkausliiga.com Mestaruussarja (group=2) zeigt Datum ohne Uhrzeit bis 8.11.; Zeiten und Karsintasarja noch nicht abgeglichen. Superliga (DK), La Liga 2, Ligue 2, Schweiz, Oesterreich, Polen, Tschechien, Challenger, Greece: Verbandsabgleich offen.",
+      "sources_tried": "veikkausliiga.com",
+      "added": "2026-10-13"
     }
   ]
 }
