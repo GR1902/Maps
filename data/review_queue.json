@@ -217,8 +217,8 @@
       "matchday": null,
       "type": "single_source",
       "priority": "medium",
-      "note": "Super Lig 15/16 (tff.org + fotmob.com) und HNL 11-13 (hnl.hr + fotmob.com, Rijeka-Varazdin und Lokomotiva-Osijek am 1.11. zusaetzlich mit nk-rijeka.hr und nk-osijek.hr gegen fotmob (vertauschte Slots) bestaetigt) am 14.10. bestaetigt und entflaggt. Offen: Youth League Liverpool-Porto (9.12.): UEFA ohne Uhrzeit, fotmob 15:00.",
-      "sources_tried": "tff.org, hnl.hr, fotmob.com, nk-rijeka.hr, nk-osijek.hr, uefa.com",
+      "note": "Super Lig 15/16 (tff.org + fotmob.com) und HNL 11-13 (hnl.hr + fotmob.com, Rijeka-Varazdin und Lokomotiva-Osijek am 1.11. zusaetzlich mit nk-rijeka.hr und nk-osijek.hr gegen fotmob (vertauschte Slots) bestaetigt) am 14.10. bestaetigt und entflaggt. Offen: Youth League Liverpool-Porto (9.12.): uefa.com (API, 14.10.) fuehrt das Spiel noch ohne Uhrzeit; fotmob.com und futboltotal.futbol nennen beide 15:00 UTC (Aggregatoren, vermutlich gleiche Datenbasis). Bleibt unverified, bis die UEFA eine Zeit setzt (Regel: keine Bestaetigung ohne offizielle Quelle).",
+      "sources_tried": "tff.org, hnl.hr, fotmob.com, nk-rijeka.hr, nk-osijek.hr, uefa.com, futboltotal.futbol",
       "added": "2026-10-13"
     },
     {
