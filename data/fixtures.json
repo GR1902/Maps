@@ -23995,6 +23995,42 @@
       "away": "LUG",
       "start": "2026-12-20T15:30:00+00:00",
       "matchday": 18
+    },
+    {
+      "home": "SER",
+      "away": "THU",
+      "start": "2027-01-16T17:00:00+00:00",
+      "matchday": 19
+    },
+    {
+      "home": "BAS",
+      "away": "VAD",
+      "start": "2027-01-16T17:00:00+00:00",
+      "matchday": 19
+    },
+    {
+      "home": "YB",
+      "away": "LUG",
+      "start": "2027-01-16T19:30:00+00:00",
+      "matchday": 19
+    },
+    {
+      "home": "ZUR",
+      "away": "LAU",
+      "start": "2027-01-17T13:00:00+00:00",
+      "matchday": 19
+    },
+    {
+      "home": "LUZ",
+      "away": "STG",
+      "start": "2027-01-17T15:30:00+00:00",
+      "matchday": 19
+    },
+    {
+      "home": "SIO",
+      "away": "GRA",
+      "start": "2027-01-17T15:30:00+00:00",
+      "matchday": 19
     }
   ],
   "austrian_bundesliga": [
@@ -25163,6 +25199,48 @@
       "away": "OFI",
       "start": "2026-12-14T17:00:00+00:00",
       "matchday": 14
+    },
+    {
+      "home": "VOL",
+      "away": "LEV",
+      "start": "2026-12-19T15:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "AST",
+      "away": "PAO",
+      "start": "2026-12-19T17:30:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "KIF",
+      "away": "ATR",
+      "start": "2026-12-19T18:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "OLY",
+      "away": "PAT",
+      "start": "2026-12-20T15:00:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "PAN",
+      "away": "IRA",
+      "start": "2026-12-20T15:30:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "ARI",
+      "away": "AEK",
+      "start": "2026-12-20T17:30:00+00:00",
+      "matchday": 15
+    },
+    {
+      "home": "OFI",
+      "away": "KAL",
+      "start": "2026-12-20T17:30:00+00:00",
+      "matchday": 15
     }
   ],
   "super_lig": [
