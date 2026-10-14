@@ -31289,288 +31289,247 @@
       "home": "STR",
       "away": "ASA",
       "start": "2026-10-14T13:00:00+00:00",
-      "matchday": 26,
-      "unverified": true
+      "matchday": 26
     },
     {
       "home": "MOS",
       "away": "EGE",
       "start": "2026-10-14T17:00:00+00:00",
-      "matchday": 26,
-      "unverified": true
+      "matchday": 26
     },
     {
       "home": "STA",
       "away": "SAN",
       "start": "2026-10-14T17:00:00+00:00",
-      "matchday": 26,
-      "unverified": true
+      "matchday": 26
     },
     {
       "home": "HOD",
       "away": "RAN",
       "start": "2026-10-14T17:00:00+00:00",
-      "matchday": 26,
-      "unverified": true
+      "matchday": 26
     },
     {
       "home": "BRY",
       "away": "RAU",
       "start": "2026-10-14T17:00:00+00:00",
-      "matchday": 26,
-      "unverified": true
+      "matchday": 26
     },
     {
       "home": "SOG",
       "away": "ODD",
       "start": "2026-10-14T17:00:00+00:00",
-      "matchday": 26,
-      "unverified": true
+      "matchday": 26
     },
     {
       "home": "SGO",
       "away": "KON",
       "start": "2026-10-14T17:00:00+00:00",
-      "matchday": 26,
-      "unverified": true
+      "matchday": 26
     },
     {
       "home": "HAU",
       "away": "LYN",
       "start": "2026-10-14T17:00:00+00:00",
-      "matchday": 26,
-      "unverified": true
+      "matchday": 26
     },
     {
       "home": "SGO",
       "away": "HAU",
       "start": "2026-10-18T12:30:00+00:00",
-      "matchday": 27,
-      "unverified": true
+      "matchday": 27
     },
     {
       "home": "EGE",
       "away": "SOG",
       "start": "2026-10-18T12:30:00+00:00",
-      "matchday": 27,
-      "unverified": true
+      "matchday": 27
     },
     {
       "home": "ASA",
       "away": "STA",
       "start": "2026-10-18T15:00:00+00:00",
-      "matchday": 27,
-      "unverified": true
+      "matchday": 27
     },
     {
       "home": "RAN",
       "away": "BRY",
       "start": "2026-10-18T15:00:00+00:00",
-      "matchday": 27,
-      "unverified": true
+      "matchday": 27
     },
     {
       "home": "ODD",
       "away": "STR",
       "start": "2026-10-18T15:00:00+00:00",
-      "matchday": 27,
-      "unverified": true
+      "matchday": 27
     },
     {
       "home": "HOD",
       "away": "RAU",
       "start": "2026-10-18T15:00:00+00:00",
-      "matchday": 27,
-      "unverified": true
+      "matchday": 27
     },
     {
       "home": "LYN",
       "away": "MOS",
       "start": "2026-10-18T15:00:00+00:00",
-      "matchday": 27,
-      "unverified": true
+      "matchday": 27
     },
     {
       "home": "KON",
       "away": "SAN",
       "start": "2026-10-18T15:00:00+00:00",
-      "matchday": 27,
-      "unverified": true
+      "matchday": 27
     },
     {
       "home": "SOG",
       "away": "RAU",
       "start": "2026-10-21T17:00:00+00:00",
-      "matchday": 24,
-      "unverified": true
+      "matchday": 24
     },
     {
       "home": "RAU",
       "away": "RAN",
       "start": "2026-10-24T12:00:00+00:00",
-      "matchday": 28,
-      "unverified": true
+      "matchday": 28
     },
     {
       "home": "STR",
       "away": "SGO",
       "start": "2026-10-25T12:00:00+00:00",
-      "matchday": 28,
-      "unverified": true
+      "matchday": 28
     },
     {
       "home": "SAN",
       "away": "LYN",
       "start": "2026-10-25T13:30:00+00:00",
-      "matchday": 28,
-      "unverified": true
+      "matchday": 28
     },
     {
       "home": "HAU",
       "away": "HOD",
       "start": "2026-10-25T13:30:00+00:00",
-      "matchday": 28,
-      "unverified": true
+      "matchday": 28
     },
     {
       "home": "SOG",
       "away": "KON",
       "start": "2026-10-25T16:00:00+00:00",
-      "matchday": 28,
-      "unverified": true
+      "matchday": 28
     },
     {
       "home": "STA",
       "away": "ODD",
       "start": "2026-10-25T16:00:00+00:00",
-      "matchday": 28,
-      "unverified": true
+      "matchday": 28
     },
     {
       "home": "BRY",
       "away": "EGE",
       "start": "2026-10-25T16:00:00+00:00",
-      "matchday": 28,
-      "unverified": true
+      "matchday": 28
     },
     {
       "home": "MOS",
       "away": "ASA",
       "start": "2026-10-25T16:00:00+00:00",
-      "matchday": 28,
-      "unverified": true
+      "matchday": 28
     },
     {
       "home": "RAN",
       "away": "SOG",
       "start": "2026-11-01T13:30:00+00:00",
-      "matchday": 29,
-      "unverified": true
+      "matchday": 29
     },
     {
       "home": "EGE",
       "away": "STR",
       "start": "2026-11-01T16:00:00+00:00",
-      "matchday": 29,
-      "unverified": true
+      "matchday": 29
     },
     {
       "home": "ASA",
       "away": "HAU",
       "start": "2026-11-01T16:00:00+00:00",
-      "matchday": 29,
-      "unverified": true
+      "matchday": 29
     },
     {
       "home": "HOD",
       "away": "BRY",
       "start": "2026-11-01T16:00:00+00:00",
-      "matchday": 29,
-      "unverified": true
+      "matchday": 29
     },
     {
       "home": "SGO",
       "away": "MOS",
       "start": "2026-11-01T16:00:00+00:00",
-      "matchday": 29,
-      "unverified": true
+      "matchday": 29
     },
     {
       "home": "ODD",
       "away": "SAN",
       "start": "2026-11-01T16:00:00+00:00",
-      "matchday": 29,
-      "unverified": true
+      "matchday": 29
     },
     {
       "home": "LYN",
       "away": "RAU",
       "start": "2026-11-01T16:00:00+00:00",
-      "matchday": 29,
-      "unverified": true
+      "matchday": 29
     },
     {
       "home": "KON",
       "away": "STA",
       "start": "2026-11-02T18:00:00+00:00",
-      "matchday": 29,
-      "unverified": true
+      "matchday": 29
     },
     {
       "home": "STA",
       "away": "SGO",
       "start": "2026-11-08T12:00:00+00:00",
-      "matchday": 30,
-      "unverified": true
+      "matchday": 30
     },
     {
       "home": "HAU",
       "away": "ODD",
       "start": "2026-11-08T12:00:00+00:00",
-      "matchday": 30,
-      "unverified": true
+      "matchday": 30
     },
     {
       "home": "BRY",
       "away": "KON",
       "start": "2026-11-08T12:00:00+00:00",
-      "matchday": 30,
-      "unverified": true
+      "matchday": 30
     },
     {
       "home": "RAU",
       "away": "EGE",
       "start": "2026-11-08T12:00:00+00:00",
-      "matchday": 30,
-      "unverified": true
+      "matchday": 30
     },
     {
       "home": "SAN",
       "away": "ASA",
       "start": "2026-11-08T12:00:00+00:00",
-      "matchday": 30,
-      "unverified": true
+      "matchday": 30
     },
     {
       "home": "MOS",
       "away": "RAN",
       "start": "2026-11-08T12:00:00+00:00",
-      "matchday": 30,
-      "unverified": true
+      "matchday": 30
     },
     {
       "home": "SOG",
       "away": "HOD",
       "start": "2026-11-08T12:00:00+00:00",
-      "matchday": 30,
-      "unverified": true
+      "matchday": 30
     },
     {
       "home": "STR",
       "away": "LYN",
       "start": "2026-11-08T12:00:00+00:00",
-      "matchday": 30,
-      "unverified": true
+      "matchday": 30
     }
   ]
 }
