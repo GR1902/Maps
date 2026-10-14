@@ -5423,5 +5423,111 @@
       "logo": "https://upload.wikimedia.org/wikipedia/en/c/cc/RC_Lens_logo.svg",
       "country": "FRA"
     }
+  },
+  "obos_ligaen": {
+    "STR": {
+      "name": "Strømmen IF",
+      "city": "Strømmen",
+      "lat": 59.9396,
+      "lng": 11.0037,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/0/05/Logo_Strommen_IF.png"
+    },
+    "ASA": {
+      "name": "Åsane Fotball",
+      "city": "Bergen",
+      "lat": 60.4698,
+      "lng": 5.3147,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Asane_Fotball_logo.svg"
+    },
+    "MOS": {
+      "name": "Moss FK",
+      "city": "Moss",
+      "lat": 59.4208,
+      "lng": 10.6709
+    },
+    "EGE": {
+      "name": "Egersunds IK",
+      "city": "Egersund",
+      "lat": 58.4515,
+      "lng": 6.0008,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/4/41/Egersunds_IK_logo.svg"
+    },
+    "STA": {
+      "name": "Stabæk Fotball",
+      "city": "Bærum",
+      "lat": 59.9213,
+      "lng": 10.5805
+    },
+    "SAN": {
+      "name": "Sandnes Ulf",
+      "city": "Sandnes",
+      "lat": 58.8615,
+      "lng": 5.7225
+    },
+    "HOD": {
+      "name": "IL Hødd",
+      "city": "Ulsteinvik",
+      "lat": 62.3393,
+      "lng": 5.8806
+    },
+    "RAN": {
+      "name": "Ranheim Fotball",
+      "city": "Trondheim",
+      "lat": 63.4283,
+      "lng": 10.5251,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Ranheim_IL_logo.svg"
+    },
+    "BRY": {
+      "name": "Bryne FK",
+      "city": "Bryne",
+      "lat": 58.7302,
+      "lng": 5.6502,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/6/6f/Bryne_FK_logo.svg"
+    },
+    "RAU": {
+      "name": "Raufoss IL",
+      "city": "Raufoss",
+      "lat": 60.7219,
+      "lng": 10.5992
+    },
+    "SOG": {
+      "name": "Sogndal Fotball",
+      "city": "Sogndal",
+      "lat": 61.232,
+      "lng": 7.0857,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/b/b5/SogndalFotball.png"
+    },
+    "ODD": {
+      "name": "Odds BK",
+      "city": "Skien",
+      "lat": 59.2116,
+      "lng": 9.59
+    },
+    "SGO": {
+      "name": "Strømsgodset IF",
+      "city": "Drammen",
+      "lat": 59.7344,
+      "lng": 10.2016
+    },
+    "KON": {
+      "name": "Kongsvinger IL",
+      "city": "Kongsvinger",
+      "lat": 60.1952,
+      "lng": 11.9875,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Logo_for_Kongsvinger_Idrettslag.png"
+    },
+    "HAU": {
+      "name": "FK Haugesund",
+      "city": "Haugesund",
+      "lat": 59.4131,
+      "lng": 5.2795,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/06/FK_Haugesund_logo.svg"
+    },
+    "LYN": {
+      "name": "Lyn Fotball",
+      "city": "Oslo",
+      "lat": 59.9249,
+      "lng": 10.7334
+    }
   }
 }

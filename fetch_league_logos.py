@@ -41,6 +41,7 @@ LEAGUE_WIKI_TITLE = {
     "challenger_pro_league": "Challenger Pro League",
     "allsvenskan": "Allsvenskan",
     "eliteserien": "Eliteserien",
+    "obos_ligaen": "Norwegian First Division",
     "superliga": "Danish Superliga",
     "veikkausliiga": "Veikkausliiga",
     "scottish_prem": "Scottish Premiership",

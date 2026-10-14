@@ -250,6 +250,16 @@
       "note": "Rapid-Ried 12.12.: bundesliga.at 19:30 Ortszeit (18:30 UTC), kicker.de 18:00 UTC. Dritte Quelle fehlt (Vereinsseite SK Rapid / TV-Plan). Spiel nicht eingetragen.",
       "sources_tried": "bundesliga.at, kicker.de",
       "added": "2026-10-14"
+    },
+    {
+      "id": "obos-ligaen-second-source",
+      "league": "obos_ligaen",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "OBOS-ligaen neu eingebaut (16 Vereine, Spieltag 24 und 26-30, 41 Spiele bis 8.11.). Quelle nur obos-ligaen.no/terminliste (offiziell, Osloer Zeit nach UTC umgerechnet). kicker.de fuehrt die Liga nicht, deshalb alle Spiele unverified. Zweite Quelle (fotball.no, NRK oder Vereinsseiten) steht aus. Stadionkoordinaten per OpenStreetMap, Egersund nur Ortsmitte; Logos fehlen fuer Moss, Stabaek, Sandnes Ulf, Hodd, Raufoss, Odd, Stromsgodset, Lyn.",
+      "sources_tried": "obos-ligaen.no, kicker.de",
+      "added": "2026-10-14"
     }
   ]
 }
