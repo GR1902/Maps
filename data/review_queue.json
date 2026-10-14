@@ -212,16 +212,6 @@
       "added": "2026-10-13"
     },
     {
-      "id": "official-missing-2026-10-13",
-      "league": "multiple",
-      "matchday": null,
-      "type": "single_source",
-      "priority": "medium",
-      "note": "Stand 14.10.: Schweiz 17/18 (sfl.ch 404, play.sfl.ch ohne Spielplan), Ligue 2 Spieltag 13 (ligue1.com rendert nicht), Challenger Pro League 14 (proleague.be blaettert nicht ueber Spieltag 8), Tschechien 15 (chanceliga.cz nur bis Runde 12, Runden 13/14 nur mit kicker.de abgeglichen) nur mit kicker.de belegt und deshalb nicht eingetragen. Oesterreich 13/14, Polen 14 (eingetragen), Daenemark 16/17 (eingetragen) mit Verbandsseite bestaetigt. Oesterreich 15 und Polen 15 noch ohne Uhrzeiten.",
-      "sources_tried": "kicker.de, bundesliga.at, ekstraklasa.org, superliga.dk, offizielle Seiten",
-      "added": "2026-10-13"
-    },
-    {
       "id": "official-only-2026-10-13",
       "league": "multiple",
       "matchday": null,
@@ -240,6 +230,16 @@
       "note": "veikkausliiga.com Mestaruussarja (group=2) zeigt Datum ohne Uhrzeit bis 8.11.; Zeiten und Karsintasarja noch nicht abgeglichen. Superliga (DK), La Liga 2, Ligue 2, Schweiz, Oesterreich, Polen, Tschechien, Challenger, Greece: Verbandsabgleich offen.",
       "sources_tried": "veikkausliiga.com",
       "added": "2026-10-13"
+    },
+    {
+      "id": "remaining-2026-10-14",
+      "league": "multiple",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "low",
+      "note": "Stand 14.10.: Offen sind Challenger Pro League Spieltag 14+ (proleague.be/cpl-kalender blaettert nicht ueber Spieltag 8), Greece Spieltag 15+ (slgr.gr zeitweise hinter Cloudflare), Greece Spieltag 7 ATR-AEK (slgr.gr: Termin nicht gesetzt, kicker 17.10. 16:30 UTC), Polen und Oesterreich Spieltag 15 ohne Uhrzeiten, Ligue 2 Spieltag 15+ und Pro League Spieltag 18+ Platzhalter, Veikkausliiga Meisterschaftsrunde ohne offizielle Uhrzeiten. Alle anderen Ligen wurden am 14.10. mit Verbandsseite und kicker.de abgeglichen.",
+      "sources_tried": "offizielle Seiten, kicker.de",
+      "added": "2026-10-14"
     }
   ]
 }
