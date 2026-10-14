@@ -7965,6 +7965,48 @@
       "away": "FCM",
       "start": "2026-11-29T15:00:00+00:00",
       "matchday": 16
+    },
+    {
+      "home": "SIL",
+      "away": "AGF",
+      "start": "2026-11-29T17:00:00+00:00",
+      "matchday": 16
+    },
+    {
+      "home": "AGF",
+      "away": "RAN",
+      "start": "2026-12-05T16:00:00+00:00",
+      "matchday": 17
+    },
+    {
+      "home": "FCM",
+      "away": "SIL",
+      "start": "2026-12-06T13:00:00+00:00",
+      "matchday": 17
+    },
+    {
+      "home": "FCN",
+      "away": "LYN",
+      "start": "2026-12-06T13:00:00+00:00",
+      "matchday": 17
+    },
+    {
+      "home": "BIF",
+      "away": "OBK",
+      "start": "2026-12-06T15:00:00+00:00",
+      "matchday": 17
+    },
+    {
+      "home": "HOR",
+      "away": "FCK",
+      "start": "2026-12-06T17:00:00+00:00",
+      "matchday": 17
+    },
+    {
+      "home": "VIB",
+      "away": "SON",
+      "start": "2026-12-07T18:00:00+00:00",
+      "matchday": 17
     }
   ],
   "veikkausliiga": [
@@ -12205,67 +12247,67 @@
     {
       "home": "LEG",
       "away": "COR",
-      "start": "2026-10-16T17:30:00+00:00",
+      "start": "2026-10-16T18:30:00+00:00",
       "matchday": 10
     },
     {
       "home": "RSB",
       "away": "ALM",
-      "start": "2026-10-17T11:00:00+00:00",
+      "start": "2026-10-17T12:00:00+00:00",
       "matchday": 10
     },
     {
       "home": "EIB",
       "away": "MAL",
-      "start": "2026-10-17T13:15:00+00:00",
+      "start": "2026-10-17T14:15:00+00:00",
       "matchday": 10
     },
     {
       "home": "SPG",
       "away": "ALB",
-      "start": "2026-10-17T15:30:00+00:00",
+      "start": "2026-10-17T16:30:00+00:00",
       "matchday": 10
     },
     {
       "home": "LPA",
       "away": "CAS",
-      "start": "2026-10-17T18:00:00+00:00",
+      "start": "2026-10-17T19:00:00+00:00",
       "matchday": 10
     },
     {
       "home": "CEU",
       "away": "OVI",
-      "start": "2026-10-18T11:00:00+00:00",
+      "start": "2026-10-18T12:00:00+00:00",
       "matchday": 10
     },
     {
       "home": "GRA",
       "away": "CAD",
-      "start": "2026-10-18T13:15:00+00:00",
+      "start": "2026-10-18T14:15:00+00:00",
       "matchday": 10
     },
     {
       "home": "GIR",
       "away": "AND",
-      "start": "2026-10-18T15:30:00+00:00",
+      "start": "2026-10-18T16:30:00+00:00",
       "matchday": 10
     },
     {
       "home": "VLL",
       "away": "ELD",
-      "start": "2026-10-18T15:30:00+00:00",
+      "start": "2026-10-18T16:30:00+00:00",
       "matchday": 10
     },
     {
       "home": "BUR",
       "away": "SAB",
-      "start": "2026-10-18T18:00:00+00:00",
+      "start": "2026-10-18T19:00:00+00:00",
       "matchday": 10
     },
     {
       "home": "CFO",
       "away": "TEN",
-      "start": "2026-10-19T17:30:00+00:00",
+      "start": "2026-10-19T18:30:00+00:00",
       "matchday": 10
     },
     {
@@ -25740,6 +25782,60 @@
       "start": "2026-08-09T18:15:00+00:00",
       "matchday": 3,
       "unverified": true
+    },
+    {
+      "home": "LUB",
+      "away": "PLO",
+      "start": "2026-11-06T17:00:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "WIS",
+      "away": "CRA",
+      "start": "2026-11-06T19:30:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "KIE",
+      "away": "RAD",
+      "start": "2026-11-07T11:15:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "SLA",
+      "away": "PIA",
+      "start": "2026-11-07T13:45:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "ZAB",
+      "away": "WIE",
+      "start": "2026-11-07T16:30:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "WID",
+      "away": "POG",
+      "start": "2026-11-07T19:15:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "BIA",
+      "away": "KAT",
+      "start": "2026-11-08T13:45:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "LEG",
+      "away": "RAK",
+      "start": "2026-11-08T16:30:00+00:00",
+      "matchday": 14
+    },
+    {
+      "home": "LEC",
+      "away": "ZAG",
+      "start": "2026-11-08T19:15:00+00:00",
+      "matchday": 14
     }
   ],
   "czech_first_league": [
