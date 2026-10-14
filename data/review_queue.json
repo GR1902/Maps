@@ -217,8 +217,8 @@
       "matchday": null,
       "type": "single_source",
       "priority": "medium",
-      "note": "Nur offizielle Quelle, als unverified eingetragen: Super Lig Spieltag 15/16 (tff.org, kicker fuehrt die Liga nicht), HNL Spieltag 11-13 (hnl.hr, kicker zeigt nur Platzhalter 22:00/23:00 UTC). Nicht pruefbar: Super League Greece (slgr.gr hinter Cloudflare-Pruefung), Ligue 2, Allsvenskan/Eliteserien/Veikkausliiga/Superliga/La Liga 2 Spieltag-Abgleich mit Verbandsseiten steht aus. Youth League Liverpool-Porto (9.12.): UEFA ohne Uhrzeit, fotmob 15:00.",
-      "sources_tried": "tff.org, hnl.hr, kicker.de, uefa.com, fotmob.com",
+      "note": "Super Lig 15/16 (tff.org + fotmob.com) und HNL 11-13 (hnl.hr + fotmob.com, Rijeka-Varazdin und Lokomotiva-Osijek am 1.11. zusaetzlich mit nk-rijeka.hr und nk-osijek.hr gegen fotmob (vertauschte Slots) bestaetigt) am 14.10. bestaetigt und entflaggt. Offen: Youth League Liverpool-Porto (9.12.): UEFA ohne Uhrzeit, fotmob 15:00.",
+      "sources_tried": "tff.org, hnl.hr, fotmob.com, nk-rijeka.hr, nk-osijek.hr, uefa.com",
       "added": "2026-10-13"
     },
     {
