@@ -237,7 +237,7 @@
       "matchday": null,
       "type": "single_source",
       "priority": "low",
-      "note": "Stand 14.10.: Offen sind Challenger Pro League Spieltag 14+ (proleague.be/cpl-kalender blaettert nicht ueber Spieltag 8), Greece Spieltag 15+ (slgr.gr zeitweise hinter Cloudflare), Greece Spieltag 7 ATR-AEK (slgr.gr: Termin nicht gesetzt, kicker 17.10. 16:30 UTC), Polen und Oesterreich Spieltag 15 ohne Uhrzeiten, Ligue 2 Spieltag 15+ und Pro League Spieltag 18+ Platzhalter, Veikkausliiga Meisterschaftsrunde ohne offizielle Uhrzeiten. Alle anderen Ligen wurden am 14.10. mit Verbandsseite und kicker.de abgeglichen.",
+      "note": "Stand 14.10.: Offen sind Greece Spieltag 15+ (slgr.gr zeitweise hinter Cloudflare), Greece Spieltag 7 ATR-AEK (slgr.gr: Termin nicht gesetzt, kicker 17.10. 16:30 UTC), Polen und Oesterreich Spieltag 15 ohne Uhrzeiten, Ligue 2 Spieltag 15+, Pro League 18+, La Liga 2 Spieltag 13+, Challenger 17+ Platzhalter, Veikkausliiga Meisterschaftsrunde ohne offizielle Uhrzeiten. Alle anderen Ligen wurden am 14.10. mit Verbandsseite und kicker.de abgeglichen. OBOS-ligaen (Norwegen 2. Liga) ist nicht in der App.",
       "sources_tried": "offizielle Seiten, kicker.de",
       "added": "2026-10-14"
     }
