@@ -646,3 +646,13 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
 .status-pill.status-booked{ background:#dcfce7; color:#166534; }
 .status-pill.status-done{ background:var(--surface); color:var(--text-muted); text-decoration:line-through; }
 .calendar-row .crnote{ font-size:0.68rem; color:var(--ink); margin-top:3px; padding:3px 7px; background:var(--surface); border-radius:4px; white-space:pre-wrap; }
+
+/* Google Maps parts for long plans */
+#plan-gmaps-parts{ padding:0 16px 8px 16px; display:flex; flex-direction:column; gap:4px; }
+#plan-gmaps-parts:empty{ display:none; }
+.gmaps-hint{ font-size:0.68rem; color:var(--text-muted); }
+.gmaps-part{
+  font-size:0.72rem; font-weight:600; color:var(--green-dark); text-decoration:none;
+  border:1px solid var(--line); border-radius:var(--radius-sm); padding:6px 9px; background:var(--paper);
+}
+.gmaps-part:hover{ background:var(--surface); }

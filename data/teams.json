@@ -174,7 +174,8 @@
       "name": "Real Betis Seville",
       "city": "Sevilla",
       "lat": 37.3568,
-      "lng": -5.9822
+      "lng": -5.9822,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/2/2f/Real_Betis_2022_logo.svg"
     },
     "RSO": {
       "name": "Real Sociedad San Sebastian",
@@ -735,7 +736,7 @@
       "city": "Lissabon",
       "lat": 38.7612216,
       "lng": -9.16179,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Sporting_Clube_de_Portugal_2026.svg"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/97/Sporting_Clube_de_Portugal_logo_%282026%29.svg"
     },
     "POR": {
       "name": "FC Porto",
@@ -756,7 +757,7 @@
       "city": "Barcelos",
       "lat": 41.5511628,
       "lng": -8.6230127,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/8/8f/Gil_Vicente_F.C.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/6/60/Gil_Vicente_F.C._logo.svg"
     },
     "RAV": {
       "name": "Rio Ave FC",
@@ -942,7 +943,7 @@
       "city": "Bruges",
       "lat": 51.1958,
       "lng": 3.1817,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/97/Club_brugge.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/d0/Club_Brugge_KV_logo.svg"
     },
     "KVK": {
       "name": "KV Kortrijk",
@@ -956,7 +957,7 @@
       "city": "Westerlo",
       "lat": 51.0917,
       "lng": 4.9186,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/1/17/K.V.C._Westerlo_logo.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/0b/KVC_Westerlo_logo.svg"
     },
     "USG": {
       "name": "Union Saint-Gilloise",
@@ -1211,7 +1212,8 @@
       "name": "SK Brann",
       "city": "Bergen",
       "lat": 60.3833,
-      "lng": 5.3253
+      "lng": 5.3253,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/7/71/Brann_logo.svg"
     },
     "HAM_N": {
       "name": "HamKam",
@@ -1389,7 +1391,8 @@
       "name": "TPS Turku",
       "city": "Turku",
       "lat": 60.4548,
-      "lng": 22.261
+      "lng": 22.261,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/c7/Turun_Palloseura_logo.svg"
     },
     "MAR_F": {
       "name": "IFK Mariehamn",
@@ -1735,7 +1738,8 @@
       "name": "Real Sociedad B",
       "city": "San Sebastián",
       "lat": 43.2969,
-      "lng": -2.0247
+      "lng": -2.0247,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f1/Real_Sociedad_logo.svg"
     },
     "MAL": {
       "name": "RCD Mallorca",
@@ -2076,7 +2080,8 @@
       "name": "Clermont",
       "city": "Clermont-Ferrand",
       "lat": 45.7936,
-      "lng": 3.1354
+      "lng": 3.1354,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/52/Clermont_Foot_logo.svg"
     },
     "DIJ": {
       "name": "Dijon",
@@ -2110,7 +2115,8 @@
       "name": "Laval",
       "city": "Laval",
       "lat": 48.0698,
-      "lng": -0.7906
+      "lng": -0.7906,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/ca/Stade_Lavallois_logo.svg"
     },
     "MET": {
       "name": "Metz",
@@ -2130,7 +2136,8 @@
       "name": "Nancy",
       "city": "Nancy",
       "lat": 48.6908,
-      "lng": 6.2033
+      "lng": 6.2033,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/4/4d/AS_Nancy_logo.svg"
     },
     "FCN": {
       "name": "Nantes",
@@ -2143,7 +2150,8 @@
       "name": "Pau",
       "city": "Pau",
       "lat": 43.2951,
-      "lng": -0.355
+      "lng": -0.355,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/8/82/Pau_FC_logo.svg"
     },
     "RED": {
       "name": "Red Star",
@@ -2299,7 +2307,7 @@
       "city": "Peterborough",
       "lat": 52.5697,
       "lng": -0.2416,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/97/Peterborough_United%27s_new_badge.svg"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9a/Peterborough_United_FC_crest.svg"
     },
     "PLY": {
       "name": "Plymouth Argyle",
@@ -2533,7 +2541,8 @@
       "name": "Emmen",
       "city": "Emmen",
       "lat": 52.7736,
-      "lng": 6.9214
+      "lng": 6.9214,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/8/83/FC_Emmen_logo.svg"
     },
     "HEL": {
       "name": "Helmond Sport",
@@ -2553,7 +2562,8 @@
       "name": "Jong Ajax",
       "city": "Amsterdam",
       "lat": 52.3011,
-      "lng": 4.8817
+      "lng": 4.8817,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Logo_AFC_Ajax_%281928-1991%2C_2025-%29.png"
     },
     "AZ2": {
       "name": "Jong AZ",
@@ -2566,7 +2576,8 @@
       "name": "Jong PSV",
       "city": "Eindhoven",
       "lat": 51.4547,
-      "lng": 5.5183
+      "lng": 5.5183,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/05/PSV_Eindhoven.svg"
     },
     "UTR2": {
       "name": "Jong FC Utrecht",
@@ -2652,7 +2663,7 @@
       "city": "Denderleeuw",
       "lat": 50.8886,
       "lng": 4.0714,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/9/98/FCVDenderEH.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/2/24/FCV_Dender_EH_logo.svg"
     },
     "EUP": {
       "name": "KAS Eupen",
@@ -2729,7 +2740,7 @@
       "city": "Seraing",
       "lat": 50.5972,
       "lng": 5.4978,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e6/RFC_Seraing_logo.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/59/RFC_Seraing_%281922%29_logo.svg"
     },
     "VIR": {
       "name": "Royal Excelsior Virton",
@@ -2751,7 +2762,8 @@
       "name": "Celtic",
       "city": "Glasgow",
       "lat": 55.8497,
-      "lng": -4.2058
+      "lng": -4.2058,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/71/Celtic_FC_crest.svg"
     },
     "DUN": {
       "name": "Dundee",
@@ -2786,7 +2798,7 @@
       "city": "Edinburgh",
       "lat": 55.9614,
       "lng": -3.1658,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Hibernian_FC_Official_2026.svg"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/03/Hibernian_FC_2026_crest.svg"
     },
     "KIL": {
       "name": "Kilmarnock",
@@ -2979,7 +2991,7 @@
       "city": "Hartberg",
       "lat": 47.2839,
       "lng": 15.9694,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/8/81/TSV_Hartberg.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/2/2e/TSV_Hartberg_logo.svg"
     },
     "WOL": {
       "name": "Wolfsberger AC",
@@ -3009,13 +3021,14 @@
       "city": "Athens",
       "lat": 37.9975,
       "lng": 23.7461,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/d/d9/A.E._Kifisia_new_official_logo.webp"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e2/A.E._Kifisia_F.C._logo.svg"
     },
     "ARI": {
       "name": "Aris",
       "city": "Thessaloniki",
       "lat": 40.6136,
-      "lng": 22.9497
+      "lng": 22.9497,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e4/Aris_Thessaloniki_F.C._logo.svg"
     },
     "AST": {
       "name": "Asteras Tripolis",
@@ -3136,7 +3149,7 @@
       "city": "Erzurum",
       "lat": 39.9236,
       "lng": 41.2531,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/6/68/Erzurumspor_F.K._crest_%282025%29.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/6/6e/Erzurumspor_F.K._logo.svg"
     },
     "EYU": {
       "name": "Eyüpspor",
@@ -3192,7 +3205,7 @@
       "city": "İzmit",
       "lat": 40.7628,
       "lng": 29.9394,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/c/cc/Kocaelispor_current_logo.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/8/8e/Kocaelispor_logo.svg"
     },
     "KON": {
       "name": "Konyaspor",
@@ -3206,7 +3219,7 @@
       "city": "Rize",
       "lat": 41.0294,
       "lng": 40.5117,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/5/5f/Caykur_Rizespor_logo.svg"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9c/%C3%87aykur_Rizespor_logo.svg"
     },
     "SAM": {
       "name": "Samsunspor",
@@ -3385,7 +3398,7 @@
       "city": "Liberec",
       "lat": 50.7663,
       "lng": 15.0543,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/f/ff/Slovan_Liberec_logo_since_2024.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/b/b2/FC_Slovan_Liberec_logo.svg"
     },
     "MLA": {
       "name": "FK Mlada Boleslav",
@@ -3462,7 +3475,7 @@
       "city": "Zlin",
       "lat": 49.2331,
       "lng": 17.6669,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/f/fc/FC_Zlin_logo.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/92/FC_Zl%C3%ADn_logo.svg"
     }
   },
   "croatian_hnl": {
@@ -3477,7 +3490,8 @@
       "name": "Gorica",
       "city": "Velika Gorica",
       "lat": 45.7113,
-      "lng": 16.0781
+      "lng": 16.0781,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/1/18/HNK_Gorica_logo.svg"
     },
     "HAJ": {
       "name": "Hajduk Split",
@@ -3526,7 +3540,7 @@
       "city": "Koprivnica",
       "lat": 46.1639,
       "lng": 16.8342,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f5/Slaven_Belupo_2022_logo.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/4/47/NK_Slaven_Belupo_logo.svg"
     },
     "VAR": {
       "name": "Varazdin",
@@ -3558,7 +3572,8 @@
       "city": "Glasgow",
       "lat": 55.8497,
       "lng": -4.2058,
-      "country": "SCO"
+      "country": "SCO",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/71/Celtic_FC_crest.svg"
     },
     "LAS": {
       "name": "LASK",
@@ -3597,7 +3612,7 @@
       "city": "Celje",
       "lat": 46.2394,
       "lng": 15.2542,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/f/fc/NK_Celje.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/75/NK_Celje_logo.svg",
       "country": "SVN"
     },
     "HBS": {
@@ -3613,7 +3628,7 @@
       "city": "Masazir",
       "lat": 40.4547,
       "lng": 49.8228,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a9/Sabah_FC_%28Azerbaijan%29.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/1/17/Sabah_FK_%28Azerbaijan%29_logo.svg",
       "country": "AZE"
     },
     "FEN": {
@@ -3693,7 +3708,7 @@
       "city": "Bruges",
       "lat": 51.1958,
       "lng": 3.1817,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/97/Club_brugge.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/d0/Club_Brugge_KV_logo.svg",
       "country": "BEL"
     },
     "AVL": {
@@ -3749,7 +3764,7 @@
       "city": "Sevilla",
       "lat": 37.3568,
       "lng": -5.9822,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/2/2f/Real_Betis_2022_logo.svg",
       "country": "ESP"
     },
     "RMA": {
@@ -3805,7 +3820,7 @@
       "city": "Lissabon",
       "lat": 38.7612216,
       "lng": -9.16179,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Sporting_Clube_de_Portugal_2026.svg",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/97/Sporting_Clube_de_Portugal_logo_%282026%29.svg",
       "country": "POR"
     },
     "GAL": {
@@ -3975,7 +3990,7 @@
       "city": "Tbilisi",
       "lat": 41.7238,
       "lng": 44.7573,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9e/Saburtalo_Tbilisi_Logo.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/6/61/FC_Iberia_1999_logo.svg",
       "country": "GEO"
     },
     "MJA": {
@@ -4071,7 +4086,8 @@
       "city": "Poznan",
       "lat": 52.4064,
       "lng": 16.9252,
-      "country": "POL"
+      "country": "POL",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/b/b0/KKS_Lech_Pozna%C5%84.svg"
     },
     "SPA": {
       "name": "AC Sparta Prague",
@@ -4110,7 +4126,7 @@
       "city": "Celje",
       "lat": 46.2394,
       "lng": 15.2542,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/f/fc/NK_Celje.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/75/NK_Celje_logo.svg",
       "country": "SVN"
     },
     "HBS": {
@@ -4198,7 +4214,7 @@
       "city": "Glasgow",
       "lat": 55.8497,
       "lng": -4.2058,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/71/Celtic_FC_crest.svg",
       "country": "SCO"
     },
     "CRY": {
@@ -4254,7 +4270,7 @@
       "city": "Rennes",
       "lat": 48.1075,
       "lng": -1.7128,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9e/Stade_Rennais_FC.svg",
       "country": "FRA"
     },
     "TOR": {
@@ -4262,7 +4278,7 @@
       "city": "Faro",
       "lat": 37.08833,
       "lng": -7.97472,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/dc/S.C.U._Torreense_logo.svg",
       "country": "POR"
     }
   },
@@ -4464,7 +4480,7 @@
       "city": "Edinburgh",
       "lat": 55.9614,
       "lng": -3.1658,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Hibernian_FC_Official_2026.svg",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/03/Hibernian_FC_2026_crest.svg",
       "country": "SCO"
     },
     "PAO": {
@@ -4480,7 +4496,8 @@
       "city": "Bergen",
       "lat": 60.3833,
       "lng": 5.3253,
-      "country": "NOR"
+      "country": "NOR",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/7/71/Brann_logo.svg"
     },
     "ATA": {
       "name": "Atalanta BC",
@@ -4495,7 +4512,7 @@
       "city": "Tel Aviv",
       "lat": 32.0578,
       "lng": 34.7649,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/a/ac/Hapoel_Tel_Aviv_F.C.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/55/Hapoel_Tel_Aviv_F.C._logo.svg",
       "country": "ISR"
     },
     "FCM": {
@@ -4639,7 +4656,7 @@
       "city": "Tel Aviv",
       "lat": 32.0578,
       "lng": 34.7649,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e9/Maccabi_Tel_Aviv.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/c3/Maccabi_Tel_Aviv_F.C._logo.svg",
       "country": "ISR"
     },
     "AGF": {
@@ -4647,21 +4664,24 @@
       "city": "Aarhus",
       "lat": 56.1497,
       "lng": 10.2144,
-      "country": "DEN"
+      "country": "DEN",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/a/ac/AGF_Aarhus_logo.svg"
     },
     "CRA": {
       "name": "Universitatea Craiova",
       "city": "Craiova",
       "lat": 44.314,
       "lng": 23.7843,
-      "country": "ROU"
+      "country": "ROU",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/02/CS_Universitatea_Craiova_logo.svg"
     },
     "CZV": {
       "name": "Crvena Zvezda",
       "city": "Belgrade",
       "lat": 44.7833,
       "lng": 20.4647,
-      "country": "SRB"
+      "country": "SRB",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/c2/Red_Star_Belgrade_crest.svg"
     },
     "TRA": {
       "name": "Trabzonspor",
@@ -4732,7 +4752,7 @@
       "city": "Tbilisi",
       "lat": 41.7238,
       "lng": 44.7573,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9e/Saburtalo_Tbilisi_Logo.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/6/61/FC_Iberia_1999_logo.svg",
       "country": "GEO"
     }
   },
@@ -4782,14 +4802,16 @@
       "city": "Belgrade",
       "lat": 44.7833,
       "lng": 20.4647,
-      "country": "SRB"
+      "country": "SRB",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/c2/Red_Star_Belgrade_crest.svg"
     },
     "CLE": {
       "name": "Clermont",
       "city": "Clermont-Ferrand",
       "lat": 45.7936,
       "lng": 3.1354,
-      "country": "FRA"
+      "country": "FRA",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/52/Clermont_Foot_logo.svg"
     },
     "AZA": {
       "name": "AZ Alkmaar",
@@ -4860,7 +4882,7 @@
       "city": "Tel Aviv",
       "lat": 32.0578,
       "lng": 34.7649,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e9/Maccabi_Tel_Aviv.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/c3/Maccabi_Tel_Aviv_F.C._logo.svg",
       "country": "ISR"
     },
     "PAF": {
@@ -4908,7 +4930,7 @@
       "city": "Akureyri",
       "lat": 65.6835,
       "lng": -18.0878,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/55/Thorsmerki.jpg",
       "country": "ISL"
     },
     "HBT": {
@@ -4916,7 +4938,7 @@
       "city": "Tórshavn",
       "lat": 62.0107,
       "lng": -6.7741,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/ef/Havnar_B%C3%B3ltfelag_logo.svg",
       "country": "FRO"
     },
     "ZAV": {
@@ -4924,7 +4946,7 @@
       "city": "Vilnius",
       "lat": 54.6872,
       "lng": 25.2797,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/7f/FK_%C5%BDalgiris_logo.svg",
       "country": "LTU"
     },
     "FLO": {
@@ -4932,7 +4954,7 @@
       "city": "Tallinn",
       "lat": 59.437,
       "lng": 24.7536,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9d/Fcflora2016.png",
       "country": "EST"
     },
     "SNO": {
@@ -4940,7 +4962,7 @@
       "city": "Riga",
       "lat": 56.9496,
       "lng": 24.1052,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e6/SK_Super_Nova_logo.svg",
       "country": "LVA"
     },
     "BAL": {
@@ -4948,7 +4970,7 @@
       "city": "Suva Reka",
       "lat": 42.3547,
       "lng": 20.83,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/00/FC_Ballkani.svg",
       "country": "KOS"
     },
     "CLI": {
@@ -4956,7 +4978,7 @@
       "city": "Belfast",
       "lat": 54.612,
       "lng": -5.943,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/9b/Cliftonville_F.C._logo.svg",
       "country": "NIR"
     },
     "UNA": {
@@ -4964,7 +4986,7 @@
       "city": "Strassen",
       "lat": 49.6275,
       "lng": 6.0708,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f5/FC_UNA_Strassen_logo.svg",
       "country": "LUX"
     },
     "CDM": {
@@ -4972,7 +4994,7 @@
       "city": "Cardiff",
       "lat": 51.4816,
       "lng": -3.1791,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/28/Shield_of_Cardiff_Metropolitan_University.svg",
       "country": "WAL"
     },
     "VAL": {
@@ -4980,7 +5002,7 @@
       "city": "Valletta",
       "lat": 35.8989,
       "lng": 14.5146,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/c/c9/Valletta_F.C._logo.png",
       "country": "MLT"
     },
     "PAR": {
@@ -4988,7 +5010,7 @@
       "city": "Tirana",
       "lat": 41.3275,
       "lng": 19.8187,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/3/36/Partizani_Tirana_Club_Logo.svg",
       "country": "ALB"
     },
     "MLA": {
@@ -4996,7 +5018,7 @@
       "city": "Podgorica",
       "lat": 42.4304,
       "lng": 19.2594,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/0c/OFK_Mladost_DG.png",
       "country": "MNE"
     },
     "DTB": {
@@ -5004,7 +5026,7 @@
       "city": "Tbilisi",
       "lat": 41.723,
       "lng": 44.768,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/d8/FC_Dinamo_Tbilisi_logoo.svg",
       "country": "GEO"
     },
     "DMI": {
@@ -5012,7 +5034,7 @@
       "city": "Minsk",
       "lat": 53.9006,
       "lng": 27.559,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/e/e3/Dinamo_Minsk_logo.svg",
       "country": "BLR"
     },
     "ZRI": {
@@ -5020,7 +5042,7 @@
       "city": "Mostar",
       "lat": 43.3438,
       "lng": 17.8078,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/6/69/H%C5%A0K_Zrinjski_Mostar.svg",
       "country": "BIH"
     },
     "BRS": {
@@ -5028,7 +5050,7 @@
       "city": "Strumica",
       "lat": 41.4374,
       "lng": 22.6433,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/50/Brera_Strumica_logo.png",
       "country": "MKD"
     },
     "SNC": {
@@ -5036,7 +5058,7 @@
       "city": "Santa Coloma",
       "lat": 42.5117,
       "lng": 1.5347,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a4/FC_Santa_Coloma_logo.svg",
       "country": "AND"
     },
     "DKY": {
@@ -5044,7 +5066,7 @@
       "city": "Kyiv",
       "lat": 50.433,
       "lng": 30.52,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/d/db/Futbolny_Klub_Dynamo_Kyiv_logo.svg",
       "country": "UKR"
     },
     "BRV": {
@@ -5052,7 +5074,7 @@
       "city": "Ljubljana",
       "lat": 46.0569,
       "lng": 14.5058,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/b/bd/NK_Bravo_logo.svg",
       "country": "SVN"
     },
     "STP": {
@@ -5060,7 +5082,7 @@
       "city": "Dublin",
       "lat": 53.3331,
       "lng": -6.2489,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/b/b6/St._Patrick%27s_Athletic_F.C._crest.svg",
       "country": "IRL"
     },
     "GOZ": {
@@ -5068,7 +5090,7 @@
       "city": "Izmir",
       "lat": 38.4192,
       "lng": 27.1287,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/07/G%C3%B6ztepe_S.K._logo.svg",
       "country": "TUR"
     },
     "STB": {
@@ -5076,7 +5098,7 @@
       "city": "Bærum",
       "lat": 59.8963,
       "lng": 10.6244,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/71/Stabaek_IF_logo.svg",
       "country": "NOR"
     },
     "ZIL": {
@@ -5084,7 +5106,7 @@
       "city": "Žilina",
       "lat": 49.2231,
       "lng": 18.7394,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/dd/MSK_Zilina_logo.svg",
       "country": "SVK"
     },
     "MTK": {
@@ -5092,7 +5114,7 @@
       "city": "Budapest",
       "lat": 47.479,
       "lng": 19.083,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/dc/MTK_Budapest_FC_%28crest%29.svg",
       "country": "HUN"
     },
     "SEP": {
@@ -5100,7 +5122,7 @@
       "city": "Sofia",
       "lat": 42.6977,
       "lng": 23.3219,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Septemvri_Sofia.png",
       "country": "BUL"
     },
     "QAR": {
@@ -5108,7 +5130,7 @@
       "city": "Baku",
       "lat": 40.4093,
       "lng": 49.8671,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/fe/Qaraba%C4%9F_FK_logo.svg",
       "country": "AZE"
     },
     "ZUR": {
@@ -5116,7 +5138,7 @@
       "city": "Zürich",
       "lat": 47.377,
       "lng": 8.504,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/6/68/FC_Zurich_Logo_2022.svg",
       "country": "SUI"
     },
     "FAR": {
@@ -5124,7 +5146,7 @@
       "city": "Constanța",
       "lat": 44.1733,
       "lng": 28.6383,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/dd/FC_Farul_Constanta.svg",
       "country": "ROU"
     },
     "SHF": {
@@ -5132,7 +5154,7 @@
       "city": "Tiraspol",
       "lat": 46.8403,
       "lng": 29.6433,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/2/27/FC_Sheriff.svg",
       "country": "MDA"
     },
     "ATM": {
@@ -5156,7 +5178,7 @@
       "city": "Sevilla",
       "lat": 37.3568,
       "lng": -5.9822,
-      "logo": null,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/2/2f/Real_Betis_2022_logo.svg",
       "country": "ESP"
     },
     "SCP": {
@@ -5164,7 +5186,7 @@
       "city": "Lissabon",
       "lat": 38.7612216,
       "lng": -9.16179,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Sporting_Clube_de_Portugal_2026.svg",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/9/97/Sporting_Clube_de_Portugal_logo_%282026%29.svg",
       "country": "POR"
     },
     "MCI": {
@@ -5228,7 +5250,7 @@
       "city": "Masazir",
       "lat": 40.4547,
       "lng": 49.8228,
-      "logo": "https://upload.wikimedia.org/wikipedia/en/a/a9/Sabah_FC_%28Azerbaijan%29.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/1/17/Sabah_FK_%28Azerbaijan%29_logo.svg",
       "country": "AZE"
     },
     "PSV": {
@@ -5340,7 +5362,7 @@
       "city": "Bruges",
       "lat": 51.1958,
       "lng": 3.1817,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/97/Club_brugge.png",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/d0/Club_Brugge_KV_logo.svg",
       "country": "BEL"
     },
     "RMA": {
@@ -5430,7 +5452,7 @@
       "city": "Strømmen",
       "lat": 59.9396,
       "lng": 11.0037,
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/0/05/Logo_Strommen_IF.png"
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/da/Strommen_IF_logo.svg"
     },
     "ASA": {
       "name": "Åsane Fotball",
@@ -5443,7 +5465,8 @@
       "name": "Moss FK",
       "city": "Moss",
       "lat": 59.4208,
-      "lng": 10.6709
+      "lng": 10.6709,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/0/06/Moss_FK_logo.svg"
     },
     "EGE": {
       "name": "Egersunds IK",
@@ -5456,19 +5479,22 @@
       "name": "Stabæk Fotball",
       "city": "Bærum",
       "lat": 59.9213,
-      "lng": 10.5805
+      "lng": 10.5805,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/7/71/Stabaek_IF_logo.svg"
     },
     "SAN": {
       "name": "Sandnes Ulf",
       "city": "Sandnes",
       "lat": 58.8615,
-      "lng": 5.7225
+      "lng": 5.7225,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/d6/Sandnes_Ulf_logo.svg"
     },
     "HOD": {
       "name": "IL Hødd",
       "city": "Ulsteinvik",
       "lat": 62.3393,
-      "lng": 5.8806
+      "lng": 5.8806,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/b/b2/IL_Hodd_logo.svg"
     },
     "RAN": {
       "name": "Ranheim Fotball",
@@ -5488,7 +5514,8 @@
       "name": "Raufoss IL",
       "city": "Raufoss",
       "lat": 60.7219,
-      "lng": 10.5992
+      "lng": 10.5992,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/d5/Raufoss_IL_logo.svg"
     },
     "SOG": {
       "name": "Sogndal Fotball",
@@ -5501,13 +5528,15 @@
       "name": "Odds BK",
       "city": "Skien",
       "lat": 59.2116,
-      "lng": 9.59
+      "lng": 9.59,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/3/34/Odds_BK_logo.svg"
     },
     "SGO": {
       "name": "Strømsgodset IF",
       "city": "Drammen",
       "lat": 59.7344,
-      "lng": 10.2016
+      "lng": 10.2016,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/3/30/Str%C3%B8msgodset_IF_logo.svg"
     },
     "KON": {
       "name": "Kongsvinger IL",
@@ -5527,7 +5556,8 @@
       "name": "Lyn Fotball",
       "city": "Oslo",
       "lat": 59.9249,
-      "lng": 10.7334
+      "lng": 10.7334,
+      "logo": "https://upload.wikimedia.org/wikipedia/en/d/de/Lyn_Fotball_logo.svg"
     }
   }
 }

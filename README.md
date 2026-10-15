@@ -27,6 +27,7 @@ norwich-scouting-map/
 │   └── leagues.json           Competition logo URL per league code (see below)
 ├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
 ├── fetch_logos.py             Fills in data/teams.json's "logo" field via Wikipedia (see below)
+├── check_logos.py             Read-only audit: clubs without a logo and logo links that no longer work
 └── fetch_league_logos.py      Fills in data/leagues.json's competition logos via Wikipedia (see below)
 ```
 
@@ -270,6 +271,17 @@ to refresh it; `dist/` isn't tracked in git.
   IDs are stable per plan and game, so importing a newer export updates the
   events in most calendar apps instead of duplicating them. It is a snapshot,
   not a live feed: export again after a plan or a kickoff changed.
+  **Open in Google Maps**: the "Open in Google Maps" button next to "Add to
+  calendar" opens the plan's route as driving directions: the plan's start
+  point (or the first game) is the origin, the games follow in plan order and
+  the last one is the destination; a plan with a single game and no start
+  point opens directions from the user's own location. Google Maps URLs
+  accept at most 3 waypoints in mobile browsers (9 on desktop), so every link
+  carries at most 5 points and a longer plan is split into parts shown as
+  links ("Part 1 of 2: ... to ..."), each part starting at the last stop of
+  the previous one. Google calculates its own route between the points:
+  only the order comes from the plan, kickoff times and the app's drive times
+  are not part of the link.
   **Plans follow the data**: a plan stores a copy of each game, so on every
   load each saved game is re-checked against `data/fixtures.json` by its key.
   A moved kickoff is updated and flagged "Kickoff changed, was ..." with an OK
@@ -406,7 +418,7 @@ tool, but don't treat them as cleared for arbitrary reuse. A handful of
 clubs (mostly obscure reserve/lower-league sides) have no `logo` field
 because the search didn't turn up a usable image — the map falls back to
 the plain colored marker for those automatically. Run `python3
-fetch_logos.py` to fill in any club still missing one (safe to re-run,
+check_logos.py` to find clubs without a logo and logo links that stopped working (Wikipedia renames crest files now and then; on 2026-10-15 a first audit found 95 such entries, all replaced), then `python3 fetch_logos.py` to fill in any club still missing one (safe to re-run,
 skips clubs that already have a `logo`), or `python3 fetch_logos.py
 --refresh` to re-fetch everything.
 

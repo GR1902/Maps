@@ -381,6 +381,61 @@ function updateShareButton(){
     const btn = document.getElementById(id);
     if(btn) btn.disabled = empty;
   });
+  const gm = document.getElementById('plan-gmaps-btn');
+  if(gm) gm.disabled = planPoints().length === 0;
+  // The part links belong to the route they were made for; drop them when the plan's route changes.
+  const parts = document.getElementById('plan-gmaps-parts');
+  if(parts && parts.innerHTML && parts.dataset.route !== gmapsRouteSig()) parts.innerHTML = '';
+}
+
+function gmapsRouteSig(){ return planPoints().map(gmapsCoord).join('|'); }
+
+// ----- Open the plan in Google Maps -----
+// Google Maps URLs take an origin, a destination and waypoints in between
+// (https://developers.google.com/maps/documentation/urls/get-started). Mobile
+// browsers accept up to 3 waypoints, desktop up to 9, so every link carries at
+// most 5 points (origin + 3 waypoints + destination) to work everywhere. A
+// longer plan becomes several parts; each part starts at the last stop of the
+// previous one. Google calculates its own route between the points: only the
+// order is ours, kickoff times and our drive times are not part of it.
+const GMAPS_POINTS_PER_PART = 5;
+
+function gmapsCoord(p){ return `${p.lat.toFixed(6)},${p.lng.toFixed(6)}`; }
+
+function gmapsLinks(points){
+  const link = (from, to, via) => 'https://www.google.com/maps/dir/?api=1'
+    + (from ? `&origin=${encodeURIComponent(gmapsCoord(from))}` : '') // no origin = the user's own location
+    + `&destination=${encodeURIComponent(gmapsCoord(to))}`
+    + (via.length ? `&waypoints=${encodeURIComponent(via.map(gmapsCoord).join('|'))}` : '')
+    + '&travelmode=driving';
+  if(points.length === 1) return [{ from: null, to: points[0], url: link(null, points[0], []) }];
+  const parts = [];
+  for(let i = 0; i < points.length - 1; ){
+    const j = Math.min(i + GMAPS_POINTS_PER_PART - 1, points.length - 1);
+    parts.push({ from: points[i], to: points[j], url: link(points[i], points[j], points.slice(i + 1, j)) });
+    i = j;
+  }
+  return parts;
+}
+
+function openPlanInGoogleMaps(){
+  const plan = activePlan();
+  const points = planPoints(plan).map((p, i) => ({
+    lat: p.lat, lng: p.lng,
+    label: plan.start && i === 0 ? plan.start.name : plan.items[i - (plan.start ? 1 : 0)].homeName
+  }));
+  const box = document.getElementById('plan-gmaps-parts');
+  box.innerHTML = '';
+  box.dataset.route = gmapsRouteSig();
+  if(points.length === 0) return;
+  const parts = gmapsLinks(points);
+  if(parts.length === 1){
+    window.open(parts[0].url, '_blank', 'noopener');
+    return;
+  }
+  // Several parts: real links instead of several pop-ups, which browsers block.
+  box.innerHTML = `<div class="gmaps-hint">Google Maps takes at most 5 points per link, so this route comes in ${parts.length} parts:</div>`
+    + parts.map((part, k) => `<a class="gmaps-part" href="${part.url}" target="_blank" rel="noopener">Part ${k + 1} of ${parts.length}: ${escapeHtml(part.from.label)} to ${escapeHtml(part.to.label)}</a>`).join('');
 }
 
 async function sharePlan(){
