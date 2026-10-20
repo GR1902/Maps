@@ -107,7 +107,7 @@
       "matchday": null,
       "type": "single_source",
       "priority": "medium",
-      "note": "spfl.co.uk zeigt je Verein nur die naechsten drei Spiele (Stand 9.10.: bis 24./25.10., alle mit unseren Daten abgeglichen). Spieltag 11-16 stammen von kicker.de und bleiben unverified, bis die SPFL sie fuehrt. BBC Sport (Vereinsseiten, britische Zeit) stuetzt 28.10. (19:45, Hearts-Rangers 20:00) und 31.10. (Kilmarnock-St Johnstone und Motherwell-St Mirren 15:00); Dundee United-Hearts (31.10.) hat dort noch keine Uhrzeit. Kicker setzt fuer Samstage vermutlich 15:00 britische Zeit als Standard, TV-Auswahl kann das noch aendern.",
+      "note": "spfl.co.uk zeigt je Verein nur die naechsten drei Spiele (Stand 9.10.: bis 24./25.10., alle mit unseren Daten abgeglichen). Spieltag 11-16 stammen von kicker.de und bleiben unverified, bis die SPFL sie fuehrt. BBC Sport (Vereinsseiten, britische Zeit) stuetzt 28.10. (19:45, Hearts-Rangers 20:00) und 31.10. (Kilmarnock-St Johnstone und Motherwell-St Mirren 15:00); Dundee United-Hearts (31.10.) hat dort noch keine Uhrzeit. Kicker setzt fuer Samstage vermutlich 15:00 britische Zeit als Standard, TV-Auswahl kann das noch aendern. Stand 20.10.: Kilmarnock-St Johnstone und Motherwell-St Mirren (31.10., 15:00) auf spfl.co.uk bestaetigt und entflaggt; Dundee United-Hearts (31.10.) steht dort noch nicht.",
       "sources_tried": "spfl.co.uk, kicker.de, bbc.com/sport",
       "added": "2026-10-07"
     },
@@ -137,19 +137,9 @@
       "matchday": 7,
       "type": "missing",
       "priority": "medium",
-      "note": "Spieltag 7: Atromitos-AEK hat auf slgr.gr noch keinen Termin (kicker.de 17.10. 16:30 UTC). Nicht eingetragen, bis die Liga einen Termin setzt. Spieltag 8-15 am 14.10. mit slgr.gr + kicker.de bestaetigt. Spieltag 16+ nicht geprueft (slgr.gr zeitweise hinter Cloudflare).",
+      "note": "Spieltag 7: Atromitos-AEK hat auf slgr.gr noch keinen Termin (kicker.de 17.10. 16:30 UTC). Nicht eingetragen, bis die Liga einen Termin setzt. Spieltag 8-15 am 14.10. mit slgr.gr + kicker.de bestaetigt. Spieltag 16+ nicht geprueft (slgr.gr zeitweise hinter Cloudflare). 20.10.: slgr.gr hinter Cloudflare (nicht umgangen), Spieltag 16 (9./10.1.2027) bei kicker.de mit Zeiten, offiziell nicht geprueft.",
       "sources_tried": "slgr.gr, kicker.de, naftemporiki.gr",
       "added": "2026-10-09"
-    },
-    {
-      "id": "epl-13",
-      "league": "epl",
-      "matchday": 13,
-      "type": "placeholder",
-      "priority": "medium",
-      "note": "Spieltag 13 (Mi 2.12.): premierleague.com zeigt alle 10 Spiele um 21:00 MEZ (Platzhalter). Erst eintragen, wenn echte Zeiten da sind. Spieltag 12: Leeds-Coventry und Man Utd-Brentford 16:00 MEZ laut premierleague.com, kicker.de 17:30; premierleague.com uebernommen.",
-      "sources_tried": "premierleague.com, kicker.de",
-      "added": "2026-10-13"
     },
     {
       "id": "official-only-2026-10-13",
@@ -170,6 +160,26 @@
       "note": "Stand 14.10.: Noch keine echten Uhrzeiten (kicker.de und Verband zeigen Platzhalter): Bundesliga 12/13, 2. Bundesliga 14, 3. Liga 16, La Liga 13/14, La Liga 2 13, Primeira Liga 13, Premier League 13, Serie A 20, Serie B 21, Ligue 1 13, Ligue 2 15, Pro League 18, Challenger 17, Ekstraklasa 15, Oesterreich 17, Superliga 18, Eredivisie 22, Tschechien 19. Veikkausliiga Meisterschaftsrunde: offizielle Seite nur mit Datum. Schottland: 16 Spiele ab 31.10. unverified, die SPFL-Vereinsseiten zeigen je Verein nur die naechsten drei Spiele (erst nach dem 18.10. relevant). Youth League Liverpool-Porto bleibt unverified. Bereits gespielte Runden (Oesterreich 2, Tschechien 2/3/8/9, Polen 2/3/4, Schweiz 2/3, La Liga 6/7) haben keine pruefbaren Uhrzeiten mehr und wirken in der App nicht.",
       "sources_tried": "kicker.de, offizielle Verbandsseiten",
       "added": "2026-10-14"
+    },
+    {
+      "id": "eredivisie-16-twente-sparta",
+      "league": "eredivisie",
+      "matchday": 16,
+      "type": "conflict",
+      "priority": "low",
+      "note": "Spieltag 16: kicker.de fuehrt Twente-Sparta am 5.2.2027 23:00 UTC (Platzhalter/verlegt), gespeichert sind 8 von 9 Spielen. Offizielle Seite eredivisie.nl noch pruefen.",
+      "sources_tried": "kicker.de",
+      "added": "2026-10-20"
+    },
+    {
+      "id": "england-efl-2026-10-20",
+      "league": "championship",
+      "matchday": 24,
+      "type": "info",
+      "priority": "low",
+      "note": "20.10.: Birmingham-Cardiff (29.12.) von 19:45 auf 20:00 UTC gemaess efl.com API korrigiert; League One MK Dons-Bromley liegt laut efl.com am 27.10. 19:45 (vorher irrtuemlich 26.9.). EFL-Seite ist Referenz, zweite Quelle nicht geprueft. Verlegte Spiele vom 3.10. (Barnsley-MK Dons, Bromley-Wycombe) haben noch keinen neuen Termin in der EFL-API.",
+      "sources_tried": "efl.com API",
+      "added": "2026-10-20"
     }
   ]
 }
