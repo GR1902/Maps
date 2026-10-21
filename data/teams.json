@@ -5564,99 +5564,99 @@
     "CZV": {
       "name": "FK Crvena Zvezda",
       "city": "Belgrade",
-      "lat": 44.7832,
-      "lng": 20.465,
+      "lat": 44.78319,
+      "lng": 20.4649,
       "logo": "https://upload.wikimedia.org/wikipedia/en/c/c2/Red_Star_Belgrade_crest.svg"
     },
     "PAR": {
       "name": "FK Partizan",
       "city": "Belgrade",
-      "lat": 44.787,
-      "lng": 20.459,
+      "lat": 44.78876,
+      "lng": 20.45903,
       "logo": "https://upload.wikimedia.org/wikipedia/en/e/ed/FK_Partizan.svg"
     },
     "VOJ": {
       "name": "FK Vojvodina",
       "city": "Novi Sad",
-      "lat": 45.2426,
-      "lng": 19.8346,
+      "lat": 45.24686,
+      "lng": 19.84225,
       "logo": "https://upload.wikimedia.org/wikipedia/commons/2/26/Logo_FK_Vojvodina.svg"
     },
     "CUK": {
       "name": "FK Čukarički",
       "city": "Belgrade",
-      "lat": 44.7855,
-      "lng": 20.4175,
+      "lat": 44.77264,
+      "lng": 20.42161,
       "logo": "https://upload.wikimedia.org/wikipedia/en/d/d8/FK_Cukaricki_logo.svg"
     },
     "RNI": {
       "name": "FK Radnički Niš",
       "city": "Niš",
-      "lat": 43.333,
-      "lng": 21.91,
+      "lat": 43.31553,
+      "lng": 21.90858,
       "logo": "https://upload.wikimedia.org/wikipedia/en/1/10/Radni%C4%8Dki_Ni%C5%A1.svg"
     },
     "RKG": {
       "name": "FK Radnički 1923",
       "city": "Kragujevac",
-      "lat": 44.007,
-      "lng": 20.914,
+      "lat": 44.02083,
+      "lng": 20.89959,
       "logo": "https://upload.wikimedia.org/wikipedia/en/a/ad/FK_Radnicki_Kragujevac_logo.svg"
     },
     "NPA": {
       "name": "FK Novi Pazar",
       "city": "Novi Pazar",
-      "lat": 43.1367,
-      "lng": 20.5122,
+      "lat": 43.13424,
+      "lng": 20.51607,
       "logo": "https://upload.wikimedia.org/wikipedia/commons/5/52/Fk-novi-pazar-logo.svg"
     },
     "IMT": {
       "name": "FK IMT Beograd",
       "city": "Loznica",
-      "lat": 44.5333,
-      "lng": 19.225,
+      "lat": 44.5392,
+      "lng": 19.2305,
       "logo": "https://upload.wikimedia.org/wikipedia/en/5/5d/FK_IMT_logo.svg"
     },
     "OFK": {
       "name": "OFK Beograd",
       "city": "Belgrade",
-      "lat": 44.8097,
-      "lng": 20.4949,
+      "lat": 44.81534,
+      "lng": 20.494,
       "logo": "https://upload.wikimedia.org/wikipedia/en/0/0e/OFK_Beograd_logo.svg"
     },
     "MAC": {
       "name": "FK Mačva Šabac",
       "city": "Šabac",
-      "lat": 44.755,
-      "lng": 19.71,
+      "lat": 44.74842,
+      "lng": 19.68576,
       "logo": "https://upload.wikimedia.org/wikipedia/en/4/4a/FK_Ma%C4%8Dva.svg"
     },
     "MLU": {
       "name": "FK Mladost Lučani",
       "city": "Lučani",
-      "lat": 43.85,
-      "lng": 20.1667,
+      "lat": 43.86,
+      "lng": 20.13255,
       "logo": "https://upload.wikimedia.org/wikipedia/en/1/17/FK_Mladost_Lucani_logo.svg"
     },
     "ZEM": {
       "name": "FK Zemun",
       "city": "Ub",
-      "lat": 44.45,
-      "lng": 20.0667,
+      "lat": 44.453,
+      "lng": 20.07136,
       "logo": "https://upload.wikimedia.org/wikipedia/en/3/3d/FK_Zemun.svg"
     },
     "RSU": {
       "name": "FK Radnik Surdulica",
       "city": "Surdulica",
-      "lat": 42.6908,
-      "lng": 22.1719,
+      "lat": 42.69237,
+      "lng": 22.16537,
       "logo": "https://upload.wikimedia.org/wikipedia/en/4/43/FK_Radnik_Surdulica_logo.svg"
     },
     "ZEL": {
       "name": "FK Železničar Pančevo",
       "city": "Pančevo",
-      "lat": 44.87,
-      "lng": 20.64,
+      "lat": 44.87967,
+      "lng": 20.6627,
       "logo": "https://upload.wikimedia.org/wikipedia/en/8/86/FK_%C5%BDelezni%C4%8Dar_Pan%C4%8Devo_logo.svg"
     }
   },
@@ -5664,71 +5664,71 @@
     "ALU": {
       "name": "NK Aluminij",
       "city": "Kidričevo",
-      "lat": 46.3956,
-      "lng": 15.7936,
+      "lat": 46.40808,
+      "lng": 15.78996,
       "logo": "https://upload.wikimedia.org/wikipedia/en/a/a2/NK_Aluminij_logo.svg"
     },
     "BRV": {
       "name": "NK Bravo",
       "city": "Ljubljana",
-      "lat": 46.065,
-      "lng": 14.524,
+      "lat": 46.06966,
+      "lng": 14.49997,
       "logo": "https://upload.wikimedia.org/wikipedia/en/b/bd/NK_Bravo_logo.svg"
     },
     "BRG": {
       "name": "NK Brinje Grosuplje",
       "city": "Grosuplje",
-      "lat": 45.9558,
-      "lng": 14.655,
+      "lat": 45.96046,
+      "lng": 14.65919,
       "logo": "https://upload.wikimedia.org/wikipedia/en/3/3f/NK_Brinje-Grosuplje.svg"
     },
     "CEL": {
       "name": "NK Celje",
       "city": "Celje",
-      "lat": 46.2339,
-      "lng": 15.265,
+      "lat": 46.24657,
+      "lng": 15.26992,
       "logo": "https://upload.wikimedia.org/wikipedia/en/7/75/NK_Celje_logo.svg"
     },
     "KOP": {
       "name": "FC Koper",
       "city": "Koper",
-      "lat": 45.54,
-      "lng": 13.726,
+      "lat": 45.54237,
+      "lng": 13.73061,
       "logo": "https://upload.wikimedia.org/wikipedia/en/f/f2/FC_Koper_logo.svg"
     },
     "MAR": {
       "name": "NK Maribor",
       "city": "Maribor",
-      "lat": 46.5645,
-      "lng": 15.6425,
+      "lat": 46.56256,
+      "lng": 15.64055,
       "logo": "https://upload.wikimedia.org/wikipedia/en/e/ee/NK_Maribor.svg"
     },
     "MUR": {
       "name": "NS Mura",
       "city": "Murska Sobota",
-      "lat": 46.659,
-      "lng": 16.162,
+      "lat": 46.66864,
+      "lng": 16.15774,
       "logo": "https://upload.wikimedia.org/wikipedia/en/d/db/N%C5%A0_Mura.svg"
     },
     "NAF": {
       "name": "NK Nafta 1903",
       "city": "Lendava",
-      "lat": 46.553,
-      "lng": 16.45,
+      "lat": 46.55933,
+      "lng": 16.45065,
       "logo": "https://upload.wikimedia.org/wikipedia/en/5/5a/NK_Nafta_1903_logo.svg"
     },
     "OLI": {
       "name": "NK Olimpija Ljubljana",
       "city": "Ljubljana",
-      "lat": 46.065,
-      "lng": 14.524,
+      "lat": 46.08047,
+      "lng": 14.52418,
       "logo": "https://upload.wikimedia.org/wikipedia/en/1/1e/NK_Olimpija_Ljubljana_logo.svg"
     },
     "RAD": {
       "name": "NK Radomlje",
-      "city": "Radomlje",
-      "lat": 46.15,
-      "lng": 14.615,
+      "city": "Domžale",
+      "lat": 46.13702,
+      "lng": 14.60188,
       "logo": "https://upload.wikimedia.org/wikipedia/en/b/b6/NK_Radomlje.svg"
     }
   },
@@ -5736,85 +5736,85 @@
     "TRE": {
       "name": "AS Trenčín",
       "city": "Trenčín",
-      "lat": 48.8995,
-      "lng": 18.0386,
+      "lat": 48.89867,
+      "lng": 18.04475,
       "logo": "https://upload.wikimedia.org/wikipedia/commons/0/06/FK_AS_Tren%C4%8D%C3%ADn_logo.svg"
     },
     "DAC": {
       "name": "FC DAC 1904 Dunajská Streda",
       "city": "Dunajská Streda",
-      "lat": 47.997,
-      "lng": 17.6226,
+      "lat": 47.99897,
+      "lng": 17.61854,
       "logo": "https://upload.wikimedia.org/wikipedia/commons/2/29/FC_DAC_1904_Dunajsk%C3%A1_Streda_svg_logo.svg"
     },
     "KOS": {
       "name": "FC Košice",
       "city": "Košice",
-      "lat": 48.7176,
-      "lng": 21.258,
+      "lat": 48.69678,
+      "lng": 21.24513,
       "logo": "https://upload.wikimedia.org/wikipedia/en/1/15/FC_Ko%C5%A1ice_logo.svg"
     },
     "TRN": {
       "name": "FC Spartak Trnava",
       "city": "Trnava",
-      "lat": 48.3774,
-      "lng": 17.588,
+      "lat": 48.37365,
+      "lng": 17.5917,
       "logo": "https://upload.wikimedia.org/wikipedia/en/1/1e/Spartak_Trnava_logo.svg"
     },
     "POD": {
       "name": "FK Železiarne Podbrezová",
       "city": "Podbrezová",
-      "lat": 48.8139,
-      "lng": 19.5164,
+      "lat": 48.8075,
+      "lng": 19.52323,
       "logo": "https://upload.wikimedia.org/wikipedia/en/f/fe/FK_%C5%BDeleziarne_Podbrezov%C3%A1_logo.svg"
     },
     "KOM": {
       "name": "KFC Komárno",
       "city": "Komárno",
-      "lat": 47.76,
-      "lng": 18.129,
+      "lat": 47.75824,
+      "lng": 18.13659,
       "logo": "https://upload.wikimedia.org/wikipedia/en/6/68/KFC_Kom%C3%A1rno_logo.svg"
     },
     "DBB": {
       "name": "MFK Dukla Banská Bystrica",
       "city": "Banská Bystrica",
-      "lat": 48.738,
-      "lng": 19.143,
+      "lat": 48.73206,
+      "lng": 19.13125,
       "logo": "https://upload.wikimedia.org/wikipedia/en/1/14/FK_Dukla_Bansk%C3%A1_Bystrica_Logo.svg"
     },
     "RUZ": {
       "name": "MFK Ružomberok",
       "city": "Ružomberok",
-      "lat": 49.078,
-      "lng": 19.306,
+      "lat": 49.08239,
+      "lng": 19.28382,
       "logo": "https://upload.wikimedia.org/wikipedia/en/a/af/MFK_Ruzomberok_logo.svg"
     },
     "SKA": {
       "name": "MFK Skalica",
       "city": "Skalica",
-      "lat": 48.85,
-      "lng": 17.227,
+      "lat": 48.8396,
+      "lng": 17.22669,
       "logo": "https://upload.wikimedia.org/wikipedia/en/d/d7/MFK_Skalica_logo.svg"
     },
     "MIC": {
       "name": "MFK Zemplín Michalovce",
       "city": "Michalovce",
-      "lat": 48.755,
-      "lng": 21.918,
+      "lat": 48.76322,
+      "lng": 21.90976,
       "logo": "https://upload.wikimedia.org/wikipedia/en/5/51/MFK_Zempl%C3%ADn_Michalovce_logo.svg"
     },
     "ZIL": {
       "name": "MŠK Žilina",
       "city": "Žilina",
-      "lat": 49.216,
-      "lng": 18.744,
+      "lat": 49.22913,
+      "lng": 18.74477,
       "logo": "https://upload.wikimedia.org/wikipedia/en/d/dd/MSK_Zilina_logo.svg"
     },
     "SLO": {
       "name": "ŠK Slovan Bratislava",
       "city": "Bratislava",
-      "lat": 48.17,
-      "lng": 17.133,
+      "lat": 48.16349,
+      "lng": 17.1367,
       "logo": "https://upload.wikimedia.org/wikipedia/commons/0/01/SK_Slovan_Bratislava_logo.svg"
     }
   }

@@ -187,7 +187,7 @@
       "matchday": null,
       "type": "missing",
       "priority": "medium",
-      "note": "SRB/SVN/SVK neu (21.10.). Gespeichert sind Runden 1-13 (SRB, superliga.rs + fotmob), 1-14 (SVN, nzs.si + fotmob; SVN Celje-Radomlje Runde 6 fehlt, nzs.si zeigt keinen Termin) und 1-14 (SVK, nikeliga.sk + fotmob). Spaetere Runden haben offiziell noch keine Uhrzeiten (SRB ab Runde 14 --:--, SVN ab 15 nur Datum, SVK ab 15 einheitlich 15:30) und fehlen. SRB: Radnicki 1923-Zeleznicar und Radnicki Nis-Partizan (28.10.) sowie SVK Kosice-DAC und Trencin-Slovan (28.10.) sind nachgeholte Spiele aus Runde 2/4 bzw. 3. Spielort-Koordinaten der Vereine sind Naeherungswerte, Kicker fuehrt die Ligen nicht.",
+      "note": "SRB/SVN/SVK neu (21.10.). Gespeichert sind Runden 1-13 (SRB, superliga.rs + fotmob), 1-14 (SVN, nzs.si + fotmob; SVN Celje-Radomlje Runde 6 fehlt, nzs.si zeigt keinen Termin) und 1-14 (SVK, nikeliga.sk + fotmob). Spaetere Runden haben offiziell noch keine Uhrzeiten (SRB ab Runde 14 --:--, SVN ab 15 nur Datum, SVK ab 15 einheitlich 15:30) und fehlen. SRB: Radnicki 1923-Zeleznicar und Radnicki Nis-Partizan (28.10.) sowie SVK Kosice-DAC und Trencin-Slovan (28.10.) sind nachgeholte Spiele aus Runde 2/4 bzw. 3. Stadionkoordinaten: fotmob-Venue-Daten, gegen OpenStreetMap/Wikipedia geprueft (alle unter 100 m Abweichung); NK Brinje Grosuplje (fotmob ohne Venue) aus OpenStreetMap (Vereinsgelaende, ca. 100 m genau). Ub/Loznica/Kragujevac usw. sind die tatsaechlichen Heimspielorte laut Liga.",
       "sources_tried": "superliga.rs, nzs.si, nikeliga.sk, fotmob.com",
       "added": "2026-10-21"
     }
