@@ -2654,8 +2654,8 @@
     "NXT": {
       "name": "Club NXT",
       "city": "Bruges",
-      "lat": 51.1958,
-      "lng": 3.1817,
+      "lat": 50.95203,
+      "lng": 3.1054,
       "logo": "https://upload.wikimedia.org/wikipedia/en/6/62/Club_NXT_Logo.png"
     },
     "DEN": {
@@ -2689,15 +2689,15 @@
     "GNK2": {
       "name": "Jong Genk",
       "city": "Genk",
-      "lat": 50.9917,
-      "lng": 5.5,
+      "lat": 51.17031,
+      "lng": 4.96835,
       "logo": "https://upload.wikimedia.org/wikipedia/commons/7/77/Logo_KRC_Genk.png"
     },
     "GNT2": {
       "name": "Jong KAA Gent",
       "city": "Deinze",
-      "lat": 50.9836,
-      "lng": 3.5325,
+      "lat": 51.08955,
+      "lng": 3.76562,
       "logo": "https://upload.wikimedia.org/wikipedia/en/f/f4/KAA_Gent_logo.svg"
     },
     "LIE": {
@@ -2731,8 +2731,8 @@
     "RSCA2": {
       "name": "RSCA Futures",
       "city": "Brussels",
-      "lat": 50.8378,
-      "lng": 4.2789,
+      "lat": 50.98385,
+      "lng": 3.52032,
       "logo": "https://upload.wikimedia.org/wikipedia/en/7/77/R.S.C._Anderlecht.svg"
     },
     "SER": {
@@ -4992,8 +4992,8 @@
     "CDM": {
       "name": "Cardiff Metropolitan University FC",
       "city": "Cardiff",
-      "lat": 51.4816,
-      "lng": -3.1791,
+      "lat": 51.5125,
+      "lng": -3.15972,
       "logo": "https://upload.wikimedia.org/wikipedia/commons/2/28/Shield_of_Cardiff_Metropolitan_University.svg",
       "country": "WAL"
     },
@@ -5016,8 +5016,8 @@
     "MLA": {
       "name": "FK Mladost Podgorica",
       "city": "Podgorica",
-      "lat": 42.4304,
-      "lng": 19.2594,
+      "lat": 42.42784,
+      "lng": 19.28234,
       "logo": "https://upload.wikimedia.org/wikipedia/en/0/0c/OFK_Mladost_DG.png",
       "country": "MNE"
     },
@@ -5048,8 +5048,8 @@
     "BRS": {
       "name": "AP Brera Strumica",
       "city": "Strumica",
-      "lat": 41.4374,
-      "lng": 22.6433,
+      "lat": 41.446,
+      "lng": 22.6379,
       "logo": "https://upload.wikimedia.org/wikipedia/en/5/50/Brera_Strumica_logo.png",
       "country": "MKD"
     },
@@ -5152,8 +5152,8 @@
     "SHF": {
       "name": "Sheriff Tiraspol",
       "city": "Tiraspol",
-      "lat": 46.8403,
-      "lng": 29.6433,
+      "lat": 46.83833,
+      "lng": 29.5575,
       "logo": "https://upload.wikimedia.org/wikipedia/en/2/27/FC_Sheriff.svg",
       "country": "MDA"
     },
