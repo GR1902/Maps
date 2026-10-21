@@ -1117,6 +1117,7 @@ const LEAGUE_COLOR = {
   scottish_prem:"#1a5c38", swiss_super_league:"#b03a2e", austrian_bundesliga:"#2f6f6f",
   super_league_greece:"#003087", super_lig:"#e30a17", ekstraklasa:"#996515",
   czech_first_league:"#11457e", croatian_hnl:"#c65102",
+  serbian_superliga:"#c6363c", slovenian_prva_liga:"#0a7d3b", slovak_nike_liga:"#1f4fa3",
   champions_league:"#0b1f4e", europa_league:"#ff6a13", conference_league:"#00a19a",
   youth_league:"#7a1fa2"
 };
@@ -1140,7 +1141,8 @@ const COUNTRY_TAG = {
   allsvenskan:"SWE", eliteserien:"NOR", obos_ligaen:"NOR", superliga:"DEN", veikkausliiga:"FIN",
   scottish_prem:"SCO", swiss_super_league:"SUI", austrian_bundesliga:"AUT",
   super_league_greece:"GRE", super_lig:"TUR", ekstraklasa:"POL",
-  czech_first_league:"CZE", croatian_hnl:"CRO"
+  czech_first_league:"CZE", croatian_hnl:"CRO",
+  serbian_superliga:"SRB", slovenian_prva_liga:"SVN", slovak_nike_liga:"SVK"
 };
 // Canonical league list + display labels, in dropdown order (top flight
 // immediately followed by its own lower tiers where we have them).
@@ -1159,6 +1161,7 @@ const LEAGUE_LABELS = {
   austrian_bundesliga: "Bundesliga (AUT)", super_league_greece: "Super League (GRE)",
   super_lig: "Süper Lig (TUR)", ekstraklasa: "Ekstraklasa (POL)",
   czech_first_league: "Chance Liga (CZE)", croatian_hnl: "HNL (CRO)",
+  serbian_superliga: "SuperLiga (SRB)", slovenian_prva_liga: "PrvaLiga (SVN)", slovak_nike_liga: "Niké liga (SVK)",
   champions_league: "UEFA Champions League", europa_league: "UEFA Europa League",
   conference_league: "UEFA Conference League", youth_league: "UEFA Youth League"
 };

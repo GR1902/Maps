@@ -180,6 +180,16 @@
       "note": "20.10.: Birmingham-Cardiff (29.12.) von 19:45 auf 20:00 UTC gemaess efl.com API korrigiert; League One MK Dons-Bromley liegt laut efl.com am 27.10. 19:45 (vorher irrtuemlich 26.9.). EFL-Seite ist Referenz, zweite Quelle nicht geprueft. Verlegte Spiele vom 3.10. (Barnsley-MK Dons, Bromley-Wycombe) haben noch keinen neuen Termin in der EFL-API.",
       "sources_tried": "efl.com API",
       "added": "2026-10-20"
+    },
+    {
+      "id": "new-leagues-2026-10-21",
+      "league": "multiple",
+      "matchday": null,
+      "type": "missing",
+      "priority": "medium",
+      "note": "SRB/SVN/SVK neu (21.10.). Gespeichert sind Runden 1-13 (SRB, superliga.rs + fotmob), 1-14 (SVN, nzs.si + fotmob; SVN Celje-Radomlje Runde 6 fehlt, nzs.si zeigt keinen Termin) und 1-14 (SVK, nikeliga.sk + fotmob). Spaetere Runden haben offiziell noch keine Uhrzeiten (SRB ab Runde 14 --:--, SVN ab 15 nur Datum, SVK ab 15 einheitlich 15:30) und fehlen. SRB: Radnicki 1923-Zeleznicar und Radnicki Nis-Partizan (28.10.) sowie SVK Kosice-DAC und Trencin-Slovan (28.10.) sind nachgeholte Spiele aus Runde 2/4 bzw. 3. Spielort-Koordinaten der Vereine sind Naeherungswerte, Kicker fuehrt die Ligen nicht.",
+      "sources_tried": "superliga.rs, nzs.si, nikeliga.sk, fotmob.com",
+      "added": "2026-10-21"
     }
   ]
 }

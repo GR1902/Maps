@@ -52,6 +52,9 @@ LEAGUE_WIKI_TITLE = {
     "ekstraklasa": "Ekstraklasa",
     "czech_first_league": "Czech First League",
     "croatian_hnl": "Croatian Football League",
+    "serbian_superliga": "Serbian SuperLiga",
+    "slovenian_prva_liga": "Slovenian PrvaLiga",
+    "slovak_nike_liga": "Slovak First Football League",
 }
 
 
