@@ -1575,6 +1575,12 @@ function leagueMatchdays(league){
   const upcoming = all.filter(md => last.get(md) + PAST_GRACE_MS > Date.now());
   return upcoming.length ? upcoming : all.slice(-1);
 }
+// Games that kicked off more than PAST_GRACE_MS ago are hidden everywhere,
+// unless "Show past matchdays" is ticked. This also drops stragglers inside
+// an upcoming matchday (e.g. a game that was played weeks earlier).
+function isUpcomingFixture(f){
+  return showPastMatchdays || new Date(f.start).getTime() + PAST_GRACE_MS > Date.now();
+}
 function toggleShowPast(on){
   showPastMatchdays = !!on;
   renderAll();
@@ -1641,6 +1647,7 @@ function renderAll(){
     const byTeam = new Map();
     FIXTURES[otherLeague].forEach(f => {
       if(!otherTeams[f.home]) return;
+      if(!isUpcomingFixture(f)) return;
       if(!byTeam.has(f.home)) byTeam.set(f.home, []);
       byTeam.get(f.home).push(f);
     });
@@ -1691,7 +1698,7 @@ function renderAll(){
           return true;
         })
       : FIXTURES[league].filter(f => f.matchday === selectedMd)
-    ).slice().sort((a,b)=> new Date(a.start)-new Date(b.start));
+    ).filter(isUpcomingFixture).slice().sort((a,b)=> new Date(a.start)-new Date(b.start));
     const color = LEAGUE_COLOR[league];
     const lightColor = lightenColor(color, 0.72);
     const homeThisWindow = new Set(fixtures.map(f => f.home));
@@ -2266,6 +2273,7 @@ async function renderCombosMulti(selections, focusLabel = null){
     if(excludedFixtures.has(poolAnchorKey(g))) return false;
     const isAnchor = anchorSet.has(poolAnchorKey(g));
     if(!isAnchor){
+      if(g.start.getTime() + PAST_GRACE_MS < Date.now()) return false;
       if(rangeFrom && g.start < rangeFrom) return false;
       if(rangeTo && g.start > rangeTo) return false;
     }
@@ -3175,6 +3183,7 @@ function renderCalendar(){
     (FIXTURES[league] || []).forEach(f => {
       const start = new Date(f.start);
       if(start.getFullYear() !== year || start.getMonth() !== month) return;
+      if(!isUpcomingFixture(f)) return;
       const h = teams[f.home];
       if(!h) return;
       const a = teams[f.away];
