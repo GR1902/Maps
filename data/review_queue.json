@@ -107,7 +107,7 @@
       "matchday": null,
       "type": "single_source",
       "priority": "medium",
-      "note": "spfl.co.uk zeigt je Verein nur die naechsten drei Spiele (Stand 9.10.: bis 24./25.10., alle mit unseren Daten abgeglichen). Spieltag 11-16 stammen von kicker.de und bleiben unverified, bis die SPFL sie fuehrt. BBC Sport (Vereinsseiten, britische Zeit) stuetzt 28.10. (19:45, Hearts-Rangers 20:00) und 31.10. (Kilmarnock-St Johnstone und Motherwell-St Mirren 15:00); Dundee United-Hearts (31.10.) hat dort noch keine Uhrzeit. Kicker setzt fuer Samstage vermutlich 15:00 britische Zeit als Standard, TV-Auswahl kann das noch aendern. Stand 20.10.: Kilmarnock-St Johnstone und Motherwell-St Mirren (31.10., 15:00) auf spfl.co.uk bestaetigt und entflaggt; Dundee United-Hearts (31.10.) steht dort noch nicht.",
+      "note": "Stand 2.11.: SPFL-Vereinsseiten (alle 12 Clubs) zeigen die naechsten drei Spiele. Spieltag 13, 14, 15 (7.-29.11.) sowie Rangers-Aberdeen (24.11.) mit spfl.co.uk + kicker.de bestaetigt und entflaggt. Dundee United-Hearts (31.10., Spieltag 12) steht bei der SPFL nicht als Ligaspiel (Hearts spielte am 1.11. Ligapokal gegen Hibs, Dundee United hat kein Spiel am 31.10.) und wurde aus fixtures.json entfernt; falls es ein nachgeholtes Ligaspiel gibt, hat es keinen Termin. Offen und unverified: Spieltag 16 (2.12., 6 Spiele, einheitlich 19:45 von kicker.de), die SPFL fuehrt sie erst ab Mitte November.",
       "sources_tried": "spfl.co.uk, kicker.de, bbc.com/sport",
       "added": "2026-10-07"
     },
@@ -119,16 +119,6 @@
       "priority": "low",
       "note": "Spieltag-Nummern: Unsere Runden 7/8/9 (10./11., 17./18., 24./25.10.) sind bei kicker.de und nach SPFL-Rundenzaehlung die Runden 8/9/10. Ab Spieltag 11 stimmen die Nummern ueberein. Die doppelten Spieltag-10-Eintraege vom 24./25.10. wurden am 9.10. entfernt (gleiche sechs Spiele wie Spieltag 9). Eine Umnummerierung braeuchte eine Schluessel-Migration fuer gespeicherte Plaene (meta.json keyAliases), wurde nicht gemacht.",
       "sources_tried": "kicker.de, spfl.co.uk",
-      "added": "2026-10-09"
-    },
-    {
-      "id": "scottish-cup-sf",
-      "league": "scottish_prem",
-      "matchday": 12,
-      "type": "single_source",
-      "priority": "medium",
-      "note": "Rangers-Aberdeen am 31.10. 17:30 ist laut BBC Sport das League-Cup-Halbfinale, kein Ligaspiel. Das Ligaspiel (Spieltag 12) steht bei kicker.de am 24.11. 21:00 MEZ (20:00 UTC) und ist mit unverified eingetragen. Hibs-Dundee (24.11.) liegt ebenfalls dort. SPFL fuehrt beide noch nicht.",
-      "sources_tried": "bbc.com/sport, kicker.de",
       "added": "2026-10-09"
     },
     {
@@ -190,6 +180,46 @@
       "note": "SRB/SVN/SVK neu (21.10.). Gespeichert sind Runden 1-13 (SRB, superliga.rs + fotmob), 1-14 (SVN, nzs.si + fotmob; SVN Celje-Radomlje Runde 6 fehlt, nzs.si zeigt keinen Termin) und 1-14 (SVK, nikeliga.sk + fotmob). Spaetere Runden haben offiziell noch keine Uhrzeiten (SRB ab Runde 14 --:--, SVN ab 15 nur Datum, SVK ab 15 einheitlich 15:30) und fehlen. SRB: Radnicki 1923-Zeleznicar und Radnicki Nis-Partizan (28.10.) sowie SVK Kosice-DAC und Trencin-Slovan (28.10.) sind nachgeholte Spiele aus Runde 2/4 bzw. 3. Stadionkoordinaten: fotmob-Venue-Daten, gegen OpenStreetMap/Wikipedia geprueft (alle unter 100 m Abweichung); NK Brinje Grosuplje (fotmob ohne Venue) aus OpenStreetMap (Vereinsgelaende, ca. 100 m genau). Ub/Loznica/Kragujevac usw. sind die tatsaechlichen Heimspielorte laut Liga.",
       "sources_tried": "superliga.rs, nzs.si, nikeliga.sk, fotmob.com",
       "added": "2026-10-21"
+    },
+    {
+      "id": "europa-celje-olympiacos-2026-11-02",
+      "league": "europa_league",
+      "matchday": 7,
+      "type": "conflict",
+      "priority": "medium",
+      "note": "Celje-Olympiacos (10.12.): UEFA-API (match.uefa.com) nennt 17:45 UTC, kicker.de und fotmob.com nennen 20:00 UTC (gespeichert). Offizielle Quelle widerspricht den zwei Aggregatoren, Spiel bleibt unverified, bis uefa.com und ein Zweitnachweis uebereinstimmen. Rennes-Olympiacos (Spieltag 5) am 2.11. auf 4.11. 15:30 UTC korrigiert (UEFA-API + kicker.de + fotmob.com). Youth League Galatasaray-Stuttgart auf 3.11. 11:00 UTC korrigiert (UEFA-API + fotmob.com).",
+      "sources_tried": "match.uefa.com, kicker.de, fotmob.com",
+      "added": "2026-11-02"
+    },
+    {
+      "id": "greece-slgr-dates-2026-11-02",
+      "league": "super_league_greece",
+      "matchday": null,
+      "type": "conflict",
+      "priority": "medium",
+      "note": "kicker.de weicht von gespeicherten Zeiten ab: Spieltag 9 (1.11., Panathinaikos-AEK 17:30 statt 17:00, PAOK-Asteras 17:00), Spieltag 10 (OFI-Atromitos 16:30 statt 17:00 UTC), Spieltag 15 (OFI-Kalamata 16:30 statt 17:30), Spieltag 16 (9./10.1.2027, 7 Spiele, nur kicker). slgr.gr oeffnete am 2.11. zwar, die Datumsangaben liessen sich aber nicht aus dem Seitentext lesen (Seite lud mehrfach neu). Gespeicherte Zeiten unveraendert, Nachpruefung mit slgr.gr noetig.",
+      "sources_tried": "slgr.gr, kicker.de",
+      "added": "2026-11-02"
+    },
+    {
+      "id": "efl-rescheduled-2026-11-02",
+      "league": "league_one",
+      "matchday": 9,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "efl.com-API nennt fuer die am 3.10. ausgefallenen Spiele neue Termine: Wigan-Mansfield 3.11. 19:45 UTC, Barnsley-MK Dons 15.12. 19:45 UTC. Gespeichert ist noch der 3.10. (vergangen). Nicht geaendert, weil keine zweite Quelle geprueft werden konnte (kicker fuehrt League One nicht). Bromley-Wycombe weiter ohne Termin.",
+      "sources_tried": "efl.com API",
+      "added": "2026-11-02"
+    },
+    {
+      "id": "not-checked-2026-11-02",
+      "league": "multiple",
+      "matchday": null,
+      "type": "missing",
+      "priority": "medium",
+      "note": "Lauf vom 2.11. nicht geprueft: SRB/SVN/SVK, Super Lig, OBOS-ligaen, Allsvenskan, Eliteserien, Veikkausliiga, Eerste Divisie, Championship/League One ausser EFL-API (superliga.rs liess sich im Browser nicht laden; fotmob zeigt SRB Runde 14 und 15 mit Zeiten, Runde 16+ Platzhalter 00:00). Youth League Runde 2 (Domestic Path, Rueckspiele 3./4.11., 20 Spiele) ist nicht gespeichert, die Matchday-Nummer 2 kollidiert mit Ligaphase Spieltag 1 (gespeichert als 2); Entscheidung des Besitzers noetig.",
+      "sources_tried": "fotmob.com, match.uefa.com",
+      "added": "2026-11-02"
     }
   ]
 }
