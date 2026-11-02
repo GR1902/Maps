@@ -1390,6 +1390,7 @@ function setFilterMode(mode, presetRange){
   }
   updateDateButtonLabel();
   renderAll();
+  refreshRadiusResults();
   if(calendarOpen){ syncCalendarToDateRange(); renderCalendar(); }
 }
 
@@ -1398,6 +1399,7 @@ function setFilterMode(mode, presetRange){
 function onMapDateChange(){
   updateDateButtonLabel();
   renderAll();
+  refreshRadiusResults();
   if(calendarOpen){ syncCalendarToDateRange(); renderCalendar(); }
 }
 
@@ -2685,6 +2687,12 @@ function useRadiusPointAsStart(){
 // actually has to call Nominatim.
 const radiusSlider = document.getElementById('radius-km');
 const radiusKmLabel = document.getElementById('radius-km-label');
+
+// The radius results are filtered by the Date Selection, so they have to be
+// recomputed when it changes; otherwise they keep showing the old date window.
+function refreshRadiusResults(){
+  if(lastRadiusPoint) renderRadiusResults(lastRadiusPoint, parseInt(radiusSlider.value, 10), false);
+}
 
 function setRadiusSlider(km, live){
   radiusSlider.value = String(km);
