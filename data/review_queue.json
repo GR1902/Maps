@@ -127,7 +127,7 @@
       "matchday": 7,
       "type": "missing",
       "priority": "medium",
-      "note": "Spieltag 7: Atromitos-AEK hat auf slgr.gr noch keinen Termin (kicker.de 17.10. 16:30 UTC). Nicht eingetragen, bis die Liga einen Termin setzt. Spieltag 8-15 am 14.10. mit slgr.gr + kicker.de bestaetigt. Spieltag 16+ nicht geprueft (slgr.gr zeitweise hinter Cloudflare). 20.10.: slgr.gr hinter Cloudflare (nicht umgangen), Spieltag 16 (9./10.1.2027) bei kicker.de mit Zeiten, offiziell nicht geprueft.",
+      "note": "Atromitos-AEK (Spieltag 7) hat auf slgr.gr/kicker.de weiter keinen sauberen Termin (kicker: 15.12. 23:00 UTC, Platzhalter); nicht eingetragen. 2.11.: slgr.gr Spieltag 9, 10, 14, 15, 16 gelesen (Athener Zeit, Datum und Zeit aus dem Seitentext). OFI-Atromitos (8.11.) auf 16:30 UTC und OFI-Kalamata (20.12.) auf 16:30 UTC korrigiert (slgr.gr + kicker.de), Spieltag 16 (9./10.1.2027, 7 Spiele) neu eingetragen. Spieltag 17+ nicht geprueft.",
       "sources_tried": "slgr.gr, kicker.de, naftemporiki.gr",
       "added": "2026-10-09"
     },
@@ -192,32 +192,22 @@
       "added": "2026-11-02"
     },
     {
-      "id": "greece-slgr-dates-2026-11-02",
-      "league": "super_league_greece",
-      "matchday": null,
-      "type": "conflict",
-      "priority": "medium",
-      "note": "kicker.de weicht von gespeicherten Zeiten ab: Spieltag 9 (1.11., Panathinaikos-AEK 17:30 statt 17:00, PAOK-Asteras 17:00), Spieltag 10 (OFI-Atromitos 16:30 statt 17:00 UTC), Spieltag 15 (OFI-Kalamata 16:30 statt 17:30), Spieltag 16 (9./10.1.2027, 7 Spiele, nur kicker). slgr.gr oeffnete am 2.11. zwar, die Datumsangaben liessen sich aber nicht aus dem Seitentext lesen (Seite lud mehrfach neu). Gespeicherte Zeiten unveraendert, Nachpruefung mit slgr.gr noetig.",
-      "sources_tried": "slgr.gr, kicker.de",
-      "added": "2026-11-02"
-    },
-    {
       "id": "efl-rescheduled-2026-11-02",
       "league": "league_one",
       "matchday": 9,
       "type": "single_source",
       "priority": "medium",
-      "note": "efl.com-API nennt fuer die am 3.10. ausgefallenen Spiele neue Termine: Wigan-Mansfield 3.11. 19:45 UTC, Barnsley-MK Dons 15.12. 19:45 UTC. Gespeichert ist noch der 3.10. (vergangen). Nicht geaendert, weil keine zweite Quelle geprueft werden konnte (kicker fuehrt League One nicht). Bromley-Wycombe weiter ohne Termin.",
-      "sources_tried": "efl.com API",
+      "note": "Wigan-Mansfield am 3.11. 19:45 UTC eingetragen (efl.com-API + BBC Sport). Offen, nur efl.com-API (BBC listet nur die naechsten Spiele): Barnsley-MK Dons und Peterborough-Notts County am 15.12. 19:45 UTC (gespeichert noch 3.10.), AFC Wimbledon-Stevenage am 26.1.2027 19:45 UTC (gespeichert 3.10.), Notts County-Blackpool am 12.1.2027 19:45 UTC (gespeichert 26.9.). Bromley-Wycombe weiter ohne Termin. Championship: 30.1.2027 (12 Spiele, 15:00) und 16.3.2027 (8 Spiele, 19:45) stehen in unseren Daten, aber noch nicht in der efl.com-API (Standardtermine, offiziell ungeprueft).",
+      "sources_tried": "efl.com API, bbc.com/sport",
       "added": "2026-11-02"
     },
     {
-      "id": "not-checked-2026-11-02",
+      "id": "remaining-2026-11-02",
       "league": "multiple",
       "matchday": null,
       "type": "missing",
       "priority": "medium",
-      "note": "Lauf vom 2.11. nicht geprueft: SRB/SVN/SVK, Super Lig, OBOS-ligaen, Allsvenskan, Eliteserien, Veikkausliiga, Eerste Divisie, Championship/League One ausser EFL-API (superliga.rs liess sich im Browser nicht laden; fotmob zeigt SRB Runde 14 und 15 mit Zeiten, Runde 16+ Platzhalter 00:00). Youth League Runde 2 (Domestic Path): die 20 Rueckspiele (3./4.11.) sind als Matchday 2 gespeichert (UEFA-API + fotmob.com); die Hinspiele vom 28.10. fehlen bewusst (vergangen).",
+      "note": "Stand 2.11. (zweiter Durchgang): Super Lig 10-16, Eerste Divisie 13-38, Eliteserien 26-30, Allsvenskan 27-30, OBOS-ligaen 29-30 gegen fotmob bzw. obos-ligaen.no unveraendert korrekt. SVN Runde 15 (nzs.si + fotmob), SVK Runden 15-17 (nikeliga.sk + fotmob), SRB Runde 15 (superliga.rs + fotmob) neu eingetragen. Offen: SRB Runde 14 (31.10.-2.11., gespielt) nicht gespeichert, ab Runde 16 Platzhalter 00:00; SVN Celje-Radomlje (Runde 6, fotmob 2.12. 16:30 UTC) offiziell nicht bestaetigt; SVK ab Runde 18 nicht geprueft; Super Lig ab Runde 17 Platzhalter (18:00 einheitlich). Youth League Runde 2 Rueckspiele (20 Spiele, 3./4.11.) als Matchday 2 gespeichert.",
       "sources_tried": "fotmob.com, match.uefa.com",
       "added": "2026-11-02"
     }
