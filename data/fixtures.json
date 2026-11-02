@@ -32500,6 +32500,126 @@
       "away": "FLO",
       "start": "2026-10-14T18:00:00+00:00",
       "matchday": 1
+    },
+    {
+      "home": "SAL",
+      "away": "KRC",
+      "start": "2026-11-03T13:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "MTA",
+      "away": "ZUR",
+      "start": "2026-11-03T15:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "GOZ",
+      "away": "AZA",
+      "start": "2026-11-03T17:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "KAI",
+      "away": "MTK",
+      "start": "2026-11-04T09:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "SEP",
+      "away": "FIO",
+      "start": "2026-11-04T10:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "PAF",
+      "away": "BEN",
+      "start": "2026-11-04T12:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "DIN",
+      "away": "QAR",
+      "start": "2026-11-04T12:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "FCK",
+      "away": "DTB",
+      "start": "2026-11-04T13:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "CZV",
+      "away": "BRV",
+      "start": "2026-11-04T13:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "CFC",
+      "away": "FLO",
+      "start": "2026-11-04T13:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "PAO",
+      "away": "ZRI",
+      "start": "2026-11-04T13:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "ZIL",
+      "away": "HJK",
+      "start": "2026-11-04T15:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "SHF",
+      "away": "FAR",
+      "start": "2026-11-04T16:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "SNO",
+      "away": "HAM",
+      "start": "2026-11-04T16:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "HRA",
+      "away": "PAR",
+      "start": "2026-11-04T16:30:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "TSG",
+      "away": "BRS",
+      "start": "2026-11-04T17:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "ZAV",
+      "away": "STP",
+      "start": "2026-11-04T17:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "CLE",
+      "away": "LEG",
+      "start": "2026-11-04T18:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "RAN",
+      "away": "DKY",
+      "start": "2026-11-04T19:00:00+00:00",
+      "matchday": 2
+    },
+    {
+      "home": "CDM",
+      "away": "STB",
+      "start": "2026-11-04T19:45:00+00:00",
+      "matchday": 2
     }
   ],
   "obos_ligaen": [

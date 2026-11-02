@@ -217,7 +217,7 @@
       "matchday": null,
       "type": "missing",
       "priority": "medium",
-      "note": "Lauf vom 2.11. nicht geprueft: SRB/SVN/SVK, Super Lig, OBOS-ligaen, Allsvenskan, Eliteserien, Veikkausliiga, Eerste Divisie, Championship/League One ausser EFL-API (superliga.rs liess sich im Browser nicht laden; fotmob zeigt SRB Runde 14 und 15 mit Zeiten, Runde 16+ Platzhalter 00:00). Youth League Runde 2 (Domestic Path, Rueckspiele 3./4.11., 20 Spiele) ist nicht gespeichert, die Matchday-Nummer 2 kollidiert mit Ligaphase Spieltag 1 (gespeichert als 2); Entscheidung des Besitzers noetig.",
+      "note": "Lauf vom 2.11. nicht geprueft: SRB/SVN/SVK, Super Lig, OBOS-ligaen, Allsvenskan, Eliteserien, Veikkausliiga, Eerste Divisie, Championship/League One ausser EFL-API (superliga.rs liess sich im Browser nicht laden; fotmob zeigt SRB Runde 14 und 15 mit Zeiten, Runde 16+ Platzhalter 00:00). Youth League Runde 2 (Domestic Path): die 20 Rueckspiele (3./4.11.) sind als Matchday 2 gespeichert (UEFA-API + fotmob.com); die Hinspiele vom 28.10. fehlen bewusst (vergangen).",
       "sources_tried": "fotmob.com, match.uefa.com",
       "added": "2026-11-02"
     }
