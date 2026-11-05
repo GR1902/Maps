@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matchday Explorer – Home Fixtures &amp; Scouting Routes</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#00622F" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Matchdays" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -77,6 +82,10 @@
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
             Pick point on map
           </button>
+          <button class="route-btn" id="radius-near-btn" type="button" onclick="nearMe()" style="width:100%; margin-top:6px;" title="Use your device's location and show games within the radius over the next two days">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+            Near me, next 2 days
+          </button>
           <button class="route-btn" id="radius-use-start-btn" onclick="useRadiusPointAsStart()" style="width:100%; margin-top:6px;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h13l-3 4 3 4H5"/></svg>
             Use as plan start
@@ -103,6 +112,7 @@
     <button id="reset-filters-btn" type="button" onclick="resetAllFilters()" title="Reset filters: leagues, matchdays, dates, place and airports back to defaults" aria-label="Reset filters">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4"/><path d="M21 12a9 9 0 0 1-15.3 6.4"/><path d="M18.5 3v4.5H14"/><path d="M5.5 21v-4.5H10"/></svg>
     </button>
+    <button type="button" class="mini-btn" id="install-btn" onclick="installApp()" style="display:none;" title="Install Matchday Explorer as an app on this device">Install app</button>
     <span id="snapshot-note"></span>
   </div>
   <div id="body">

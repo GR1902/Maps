@@ -104,6 +104,21 @@ to refresh it; `dist/` isn't tracked in git.
   the UEFA competitions); when the clocks agree only the plain time is shown.
   The calendar's day lists do the same, its compact cells keep the viewer's
   time.
+- **Installable and usable offline** (`manifest.webmanifest`, `sw.js`,
+  `icons/`): on http(s) the page registers a service worker that stores the app
+  files and the schedule data (network first: online you always get the newest
+  version, offline the last loaded copy) and caches the Leaflet library from
+  the CDN once. Offline you can browse fixtures, popups, lists, the calendar and
+  your plans; the map background, club logos, routing and address search need a
+  connection (routes fall back to straight-line estimates), and the header
+  shows "Offline". Browsers offer "Install" (an "Install app" button appears in
+  the control bar where the browser supports it; on iPhone use Share, "Add to
+  Home Screen"). The standalone file does not use the service worker. Bump
+  `VERSION` in `sw.js` if its file lists change.
+- **Near me** ("Near me, next 2 days" in the Place dropdown): uses the device
+  location (the browser asks first) as the radius search centre and sets Dates
+  to today plus two days, so the list shows what is playing around where you
+  stand. The radius is the slider's current value. Reset clears it again.
 - **Data status** (right end of the control bar): "Fixtures checked <date>"
   from `data/meta.json` (`{"checked": "YYYY-MM-DD"}`, set by the weekly
   verification runs), turning amber after 10 days, plus the number of

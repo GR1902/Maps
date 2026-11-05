@@ -1572,7 +1572,8 @@ function setQuickRange(kind){
   today.setHours(0, 0, 0, 0);
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
   let from = today, to = today;
-  if(kind === '7days') to = addDays(today, 6);
+  if(kind === '48h') to = addDays(today, 2);
+  else if(kind === '7days') to = addDays(today, 6);
   else if(kind === '30days') to = addDays(today, 29);
   else {
     const dow = today.getDay(); // 0=Sun..6=Sat
@@ -3447,6 +3448,57 @@ function renderCalendarDayDetail(key, dayFixtures){
   });
 }
 
+// ===== "Near me": games around the device's location =====
+// Takes the device position as the radius search centre and sets the Dates
+// range to the next two days, so the list shows what can be reached from where
+// the scout stands right now.
+function nearMe(){
+  const status = document.getElementById('radius-status');
+  if(!navigator.geolocation){ status.textContent = 'This browser cannot share its location.'; return; }
+  status.textContent = 'Getting your location…';
+  navigator.geolocation.getCurrentPosition(pos => {
+    const point = { lat: pos.coords.latitude, lng: pos.coords.longitude, label: 'My location' };
+    lastRadiusPoint = point;
+    document.getElementById('radius-address').value = point.label;
+    updateSearchClearButtons();
+    setQuickRange('48h'); // also switches Dates to the range mode
+    renderRadiusResults(point, parseInt(document.getElementById('radius-km').value, 10), true);
+  }, err => {
+    status.textContent = err.code === 1
+      ? 'Location access was declined. Allow it in the browser to use this.'
+      : 'Could not get your location. Try again, or search an address instead.';
+  }, { enableHighAccuracy: false, timeout: 12000, maximumAge: 60000 });
+}
+
+// ===== Install as an app, offline notice, service worker =====
+// sw.js caches the app and the schedule data, so the tool opens without a
+// connection (see the comments in sw.js for what is and is not available
+// offline). It is only registered when served over http(s), not from a file.
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  installPrompt = e;
+  const btn = document.getElementById('install-btn');
+  if(btn) btn.style.display = '';
+});
+window.addEventListener('appinstalled', () => {
+  installPrompt = null;
+  const btn = document.getElementById('install-btn');
+  if(btn) btn.style.display = 'none';
+});
+async function installApp(){
+  if(!installPrompt) return;
+  installPrompt.prompt();
+  await installPrompt.userChoice.catch(() => {});
+  installPrompt = null;
+  document.getElementById('install-btn').style.display = 'none';
+}
+window.addEventListener('online', () => renderDataStatus());
+window.addEventListener('offline', () => renderDataStatus());
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* the app works without it */ }); });
+}
+
 // ===== Data status line (header) =====
 // Replaces a fixed claim with what is actually known: when the fixtures were
 // last verified (data/meta.json) and how many upcoming kickoffs still lack a
@@ -3468,6 +3520,7 @@ function renderDataStatus(){
   let open = 0;
   Object.keys(FIXTURES).forEach(lg => FIXTURES[lg].forEach(f => { if(f.unverified && new Date(f.start).getTime() > now) open++; }));
   if(open > 0) parts.push(`<span class="unverified-badge">⚠</span> ${open} kickoff${open === 1 ? '' : 's'} not yet confirmed by two sources`);
+  if(navigator.onLine === false) parts.push('<b>Offline</b>: saved data, map background and routes may be missing');
   el.innerHTML = parts.join(' · ');
   el.classList.toggle('stale', stale);
 }
