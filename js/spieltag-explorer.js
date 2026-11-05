@@ -383,12 +383,122 @@ function updateShareButton(){
   });
   const gm = document.getElementById('plan-gmaps-btn');
   if(gm) gm.disabled = planPoints().length === 0;
+  const note = document.getElementById('plan-backup-note');
+  if(note && !note.dataset.sticky) note.textContent = backupNoteText();
   // The part links belong to the route they were made for; drop them when the plan's route changes.
   const parts = document.getElementById('plan-gmaps-parts');
   if(parts && parts.innerHTML && parts.dataset.route !== gmapsRouteSig()) parts.innerHTML = '';
 }
 
 function gmapsRouteSig(){ return planPoints().map(gmapsCoord).join('|'); }
+
+// ----- Back up and restore all plans -----
+// Plans live in this browser only (localStorage), so clearing the browser data
+// or switching device loses them. "Export backup" saves every plan to a file;
+// "Import backup" reads such a file back. The file is untrusted input: games
+// are rebuilt from the current schedule by their key (unknown ones are left
+// out), texts are length-limited, ids and coordinates validated. A plan that is
+// already here and identical is skipped, one with the same id but different
+// content comes in as a copy, so nothing here is ever overwritten.
+const BACKUP_FORMAT = 'matchday-explorer-plans';
+const BACKUP_KEY = 'scoutingLastBackup';
+
+function backupNoteText(){
+  let last = null;
+  try{ last = localStorage.getItem(BACKUP_KEY); } catch(e){ /* not essential */ }
+  if(!last) return 'No backup yet';
+  const days = Math.floor((Date.now() - new Date(last).getTime()) / 86400000);
+  return days <= 0 ? 'Last backup: today' : `Last backup: ${days} ${days === 1 ? 'day' : 'days'} ago`;
+}
+// A message (e.g. "Imported 2 plans.") stays visible for a few seconds; the
+// plan area re-renders often and would otherwise replace it at once.
+function updateBackupNote(message){
+  const el = document.getElementById('plan-backup-note');
+  if(!el) return;
+  if(message){
+    el.dataset.sticky = '1';
+    el.textContent = message;
+    setTimeout(() => { delete el.dataset.sticky; el.textContent = backupNoteText(); }, 6000);
+  } else {
+    delete el.dataset.sticky;
+    el.textContent = backupNoteText();
+  }
+}
+
+function exportAllPlans(){
+  flushPlanNote();
+  const data = { format: BACKUP_FORMAT, version: 1, exportedAt: new Date().toISOString(), activePlanId, plans };
+  downloadTextFile(`matchday-plans-${localDateKey(new Date())}.json`, JSON.stringify(data, null, 2), 'application/json');
+  try{ localStorage.setItem(BACKUP_KEY, data.exportedAt); } catch(e){ /* not essential */ }
+  updateBackupNote();
+}
+
+// Turns the file's plans into clean plans; returns { plans, droppedGames }.
+function sanitizeBackupPlans(rawPlans){
+  const text = (v, max) => typeof v === 'string' ? v.trim().slice(0, max) : '';
+  const clean = [];
+  let droppedGames = 0;
+  rawPlans.slice(0, 200).forEach(raw => {
+    if(!raw || typeof raw !== 'object' || !Array.isArray(raw.items)) return;
+    const seen = new Set();
+    const items = [];
+    raw.items.slice(0, 120).forEach(it => {
+      const item = it && typeof it.key === 'string' ? itemFromKey(it.key) : null;
+      if(!item){ droppedGames++; return; }
+      if(!seen.has(item.key)){ seen.add(item.key); items.push(item); }
+    });
+    const plan = { id: typeof raw.id === 'string' && /^[a-z0-9]{6,32}$/.test(raw.id) ? raw.id : uid(), name: text(raw.name, 80) || 'Imported plan', items };
+    const scout = text(raw.scout, 80); if(scout) plan.scout = scout;
+    if(PLAN_STATUSES.some(([k]) => k === raw.status) && raw.status !== 'idea') plan.status = raw.status;
+    const note = text(raw.note, PLAN_NOTE_MAX); if(note) plan.note = note;
+    const st = raw.start;
+    if(st && typeof st === 'object' && text(st.name, 80) && Number.isFinite(st.lat) && Math.abs(st.lat) <= 90 && Number.isFinite(st.lng) && Math.abs(st.lng) <= 180){
+      plan.start = { name: text(st.name, 80), lat: st.lat, lng: st.lng };
+    }
+    if(typeof raw.shareId === 'string' && /^[a-z0-9]{6,32}$/.test(raw.shareId)) plan.shareId = raw.shareId;
+    if(Number.isFinite(raw.sharedAt)) plan.sharedAt = raw.sharedAt;
+    if(typeof raw.syncSig === 'string' && raw.syncSig.length <= 4000) plan.syncSig = raw.syncSig;
+    if(Number.isFinite(raw.lastUsed)) plan.lastUsed = raw.lastUsed;
+    clean.push(plan);
+  });
+  return { plans: clean, droppedGames };
+}
+
+async function importAllPlansFromFile(input){
+  const file = input.files && input.files[0];
+  input.value = ''; // allows choosing the same file again
+  if(!file) return;
+  if(file.size > 3 * 1024 * 1024){ alert('This file is too large to be a plan backup.'); return; }
+  let data = null;
+  try{ data = JSON.parse(await file.text()); } catch(e){ /* handled below */ }
+  if(!data || data.format !== BACKUP_FORMAT || !Array.isArray(data.plans) || data.plans.length === 0){
+    alert('This file is not a plan backup from Matchday Explorer.');
+    return;
+  }
+  const { plans: incoming, droppedGames } = sanitizeBackupPlans(data.plans);
+  if(incoming.length === 0){ alert('The backup contains no usable plans.'); return; }
+  const toAdd = [];
+  let identical = 0, copies = 0;
+  incoming.forEach(plan => {
+    const same = plans.find(p => p.id === plan.id);
+    if(!same){ toAdd.push(plan); return; }
+    if(planSig(same) === planSig(plan)){ identical++; return; }
+    copies++;
+    toAdd.push({ ...plan, id: uid(), name: `${plan.name} (imported)` });
+  });
+  if(toAdd.length === 0){ updateBackupNote('Nothing to import: all plans are already here.'); return; }
+  const lines = [`Import ${toAdd.length} ${toAdd.length === 1 ? 'plan' : 'plans'} from this backup?`, ''];
+  if(identical) lines.push(`${identical} identical ${identical === 1 ? 'plan is' : 'plans are'} already here and will be skipped.`);
+  if(copies) lines.push(`${copies} ${copies === 1 ? 'plan exists' : 'plans exist'} here with different content and will be added as ${copies === 1 ? 'a copy' : 'copies'} ("(imported)").`);
+  if(droppedGames) lines.push(`${droppedGames} ${droppedGames === 1 ? 'game is' : 'games are'} no longer in the schedule and will be left out.`);
+  lines.push('Your existing plans stay as they are.');
+  if(!confirm(lines.join('\n'))) return;
+  flushPlanNote();
+  toAdd.forEach(p => plans.push(p));
+  savePlans();
+  renderWatchlist();
+  updateBackupNote(`Imported ${toAdd.length} ${toAdd.length === 1 ? 'plan' : 'plans'}.`);
+}
 
 // ----- Open the plan in Google Maps -----
 // Google Maps URLs take an origin, a destination and waypoints in between

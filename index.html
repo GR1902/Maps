@@ -191,6 +191,13 @@
           </button>
         </div>
         <div id="plan-gmaps-parts"></div>
+        <div id="plan-backup-row">
+          <span class="backup-label">All plans</span>
+          <button type="button" class="mini-btn" id="plan-backup-export" onclick="exportAllPlans()" title="Download all your plans as a backup file">Export backup</button>
+          <button type="button" class="mini-btn" id="plan-backup-import" onclick="document.getElementById('plan-backup-file').click()" title="Restore plans from a backup file">Import backup</button>
+          <input type="file" id="plan-backup-file" accept="application/json,.json" style="display:none;" onchange="importAllPlansFromFile(this)">
+          <span id="plan-backup-note"></span>
+        </div>
         <div id="watchlist-dropzone">
           <div id="watchlist-list"></div>
           <div id="watchlist-summary"></div>

@@ -656,3 +656,8 @@ header .sub{ font-size:0.68rem; color:rgba(255,255,255,0.68); text-transform:upp
   border:1px solid var(--line); border-radius:var(--radius-sm); padding:6px 9px; background:var(--paper);
 }
 .gmaps-part:hover{ background:var(--surface); }
+
+/* Plan backup */
+#plan-backup-row{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:0 16px 10px 16px; }
+#plan-backup-row .backup-label{ font-size:0.68rem; font-weight:600; color:var(--text-muted); margin-right:2px; }
+#plan-backup-note{ font-size:0.66rem; color:var(--text-muted); flex-basis:100%; }

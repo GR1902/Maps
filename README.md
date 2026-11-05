@@ -291,6 +291,16 @@ to refresh it; `dist/` isn't tracked in git.
   the previous one. Google calculates its own route between the points:
   only the order comes from the plan, kickoff times and the app's drive times
   are not part of the link.
+  **Backup of all plans**: plans live only in the browser's `localStorage`, so
+  clearing the browser data or switching device would lose them. "Export
+  backup" (below the plan buttons, "All plans") saves every plan to
+  `matchday-plans-<date>.json`, "Import backup" reads such a file back, and a
+  line shows when the last backup was made. The import never overwrites: plans
+  already here and identical are skipped, a plan with the same id but
+  different content comes in as a copy "(... (imported))", new plans are
+  added. The file is treated as untrusted: games are rebuilt from the current
+  schedule by their key (unknown ones are dropped and counted), texts are
+  length-limited and ids, statuses and coordinates validated.
   **Plans follow the data**: a plan stores a copy of each game, so on every
   load each saved game is re-checked against `data/fixtures.json` by its key.
   A moved kickoff is updated and flagged "Kickoff changed, was ..." with an OK
