@@ -1,0 +1,31 @@
+# Runs check_data.py on every push and pull request, so a broken fixture file
+# (unknown team code, a game stored under two matchdays, bad time format, missing
+# file) is flagged within a minute. The Monday run also fails when data/meta.json
+# says the fixtures were last verified more than 10 days ago, which means the
+# weekly verification did not run; GitHub then emails the repository owner.
+name: Data check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check data
+        run: python3 check_data.py
+      - name: Check that the weekly verification ran
+        if: github.event_name == 'schedule'
+        run: python3 check_data.py --max-age-days 10 | tail -n 3

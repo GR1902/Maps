@@ -27,6 +27,8 @@ norwich-scouting-map/
 │   ├── leagues.json           Competition logo URL per league code (see below)
 │   └── changelog.json         What changed (kickoff moves, new games), written by make_changelog.py
 ├── make_changelog.py          Diffs data/fixtures.json between two git revisions into changelog.json
+├── check_data.py              Consistency check of all data files (run by GitHub Actions, see below)
+├── .github/workflows/         data-check.yml, changelog.yml, logo-check.yml
 ├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
 ├── fetch_logos.py             Fills in data/teams.json's "logo" field via Wikipedia (see below)
 ├── check_logos.py             Read-only audit: clubs without a logo and logo links that no longer work
@@ -631,6 +633,50 @@ Beyond each league's confirmed horizon there's nothing to fetch — the
 newly-confirmed matchdays as each federation releases them over time,
 rather than this being a one-time manual push.
 
+## Automatic checks (GitHub Actions)
+
+Three workflows in `.github/workflows/` watch the data. Only the changelog
+one writes to the repository, the other two just report.
+
+- **Data check** (`data-check.yml`, every push to `main`, every pull request,
+  Mondays 06:17 UTC): runs `python3 check_data.py`. Errors fail the run (and
+  GitHub emails the owner), warnings do not. It fails on: a JSON file that does
+  not parse; a fixture whose club code is not in `teams.json`; the same game
+  twice; the same pairing stored under two matchdays less than 21 days apart
+  (the Scottish duplicate-matchday problem); a club twice in one matchday or
+  two games of a club less than 20 hours apart; more games in a matchday than
+  clubs/2; a start time that is not ISO UTC or outside the 2026/27 season;
+  coordinates outside Europe (lat/lng swapped); a league without label, country
+  or time zone in `js/spieltag-explorer.js`; a queue item for an unknown league;
+  files that `index.html`, `sw.js` or the web manifest point to but that do not
+  exist. Warnings: unverified flags on games already played (harmless), a round
+  of 4+ games that all start at one placeholder hour (23:00 or 00:00 UTC), a
+  club without logo or without any game. Incomplete matchdays are printed as
+  notes only, because leagues publish their rounds piece by piece. The Monday
+  run also fails when `data/meta.json` says the fixtures were last verified more
+  than 10 days ago (`--max-age-days 10`): that is the alarm for a weekly
+  verification that did not run. Run it yourself before committing data:
+  `python3 check_data.py` (add `--max-age-days 10` to test that rule).
+- **Update changelog** (`changelog.yml`, after a push that touches
+  `data/fixtures.json`): runs `make_changelog.py --before <old head> --after
+  <new head> --write` and commits `data/changelog.json` as "Update changelog
+  [skip ci]". It always starts from the newest `main`, retries the push up to
+  five times when an agent pushed in the meantime, and does nothing when the
+  same commit was already recorded. It needs the default `GITHUB_TOKEN` to be
+  allowed to write (the workflow asks for `contents: write`; if the repository
+  or organisation forces read-only tokens under Settings, Actions, General, the
+  run fails with a 403). Commits made with that token do not start other
+  workflows, so there is no loop. `workflow_dispatch` takes an older commit
+  hash for a manual run.
+- **Logo check** (`logo-check.yml`, Mondays 06:30 UTC): runs
+  `python3 check_logos.py`; fails when a club has no logo or a link is dead, the
+  log lists the clubs. Wikimedia sometimes throttles shared runners; re-run
+  the workflow before assuming a logo is really gone.
+
+Pushing files under `.github/workflows/` needs a GitHub token with the
+`workflow` scope (a fine-grained token: "Workflows" read and write), otherwise
+the push is rejected.
+
 ## Automated weekly updates
 
 A scheduled cloud agent ("Norwich Scouting Map - Weekly Fixture Update")
@@ -641,6 +687,14 @@ or corrects postponed/rescheduled fixtures, and commits + pushes the
 result. It never invents placeholder dates/times — a league with nothing
 newly confirmed is simply left alone until next week. Managed at
 [claude.ai/code/routines](https://claude.ai/code/routines).
+
+> Status 2026-11: that cloud routine no longer exists (its run on 12 Oct had no
+> network access to the league sites). The verification is done by a local
+> scheduled task in the Claude desktop app (Mondays, app must be open) with a
+> real browser: it works the queue in `data/review_queue.json`, compares the
+> official league sites with kicker.de, sets `data/meta.json`, runs
+> `check_data.py` and `check_logos.py` and pushes. The "Data check" workflow's
+> Monday run is the alarm if that stops happening.
 
 ## On accuracy vs. an official API
 

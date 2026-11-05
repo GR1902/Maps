@@ -1,0 +1,24 @@
+# Weekly audit of every club logo link (Wikipedia renames crest files now and
+# then). Fails when a club has no logo or a link stopped working, so the owner
+# gets an email; the run log lists the clubs. Read-only.
+name: Logo check
+
+on:
+  schedule:
+    - cron: '30 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  logos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check logos
+        run: python3 check_logos.py

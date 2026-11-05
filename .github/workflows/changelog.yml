@@ -1,0 +1,60 @@
+# After a push that changes data/fixtures.json, records what changed for upcoming
+# games (moved kickoffs, new games, removed games) in data/changelog.json, which
+# the app shows as "N changes since your last visit". Commits made with the
+# default token do not start further workflows, so this cannot loop.
+name: Update changelog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - data/fixtures.json
+  workflow_dispatch:
+    inputs:
+      before:
+        description: Older commit to compare against (the diff runs up to the current head)
+        required: true
+
+concurrency:
+  group: changelog
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Record the changes and push
+        env:
+          BEFORE: ${{ github.event.inputs.before || github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4 5; do
+            # always start from the newest main: an agent may have pushed data in the meantime
+            git fetch origin main
+            git reset --hard origin/main
+            python3 make_changelog.py --before "$BEFORE" --after "$AFTER" --write
+            if git diff --quiet -- data/changelog.json; then
+              echo "No changelog change to commit."
+              exit 0
+            fi
+            git add data/changelog.json
+            git commit -m "Update changelog [skip ci]"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt), trying again"
+            sleep $((attempt * 5))
+          done
+          echo "Could not push the changelog"
+          exit 1
