@@ -24,7 +24,9 @@ norwich-scouting-map/
 │   ├── teams.json             787 club/venue records, keyed by league → team code
 │   ├── fixtures.json          5564 fixtures, keyed by league, with matchday numbers
 │   ├── airports.json          ~60 major European airports (name, IATA, city, lat/lng)
-│   └── leagues.json           Competition logo URL per league code (see below)
+│   ├── leagues.json           Competition logo URL per league code (see below)
+│   └── changelog.json         What changed (kickoff moves, new games), written by make_changelog.py
+├── make_changelog.py          Diffs data/fixtures.json between two git revisions into changelog.json
 ├── build_standalone.py        Builds dist/matchday-explorer-standalone.html (see below)
 ├── fetch_logos.py             Fills in data/teams.json's "logo" field via Wikipedia (see below)
 ├── check_logos.py             Read-only audit: clubs without a logo and logo links that no longer work
@@ -119,6 +121,22 @@ to refresh it; `dist/` isn't tracked in git.
   location (the browser asks first) as the radius search centre and sets Dates
   to today plus two days, so the list shows what is playing around where you
   stand. The radius is the slider's current value. Reset clears it again.
+- **What changed** (data status line, right end of the control bar): when
+  kickoffs moved or games were added since the visitor's last visit, a pill
+  reads "● 2 kickoff changes, 153 new games since your last visit"; otherwise a
+  quiet "Recent changes" link. The panel lists, in this order, changes to games
+  in the visitor's own plans (with the plan's name), moved kickoffs (old time
+  to new time), new fixtures grouped per league and matchday, and removed games.
+  A click on a row jumps to that game on the map. Opening the panel marks
+  everything as seen (`scoutingChangesSeen` in `localStorage`); a first visit
+  starts with nothing to report. The data comes from `data/changelog.json`,
+  which `make_changelog.py` writes by diffing `data/fixtures.json` between two
+  git revisions (`python3 make_changelog.py --before <ref> [--after <ref>]
+  [--write]`; without `--write` it only prints). It ignores games in the past,
+  flag-only edits and pure matchday renumbering, groups new games per matchday
+  and keeps the last 60 days / 300 entries. The GitHub Action updates it after
+  every push that touches the fixtures; verification runs done by hand can run
+  the script themselves.
 - **Data status** (right end of the control bar): "Fixtures checked <date>"
   from `data/meta.json` (`{"checked": "YYYY-MM-DD"}`, set by the weekly
   verification runs), turning amber after 10 days, plus the number of

@@ -4,6 +4,7 @@ let FIXTURES = {};
 let AIRPORTS = [];
 let LEAGUE_LOGO = {}; // league code -> competition logo URL, loaded from data/leagues.json
 let META = {};         // data/meta.json: { checked: 'YYYY-MM-DD' } = when the fixtures were last verified
+let CHANGELOG = { entries: [] }; // data/changelog.json: what changed for upcoming games, written by make_changelog.py
 let SCOUTS = [];       // data/scouts.json: roster of scout names a plan can be assigned to
 
 // Small inline-SVG icon set (stroke-based, currentColor) used in place of
@@ -3499,6 +3500,144 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* the app works without it */ }); });
 }
 
+// ===== "What changed": fixture changes since the visitor's last visit =====
+// data/changelog.json is written by make_changelog.py after each data push:
+// kickoff moves, added matchdays and removed games for upcoming games. The app
+// remembers when this browser last looked (localStorage) and offers the
+// difference as a pill in the header and a panel. Nobody is greeted with the
+// whole history: the first visit starts from the newest entry.
+const CHANGES_SEEN_KEY = 'scoutingChangesSeen';
+const CHANGES_RECENT_DAYS = 14;
+
+function changesEntries(){ return Array.isArray(CHANGELOG.entries) ? CHANGELOG.entries : []; }
+function newestChangeAt(){ const e = changesEntries(); return e.length ? e[e.length - 1].at : null; }
+function changesSeenAt(){
+  let v = null;
+  try{ v = localStorage.getItem(CHANGES_SEEN_KEY); } catch(e){ /* not essential */ }
+  return v;
+}
+function markChangesSeen(){
+  const at = newestChangeAt();
+  if(!at) return;
+  try{ localStorage.setItem(CHANGES_SEEN_KEY, at); } catch(e){ /* not essential */ }
+}
+// First visit in this browser: start from the newest entry so only later changes show up.
+function initChangesBaseline(){
+  if(changesSeenAt() === null) markChangesSeen();
+}
+
+// Changes recorded after `sinceIso` (or inside the recent window when null),
+// merged per game: a game moved twice shows one move from the first old to the
+// last new time, and new games are added up per league and matchday. Changes
+// whose games lie in the past by now are dropped.
+function collectChanges(sinceIso){
+  const cutoff = sinceIso ? new Date(sinceIso).getTime() : Date.now() - CHANGES_RECENT_DAYS * 86400000;
+  const now = Date.now();
+  const moves = new Map(), news = new Map(), removed = [];
+  changesEntries().filter(e => new Date(e.at).getTime() > cutoff).forEach(e => e.changes.forEach(c => {
+    if(!LEAGUE_LABELS[c.l]) return;
+    if(c.t === 'time'){
+      const key = `${c.l}|${c.h}|${c.a}|${c.m}`;
+      const prev = moves.get(key);
+      moves.set(key, { ...c, from: prev ? prev.from : c.from, at: e.at });
+    } else if(c.t === 'new'){
+      const key = `${c.l}|${c.m}`;
+      const prev = news.get(key);
+      news.set(key, prev
+        ? { ...prev, n: prev.n + c.n, from: c.from < prev.from ? c.from : prev.from, to: c.to > prev.to ? c.to : prev.to, h: undefined, a: undefined, at: e.at }
+        : { ...c, at: e.at });
+    } else if(c.t === 'removed'){
+      removed.push({ ...c, at: e.at });
+    }
+  }));
+  return {
+    moves: [...moves.values()].filter(c => new Date(c.from).getTime() !== new Date(c.to).getTime() && new Date(c.to).getTime() > now)
+      .sort((a, b) => new Date(a.to) - new Date(b.to)),
+    news: [...news.values()].filter(c => new Date(c.to).getTime() > now).sort((a, b) => new Date(a.from) - new Date(b.from)),
+    removed: removed.filter(c => new Date(c.s).getTime() > now)
+  };
+}
+function countChanges(ch){ return ch.moves.length + ch.news.reduce((s, c) => s + c.n, 0) + ch.removed.length; }
+
+function changesStatusHtml(){
+  if(changesEntries().length === 0) return '';
+  const seen = changesSeenAt();
+  const ch = collectChanges(seen);
+  const total = countChanges(ch);
+  if(seen && total > 0){
+    const bits = [];
+    if(ch.moves.length) bits.push(`${ch.moves.length} kickoff ${ch.moves.length === 1 ? 'change' : 'changes'}`);
+    const newGames = ch.news.reduce((s, c) => s + c.n, 0);
+    if(newGames) bits.push(`${newGames} new ${newGames === 1 ? 'game' : 'games'}`);
+    if(ch.removed.length) bits.push(`${ch.removed.length} removed`);
+    return `<button type="button" class="changes-pill" onclick="openChangesPanel()" title="Open the list of changes">● ${bits.join(', ')} since your last visit</button>`;
+  }
+  return `<a href="#" class="changes-link" onclick="openChangesPanel(); return false;">Recent changes</a>`;
+}
+
+function gameName(league, homeCode, awayCode){
+  const t = TEAMS[league] || {};
+  return `${escapeHtml(t[homeCode] ? t[homeCode].name : homeCode)} – ${escapeHtml(t[awayCode] ? t[awayCode].name : awayCode)}`;
+}
+function changeDay(iso){ return new Date(iso).toLocaleDateString('en-GB', { day:'numeric', month:'short' }); }
+
+// Opens a changed game on the map: its league and matchday are selected and the map centres on the venue.
+function showFixtureFromChanges(league, matchday, homeCode){
+  closeChangesPanel();
+  const club = TEAMS[league] && TEAMS[league][homeCode];
+  selectedLeagues.add(league);
+  leagueMatchday[league] = matchday;
+  setView('map');
+  setFilterMode('matchday');
+  buildLeaguePanel();
+  renderAll();
+  // renderAll() ends with an animated fitBounds; a setView during that animation is undone
+  // when it finishes, so wait it out (Leaflet's zoom animation takes 250 ms)
+  if(club) setTimeout(() => map.setView([club.lat, club.lng], 10), 320);
+}
+
+function openChangesPanel(){
+  const seen = changesSeenAt();
+  let ch = collectChanges(seen);
+  const unseen = !!seen && countChanges(ch) > 0;
+  if(!unseen) ch = collectChanges(null); // nothing new: show the recent window instead
+  document.getElementById('changes-title').textContent = unseen ? 'Changes since your last visit' : `Changes in the last ${CHANGES_RECENT_DAYS} days`;
+  const body = document.getElementById('changes-body');
+  const planKeys = new Map();
+  plans.forEach(p => p.items.forEach(w => { if(!planKeys.has(w.key)) planKeys.set(w.key, p.name); }));
+  let html = '';
+  if(countChanges(ch) === 0){
+    html = `<p class="changes-empty">No changes to upcoming games were recorded in this period.</p>`;
+  }
+  const mine = ch.moves.filter(c => planKeys.has(`${c.l}::${c.h}::${c.m}`));
+  if(mine.length){
+    html += `<h3>In your plans</h3>` + mine.map(c => `<div class="chg-row chg-mine"><div class="chg-main">${gameName(c.l, c.h, c.a)} <span class="chg-plan">${escapeHtml(planKeys.get(`${c.l}::${c.h}::${c.m}`))}</span></div><div class="chg-sub">${escapeHtml(LEAGUE_LABELS[c.l])} · ${fmtKickoff(c.from, c.l, c.h)} → <b>${fmtKickoff(c.to, c.l, c.h)}</b> · ${changeDay(c.at)}</div></div>`).join('');
+  }
+  if(ch.moves.length){
+    html += `<h3>Kickoff changes (${ch.moves.length})</h3>` + ch.moves.slice(0, 60).map(c =>
+      `<div class="chg-row" onclick="showFixtureFromChanges('${c.l}', ${c.m}, '${c.h}')"><div class="chg-main">${gameName(c.l, c.h, c.a)}</div><div class="chg-sub">${escapeHtml(LEAGUE_LABELS[c.l])} · ${fmtKickoff(c.from, c.l, c.h)} → <b>${fmtKickoff(c.to, c.l, c.h)}</b> · ${changeDay(c.at)}</div></div>`).join('')
+      + (ch.moves.length > 60 ? `<div class="chg-more">and ${ch.moves.length - 60} more</div>` : '');
+  }
+  if(ch.news.length){
+    html += `<h3>New fixtures (${ch.news.reduce((s, c) => s + c.n, 0)})</h3>` + ch.news.map(c => {
+      const range = changeDay(c.from) === changeDay(c.to) ? changeDay(c.from) : `${changeDay(c.from)} to ${changeDay(c.to)}`;
+      const what = c.n === 1 && c.h ? gameName(c.l, c.h, c.a) : `${c.n} games`;
+      const click = c.n === 1 && c.h ? ` onclick="showFixtureFromChanges('${c.l}', ${c.m}, '${c.h}')"` : '';
+      return `<div class="chg-row"${click}><div class="chg-main">${escapeHtml(LEAGUE_LABELS[c.l])}, matchday ${c.m}: ${what}</div><div class="chg-sub">${range} · added ${changeDay(c.at)}</div></div>`;
+    }).join('');
+  }
+  if(ch.removed.length){
+    html += `<h3>Removed games (${ch.removed.length})</h3>` + ch.removed.map(c =>
+      `<div class="chg-row"><div class="chg-main">${gameName(c.l, c.h, c.a)}</div><div class="chg-sub">${escapeHtml(LEAGUE_LABELS[c.l])} · was ${fmtKickoff(c.s, c.l, c.h)} · ${changeDay(c.at)}</div></div>`).join('');
+  }
+  body.innerHTML = html;
+  document.getElementById('changes-overlay').classList.add('open');
+  markChangesSeen();
+  renderDataStatus();
+}
+function closeChangesPanel(){ document.getElementById('changes-overlay').classList.remove('open'); }
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeChangesPanel(); });
+
 // ===== Data status line (header) =====
 // Replaces a fixed claim with what is actually known: when the fixtures were
 // last verified (data/meta.json) and how many upcoming kickoffs still lack a
@@ -3520,6 +3659,8 @@ function renderDataStatus(){
   let open = 0;
   Object.keys(FIXTURES).forEach(lg => FIXTURES[lg].forEach(f => { if(f.unverified && new Date(f.start).getTime() > now) open++; }));
   if(open > 0) parts.push(`<span class="unverified-badge">⚠</span> ${open} kickoff${open === 1 ? '' : 's'} not yet confirmed by two sources`);
+  const changeLabel = changesStatusHtml();
+  if(changeLabel) parts.push(changeLabel);
   if(navigator.onLine === false) parts.push('<b>Offline</b>: saved data, map background and routes may be missing');
   el.innerHTML = parts.join(' · ');
   el.classList.toggle('stale', stale);
@@ -3527,13 +3668,14 @@ function renderDataStatus(){
 
 // ===== Bootstrap: load data, then render =====
 async function loadData(){
-  const [teamsRes, fixturesRes, airportsRes, leaguesRes, metaRes, scoutsRes] = await Promise.all([
+  const [teamsRes, fixturesRes, airportsRes, leaguesRes, metaRes, scoutsRes, changelogRes] = await Promise.all([
     fetch('data/teams.json'),
     fetch('data/fixtures.json'),
     fetch('data/airports.json'),
     fetch('data/leagues.json'),
     fetch('data/meta.json').catch(() => null), // optional: the app works without it
-    fetch('data/scouts.json').catch(() => null) // optional as well
+    fetch('data/scouts.json').catch(() => null), // optional as well
+    fetch('data/changelog.json').catch(() => null)
   ]);
   TEAMS = await teamsRes.json();
   FIXTURES = await fixturesRes.json();
@@ -3541,8 +3683,10 @@ async function loadData(){
   LEAGUE_LOGO = await leaguesRes.json();
   try{ if(metaRes && metaRes.ok) META = await metaRes.json(); } catch(e){ /* keep the empty default */ }
   try{ if(scoutsRes && scoutsRes.ok) SCOUTS = await scoutsRes.json(); } catch(e){ /* keep the empty default */ }
+  try{ if(changelogRes && changelogRes.ok) CHANGELOG = await changelogRes.json(); } catch(e){ /* keep the empty default */ }
 
   reconcilePlans();
+  initChangesBaseline();
   renderDataStatus();
   buildLeaguePanel();
   renderWatchlist();

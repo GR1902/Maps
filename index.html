@@ -17,6 +17,15 @@
 <link rel="stylesheet" href="css/spieltag-explorer.css" />
 </head>
 <body>
+<div id="changes-overlay" onclick="if(event.target === this) closeChangesPanel()">
+  <div id="changes-panel" role="dialog" aria-modal="true" aria-labelledby="changes-title">
+    <div id="changes-head">
+      <h2 id="changes-title">What changed</h2>
+      <button type="button" id="changes-close" onclick="closeChangesPanel()" aria-label="Close">✕</button>
+    </div>
+    <div id="changes-body"></div>
+  </div>
+</div>
 <div id="app">
   <header>
     <div>

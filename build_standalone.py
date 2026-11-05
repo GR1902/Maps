@@ -23,6 +23,8 @@ airports_json = (root / "data/airports.json").read_text()
 leagues_json = (root / "data/leagues.json").read_text()
 meta_json = (root / "data/meta.json").read_text()
 scouts_json = (root / "data/scouts.json").read_text()
+changelog_path = root / "data/changelog.json"
+changelog_json = changelog_path.read_text() if changelog_path.exists() else '{"entries": []}'
 
 js = (root / "js/spieltag-explorer.js").read_text()
 
@@ -44,10 +46,14 @@ js, n = re.subn(r"^let SCOUTS = \[\];.*$", lambda m: f"let SCOUTS = {scouts_json
 if n != 1:
     raise SystemExit("Could not find the SCOUTS declaration to replace — source file changed?")
 
+js, n = re.subn(r"^let CHANGELOG = \{ entries: \[\] \};.*$", lambda m: f"let CHANGELOG = {changelog_json};", js, count=1, flags=re.M)
+if n != 1:
+    raise SystemExit("Could not find the CHANGELOG declaration to replace — source file changed?")
+
 js, n = re.subn(
     r"// ===== Bootstrap: load data, then render =====\nasync function loadData\(\)\{.*?\}\n\nloadData\(\);",
     "// ===== Bootstrap: data is embedded above, render immediately =====\n"
-    "reconcilePlans();\nrenderDataStatus();\nbuildLeaguePanel();\nrenderWatchlist();\ncomputeWatchlistLegs();\nrenderAll();\ndataReady = true;\nimportSharedPlanFromUrl();",
+    "reconcilePlans();\ninitChangesBaseline();\nrenderDataStatus();\nbuildLeaguePanel();\nrenderWatchlist();\ncomputeWatchlistLegs();\nrenderAll();\ndataReady = true;\nimportSharedPlanFromUrl();",
     js,
     count=1,
     flags=re.S,
