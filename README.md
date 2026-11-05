@@ -95,6 +95,15 @@ to refresh it; `dist/` isn't tracked in git.
 - **Control bar** (one row on desktop): **Leagues (n)**, **Dates** (shows the
   active range, e.g. "Dates: 09 Oct to 11 Oct"), **Place**, the **Map |
   Calendar** switch, the reset icon, and on the right the data status below
+- **Kickoff times on the venue's clock**: fixture lists, map popups, radius
+  results, trip cards and My Plan show the kickoff in the stadium's local time
+  first and, when the viewer's own clock differs, the viewer's time after it
+  ("Sat 12/12, 18:00 local · 15:00 GMT", with the viewer's weekday added if it
+  falls on another day). The venue's time zone comes from its country
+  (`COUNTRY_TZ`, keyed by the country codes of `COUNTRY_TAG` and of the clubs in
+  the UEFA competitions); when the clocks agree only the plain time is shown.
+  The calendar's day lists do the same, its compact cells keep the viewer's
+  time.
 - **Data status** (right end of the control bar): "Fixtures checked <date>"
   from `data/meta.json` (`{"checked": "YYYY-MM-DD"}`, set by the weekly
   verification runs), turning amber after 10 days, plus the number of

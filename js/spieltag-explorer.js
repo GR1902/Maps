@@ -834,9 +834,9 @@ function renderWatchlist(){
       <span class="rank">${idx + 1}</span>
       <div class="wbody">
         <div class="wteams">${w.homeName} – ${w.awayName}</div>
-        <div class="wmeta">${w.city} · ${fmtDate(w.start)}${unverifiedBadge(w.key)} · ${LEAGUE_LABELS[w.league] || w.league}</div>
+        <div class="wmeta">${w.city} · ${fmtKickoff(w.start, w.league, w.homeCode)}${unverifiedBadge(w.key)} · ${LEAGUE_LABELS[w.league] || w.league}</div>
         ${w.missing ? `<div class="wflag wflag-missing">No longer in the schedule. Check before you travel.</div>` : ''}
-        ${w.changedFrom ? `<div class="wflag">⟳ Kickoff changed, was ${fmtDate(w.changedFrom)} <button type="button" class="wflag-ok" title="Got it, hide this note">OK</button></div>` : ''}
+        ${w.changedFrom ? `<div class="wflag">⟳ Kickoff changed, was ${fmtKickoff(w.changedFrom, w.league, w.homeCode)} <button type="button" class="wflag-ok" title="Got it, hide this note">OK</button></div>` : ''}
       </div>
       <span class="wremove" title="Remove">×</span>
     `;
@@ -1258,6 +1258,58 @@ function fmtDate(iso){
   return d.toLocaleString('en-GB', { weekday:'short', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
 }
 
+// ----- Kickoff in the venue's local time, plus the viewer's own time -----
+// Kickoffs are stored in UTC. A scout travelling to another country needs the
+// time on the stadium clock, so lists and popups show it first, followed by the
+// time on the viewer's own clock when the two differ (e.g. "Sat 17/10, 15:00
+// local · 14:00 BST"). The venue's time zone follows from its country.
+const COUNTRY_TZ = {
+  ALB:'Europe/Tirane', AND:'Europe/Andorra', ARM:'Asia/Yerevan', AUT:'Europe/Vienna', AZE:'Asia/Baku', BEL:'Europe/Brussels',
+  BIH:'Europe/Sarajevo', BLR:'Europe/Minsk', BUL:'Europe/Sofia', CRO:'Europe/Zagreb', CYP:'Asia/Nicosia', CZE:'Europe/Prague',
+  DEN:'Europe/Copenhagen', ENG:'Europe/London', ESP:'Europe/Madrid', EST:'Europe/Tallinn', FIN:'Europe/Helsinki', FRA:'Europe/Paris',
+  FRO:'Atlantic/Faroe', GEO:'Asia/Tbilisi', GER:'Europe/Berlin', GIB:'Europe/Gibraltar', GRE:'Europe/Athens', HUN:'Europe/Budapest',
+  IRL:'Europe/Dublin', ISL:'Atlantic/Reykjavik', ISR:'Asia/Jerusalem', ITA:'Europe/Rome', KAZ:'Asia/Almaty', KOS:'Europe/Belgrade',
+  LAT:'Europe/Riga', LVA:'Europe/Riga', LTU:'Europe/Vilnius', LUX:'Europe/Luxembourg', MDA:'Europe/Chisinau', MKD:'Europe/Skopje',
+  MLT:'Europe/Malta', MNE:'Europe/Podgorica', MON:'Europe/Monaco', NED:'Europe/Amsterdam', NIR:'Europe/London', NOR:'Europe/Oslo',
+  POL:'Europe/Warsaw', POR:'Europe/Lisbon', ROU:'Europe/Bucharest', SCO:'Europe/London', SRB:'Europe/Belgrade', SUI:'Europe/Zurich',
+  SVK:'Europe/Bratislava', SVN:'Europe/Ljubljana', SWE:'Europe/Stockholm', TUR:'Europe/Istanbul', UKR:'Europe/Kyiv', WAL:'Europe/London'
+};
+function venueTimeZone(league, homeCode){
+  const club = TEAMS[league] && TEAMS[league][homeCode];
+  return COUNTRY_TZ[COUNTRY_TAG[league] || (club && club.country) || ''] || null;
+}
+// Offset of a time zone from UTC at a given moment, in minutes (DST included).
+function tzOffsetMinutes(tz, date){
+  const part = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'longOffset' }).formatToParts(date).find(x => x.type === 'timeZoneName');
+  const m = part && /GMT([+-])(\d\d):(\d\d)/.exec(part.value);
+  return m ? (m[1] === '-' ? -1 : 1) * (parseInt(m[2], 10) * 60 + parseInt(m[3], 10)) : 0;
+}
+// The viewer's zone, shown only when its clock differs from the venue's.
+function viewerTimeNote(date, tz){
+  const mine = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if(!tz || tz === mine || tzOffsetMinutes(tz, date) === tzOffsetMinutes(mine, date)) return '';
+  const day = z => date.toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'2-digit', timeZone: z });
+  const time = date.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', timeZone: mine, timeZoneName:'short' });
+  return (day(mine) !== day(tz) ? day(mine) + ' ' : '') + time;
+}
+// Full kickoff with date: "Sat 17/10, 15:00 local · 14:00 BST", or the plain
+// viewer-time form when the clocks agree or the venue's zone is unknown.
+function fmtKickoff(iso, league, homeCode){
+  const d = new Date(iso);
+  const tz = venueTimeZone(league, homeCode);
+  const note = viewerTimeNote(d, tz);
+  if(!note) return fmtDate(iso);
+  const local = d.toLocaleString('en-GB', { weekday:'short', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit', timeZone: tz });
+  return `${local} local · ${note}`;
+}
+// Time only, for the calendar's day lists.
+function fmtKickoffTime(date, league, homeCode){
+  const tz = venueTimeZone(league, homeCode);
+  const note = viewerTimeNote(date, tz);
+  if(!note) return fmtTimeOnly(date);
+  return `${date.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', timeZone: tz })} local · ${note}`;
+}
+
 // Short calendar-date-only label (no weekday/time) for the date-range mode's
 // league-block header, e.g. "21 Aug" — fmtDate above is time-of-kickoff
 // oriented and too long to sit next to a league name.
@@ -1667,7 +1719,7 @@ function renderAll(){
       const more = teamFixtures.length > 1 ? ` <span style="opacity:0.7;">(+${teamFixtures.length - 1} more this window)</span>` : '';
       marker.bindPopup(`
         <div class="popup-club">${h.name} vs ${a ? a.name : next.away}</div>
-        <div class="popup-meta">${h.city} · ${fmtDate(next.start)}${unverifiedBadge(nextKey, true)} · ${COUNTRY_TAG[otherLeague] || h.country || ''}${more}</div>
+        <div class="popup-meta">${h.city} · ${fmtKickoff(next.start, otherLeague, code)}${unverifiedBadge(nextKey, true)} · ${COUNTRY_TAG[otherLeague] || h.country || ''}${more}</div>
         <div><button class="watch-btn" data-key="${nextKey}">${watchButtonLabel(isWatched(nextKey))}</button></div>
       `);
       bindWatchButton(marker, nextItem);
@@ -1774,7 +1826,7 @@ function renderAll(){
         <span class="watch-star" data-key="${watchKey}">☆</span>
         <div class="fbody">
           <div class="teams">${h.name} – ${a ? a.name : f.away}</div>
-          <div class="meta">${h.city} · ${fmtDate(f.start)}${unverifiedBadge(watchKey)}${useRange ? ` · MD${f.matchday}` : ''}</div>
+          <div class="meta">${h.city} · ${fmtKickoff(f.start, league, f.home)}${unverifiedBadge(watchKey)}${useRange ? ` · MD${f.matchday}` : ''}</div>
         </div>
         <span class="suggest-btn" data-tooltip="Suggest a trip around this game">${ICONS.sparkle}</span>
       `;
@@ -1837,7 +1889,7 @@ function buildVenuePopupHtml(games, idx){
   return `
     ${pager}
     <div class="popup-club">${g.gameLabel}</div>
-    <div class="popup-meta">${g.h.city} · ${fmtDate(g.f.start)}${unverifiedBadge(g.watchKey, true)}</div>
+    <div class="popup-meta">${g.h.city} · ${fmtKickoff(g.f.start, g.league, g.f.home)}${unverifiedBadge(g.watchKey, true)}</div>
     <div><button class="watch-btn" data-key="${g.watchKey}">${watchButtonLabel(isWatched(g.watchKey))}</button><button class="suggest-trip-btn" data-key="${g.watchKey}">${ICONS.sparkle} Suggest trip</button></div>
   `;
 }
@@ -2146,7 +2198,7 @@ function renderComboCards({ trips, pool, legInfo, anchorSet, summaryLabel }){
       const legNote = i > 0 ? `<br><span style="color:#00A650; font-size:0.62rem;">${legLabels[i-1]}</span>` : '';
       return `
       <div class="combo-game" style="${isAnchor ? 'font-weight:700;' : ''}"><span class="combo-game-remove" title="Exclude this game from Combinable Trips" onclick="event.stopPropagation(); excludeFixtureFromCombos('${g.league}','${g.homeCode}',${g.start.getTime()})">×</span>${i+1}. ${g.home.name} <span style="color:#6b6455;">(${g.country})</span> – ${g.awayName}${isAnchor ? ' ★' : ''}<br>
-      <span style="color:#6b6455; font-size:0.66rem;">${g.home.city} · ${fmtDate(g.start.toISOString())}</span>${legNote}</div>
+      <span style="color:#6b6455; font-size:0.66rem;">${g.home.city} · ${fmtKickoff(g.start.toISOString(), g.league, g.homeCode)}</span>${legNote}</div>
     `;
     }).join('');
     const card = document.createElement('div');
@@ -2615,7 +2667,7 @@ function renderRadiusResults(point, radiusKm, fitView, includePast){
     marker._iconBuilder = (idx) => makeIcon(LEAGUE_COLOR[g.league], g.home.logo, idx);
     marker.bindPopup(`
       <div class="popup-club">${gameLabel}</div>
-      <div class="popup-meta">${g.home.city} · ${fmtDate(g.start.toISOString())}${unverifiedBadge(watchKey, true)} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+      <div class="popup-meta">${g.home.city} · ${fmtKickoff(g.start.toISOString(), g.league, g.homeCode)}${unverifiedBadge(watchKey, true)} · ${LEAGUE_LABELS[g.league] || g.league}</div>
       <div><button class="watch-btn" data-key="${watchKey}">${watchButtonLabel(isWatched(watchKey))}</button><button class="suggest-trip-btn" data-key="${watchKey}">${ICONS.sparkle} Suggest trip</button></div>
     `);
     bindWatchButton(marker, watchItem);
@@ -2632,7 +2684,7 @@ function renderRadiusResults(point, radiusKm, fitView, includePast){
       ${resultLogoHtml(g.home.logo, LEAGUE_COLOR[g.league])}
       <div class="rbody">
         <div class="rteams">${g.home.name} – ${g.awayName}</div>
-        <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtDate(g.start.toISOString())}${unverifiedBadge(watchKey)} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+        <div class="rmeta">${g.distKm.toFixed(0)} km · ${g.home.city} · ${fmtKickoff(g.start.toISOString(), g.league, g.homeCode)}${unverifiedBadge(watchKey)} · ${LEAGUE_LABELS[g.league] || g.league}</div>
       </div>
       <span class="suggest-btn" data-tooltip="Suggest a trip around this game">${ICONS.sparkle}</span>
     `;
@@ -3124,10 +3176,10 @@ function renderPlansDayDetail(key, dayEntries){
         <span class="cal-scout-dot" style="background:${scoutColor(e.plan.scout)}" title="${escapeHtml(e.plan.scout || 'No scout')}">${escapeHtml(scoutInitials(e.plan.scout))}</span>
         <div class="crbody">
           <div class="crteams">${escapeHtml(w.homeName)} – ${escapeHtml(w.awayName)}</div>
-          <div class="crmeta">${fmtTimeOnly(e.start)}${unverifiedBadge(w.key)} · ${escapeHtml(w.city)} · ${escapeHtml(LEAGUE_LABELS[w.league] || w.league)} · Plan: ${escapeHtml(e.plan.name)}${e.plan.scout ? ` · ${escapeHtml(e.plan.scout)}` : ''} <span class="status-pill status-${planStatus(e.plan)}">${planStatusLabel(e.plan)}</span></div>
+          <div class="crmeta">${fmtKickoffTime(e.start, w.league, w.homeCode)}${unverifiedBadge(w.key)} · ${escapeHtml(w.city)} · ${escapeHtml(LEAGUE_LABELS[w.league] || w.league)} · Plan: ${escapeHtml(e.plan.name)}${e.plan.scout ? ` · ${escapeHtml(e.plan.scout)}` : ''} <span class="status-pill status-${planStatus(e.plan)}">${planStatusLabel(e.plan)}</span></div>
           ${e.plan.note ? `<div class="crnote">${escapeHtml(e.plan.note)}</div>` : ''}
           ${w.missing ? `<div class="wflag wflag-missing">No longer in the schedule. Check before you travel.</div>` : ''}
-          ${w.changedFrom ? `<div class="wflag">⟳ Kickoff changed, was ${fmtDate(w.changedFrom)}</div>` : ''}
+          ${w.changedFrom ? `<div class="wflag">⟳ Kickoff changed, was ${fmtKickoff(w.changedFrom, w.league, w.homeCode)}</div>` : ''}
         </div>
       </div>`;
   });
@@ -3268,7 +3320,7 @@ function renderCalendarDayDetail(key, dayFixtures){
         ${resultLogoHtml(g.home.logo, LEAGUE_COLOR[g.league])}
         <div class="crbody">
           <div class="crteams">${g.home.name} – ${g.awayName}</div>
-          <div class="crmeta">${fmtTimeOnly(g.start)} · ${g.home.city} · ${LEAGUE_LABELS[g.league] || g.league}</div>
+          <div class="crmeta">${fmtKickoffTime(g.start, g.league, g.homeCode)} · ${g.home.city} · ${LEAGUE_LABELS[g.league] || g.league}</div>
         </div>
       </div>
     `;
