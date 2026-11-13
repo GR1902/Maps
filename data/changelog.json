@@ -1151,6 +1151,89 @@
      "to": "2027-02-07T15:30:00+00:00"
     }
    ]
+  },
+  {
+   "at": "2026-11-13T17:31:41Z",
+   "sha": "251b588",
+   "changes": [
+    {
+     "t": "time",
+     "l": "eerste_divisie",
+     "m": 18,
+     "h": "BOS",
+     "a": "AJA2",
+     "from": "2026-12-04T19:00:00+00:00",
+     "to": "2026-12-06T15:45:00+00:00"
+    },
+    {
+     "t": "time",
+     "l": "eerste_divisie",
+     "m": 18,
+     "h": "EIN",
+     "a": "ROD",
+     "from": "2026-12-06T11:15:00+00:00",
+     "to": "2026-12-06T13:30:00+00:00"
+    },
+    {
+     "t": "time",
+     "l": "eerste_divisie",
+     "m": 18,
+     "h": "HER",
+     "a": "EMM",
+     "from": "2026-12-04T19:00:00+00:00",
+     "to": "2026-12-06T13:30:00+00:00"
+    },
+    {
+     "t": "time",
+     "l": "eerste_divisie",
+     "m": 20,
+     "h": "ALM",
+     "a": "VIT",
+     "from": "2026-12-18T19:00:00+00:00",
+     "to": "2026-12-19T19:00:00+00:00"
+    },
+    {
+     "t": "time",
+     "l": "eerste_divisie",
+     "m": 20,
+     "h": "PSV2",
+     "a": "EIN",
+     "from": "2026-12-21T19:00:00+00:00",
+     "to": "2026-12-18T19:00:00+00:00"
+    },
+    {
+     "t": "new",
+     "l": "serbian_superliga",
+     "m": 16,
+     "n": 7,
+     "from": "2026-11-21T12:00:00+00:00",
+     "to": "2026-11-22T16:00:00+00:00"
+    },
+    {
+     "t": "new",
+     "l": "slovak_nike_liga",
+     "m": 18,
+     "n": 6,
+     "from": "2026-12-12T14:30:00+00:00",
+     "to": "2026-12-13T17:00:00+00:00"
+    },
+    {
+     "t": "new",
+     "l": "slovenian_prva_liga",
+     "m": 16,
+     "n": 5,
+     "from": "2026-11-21T14:00:00+00:00",
+     "to": "2026-11-23T16:30:00+00:00"
+    },
+    {
+     "t": "new",
+     "l": "slovenian_prva_liga",
+     "m": 17,
+     "n": 5,
+     "from": "2026-11-27T17:00:00+00:00",
+     "to": "2026-11-29T16:30:00+00:00"
+    }
+   ]
   }
  ],
  "_comment": "Fixture changes for upcoming games, written by make_changelog.py after each data push; the app shows what is new since the visitor's last visit."
