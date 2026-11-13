@@ -87,7 +87,7 @@
       "matchday": 1,
       "type": "not_scheduled",
       "priority": "low",
-      "note": "Domestic Champions Path Runde 1 (10 Spiele, 10.-14.10.) am 9.10. bestaetigt: uefa.com, fotmob.com (UTC, leagues/9741) und futboltotal.futbol (JSON-LD startDate) stimmen ueberein, kicker.de fuehrt die Runde nicht. Spaetere K.o.-Runden (Playoffs ab Dez.) sind noch nicht terminiert. Matchday-Zaehlung: 1 = Runde 1, Ligaphase-Spieltag N = N+1. Hinweis: uefa.com zeigt die Zeit der Betrachter-Zeitzone und war frueher bei fuenf Spielen eine Stunde zu spaet, daher immer mit fotmob.com (UTC) gegenpruefen.",
+      "note": "Domestic Champions Path Runde 1 (10 Spiele, 10.-14.10.) am 9.10. bestaetigt: uefa.com, fotmob.com (UTC, leagues/9741) und futboltotal.futbol (JSON-LD startDate) stimmen ueberein, kicker.de fuehrt die Runde nicht. Spaetere K.o.-Runden (Playoffs ab Dez.) sind noch nicht terminiert. Matchday-Zaehlung: 1 = Runde 1, Ligaphase-Spieltag N = N+1. Hinweis: uefa.com zeigt die Zeit der Betrachter-Zeitzone und war frueher bei fuenf Spielen eine Stunde zu spaet, daher immer mit fotmob.com (UTC) gegenpruefen. Stand 13.11.: Ligaphase Spieltag 5 und 6 (24./25.11., 8./9.12.) mit UEFA-API und fotmob.com abgeglichen, sieben Zeiten korrigiert. Liverpool-Porto (9.12.) hat in der UEFA-API weiter keine Zeit (fotmob 15:00 vermutlich Platzhalter), bleibt mit Flag. Domestic Champions Path Runde 3 (25.11. und 8./9.12., je 10 Spiele) ist terminiert, aber noch nicht gespeichert (Teams teils nicht in teams.json).",
       "sources_tried": "uefa.com, fotmob.com, futboltotal.futbol, kicker.de",
       "added": "2026-10-07"
     },
@@ -167,7 +167,7 @@
       "matchday": 7,
       "type": "conflict",
       "priority": "medium",
-      "note": "Celje-Olympiacos (10.12.): UEFA-API (match.uefa.com) nennt 17:45 UTC, kicker.de und fotmob.com nennen 20:00 UTC (gespeichert). Offizielle Quelle widerspricht den zwei Aggregatoren, Spiel bleibt unverified, bis uefa.com und ein Zweitnachweis uebereinstimmen. Rennes-Olympiacos (Spieltag 5) am 2.11. auf 4.11. 15:30 UTC korrigiert (UEFA-API + kicker.de + fotmob.com). Youth League Galatasaray-Stuttgart auf 3.11. 11:00 UTC korrigiert (UEFA-API + fotmob.com).",
+      "note": "Celje-Olympiacos (10.12.): UEFA-API (match.uefa.com) nennt 17:45 UTC, kicker.de und fotmob.com nennen 20:00 UTC (gespeichert). Offizielle Quelle widerspricht den zwei Aggregatoren, Spiel bleibt unverified, bis uefa.com und ein Zweitnachweis uebereinstimmen. Rennes-Olympiacos (Spieltag 5) am 2.11. auf 4.11. 15:30 UTC korrigiert (UEFA-API + kicker.de + fotmob.com). Youth League Galatasaray-Stuttgart auf 3.11. 11:00 UTC korrigiert (UEFA-API + fotmob.com). Stand 13.11.: UEFA-API nennt weiter 17:45 UTC (9 Spiele 17:45 und 9 Spiele 20:00 am 10.12.), gespeichert bleibt 20:00 mit Flag.",
       "sources_tried": "match.uefa.com, kicker.de, fotmob.com",
       "added": "2026-11-02"
     },
@@ -219,6 +219,16 @@
       "priority": "medium",
       "note": "Spieltag 22 (6./7.2.2027) mit Warnflag eingetragen: kicker.de und fotmob.com stimmen ueberein, sfl.ch laedt den Spielplan nicht (leere Seite). Flag entfernen, sobald sfl.ch oder ein Verein die Zeiten zeigt. Ab Spieltag 23 keine Zeiten bei kicker.de und fotmob.com.",
       "sources_tried": "kicker.de, fotmob.com, sfl.ch",
+      "added": "2026-11-13"
+    },
+    {
+      "id": "status-final-scheduled-2026-11-13",
+      "league": "multiple",
+      "matchday": null,
+      "type": "info",
+      "priority": "low",
+      "note": "Stand 13.11.: letzter final terminierter Spieltag je Liga. Bundesliga 18, 2. Bundesliga 18, 3. Liga 15, La Liga 14 (13 ohne Real Madrid-Celta), La Liga 2 15, Serie A 19, Serie B 20, Ligue 1 18, Ligue 2 15, Primeira Liga 14, Eredivisie 21, Eerste Divisie alle Runden, Belgien 17, Challenger 16, Premier League 20, Championship und League One TV-Termine bis 3.3.2027, Daenemark 17, Schweiz 22 (Flag), Oesterreich 16, Griechenland 16, Super Lig 16, Ekstraklasa 17, Tschechien 18, Kroatien 17, Serbien 16, Slowenien 17, Slowakei 18, UEFA Ligaphase komplett. Nicht neu geprueft in diesem Lauf: Schottland (SPFL), Allsvenskan, Eliteserien, OBOS-ligaen, Veikkausliiga.",
+      "sources_tried": "kicker.de, offizielle Seiten und APIs je Liga, fotmob.com",
       "added": "2026-11-13"
     }
   ]
