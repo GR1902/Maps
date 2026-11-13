@@ -12,16 +12,6 @@
       "added": "2026-10-07"
     },
     {
-      "id": "la_liga-13",
-      "league": "la_liga",
-      "matchday": 13,
-      "type": "placeholder",
-      "priority": "high",
-      "note": "Spieltag 12 (6.-8.11.) am 13.10. bestaetigt (laliga.com + kicker.de) und eingetragen. Spieltag 13 (22.11.): alle 10 Spiele einheitlich 16:00 UTC bei kicker.de, Platzhalter. Erst eintragen, wenn laliga.com echte Zeiten nennt.",
-      "sources_tried": "kicker.de, laliga.com",
-      "added": "2026-10-07"
-    },
-    {
       "id": "ekstraklasa-4",
       "league": "ekstraklasa",
       "matchday": 4,
@@ -32,22 +22,22 @@
       "added": "2026-10-07"
     },
     {
-      "id": "bundesliga-12",
+      "id": "bundesliga-19",
       "league": "bundesliga",
-      "matchday": 12,
+      "matchday": 19,
       "type": "not_scheduled",
       "priority": "high",
-      "note": "Spieltag 12 (5.12.): Zeiten noch nicht veroeffentlicht (kicker.de, bundesliga.com).",
+      "note": "Spieltag 12 bis 18 sind final terminiert und eingetragen (13.11., bundesliga.com + kicker.de). Ab Spieltag 19 (30.1.2027) nur einheitliche Platzhalterzeiten.",
       "sources_tried": "kicker.de, bundesliga.com",
       "added": "2026-10-07"
     },
     {
-      "id": "bundesliga_2-14",
+      "id": "bundesliga_2-19",
       "league": "bundesliga_2",
-      "matchday": 14,
+      "matchday": 19,
       "type": "not_scheduled",
       "priority": "high",
-      "note": "Spieltag 14 (4.-6.12.): bundesliga.com 'not yet scheduled'.",
+      "note": "Spieltag 14 bis 18 sind final terminiert und eingetragen (13.11., bundesliga.com + kicker.de). Ab Spieltag 19 (31.1.2027) nur Platzhalterzeiten.",
       "sources_tried": "bundesliga.com, kicker.de",
       "added": "2026-10-07"
     },
@@ -72,12 +62,12 @@
       "added": "2026-10-07"
     },
     {
-      "id": "primeira_liga-13",
+      "id": "primeira_liga-15",
       "league": "primeira_liga",
-      "matchday": 13,
+      "matchday": 15,
       "type": "not_scheduled",
       "priority": "medium",
-      "note": "Spieltag 13 (6.12.) bei kicker.de ohne Uhrzeiten.",
+      "note": "Spieltag 13 und 14 sind eingetragen (13.11., ligaportugal.pt + kicker.de). Ab Spieltag 15 (20.12.) noch keine Uhrzeiten.",
       "sources_tried": "kicker.de",
       "added": "2026-10-07"
     },
@@ -119,16 +109,6 @@
       "priority": "low",
       "note": "Spieltag-Nummern: Unsere Runden 7/8/9 (10./11., 17./18., 24./25.10.) sind bei kicker.de und nach SPFL-Rundenzaehlung die Runden 8/9/10. Ab Spieltag 11 stimmen die Nummern ueberein. Die doppelten Spieltag-10-Eintraege vom 24./25.10. wurden am 9.10. entfernt (gleiche sechs Spiele wie Spieltag 9). Eine Umnummerierung braeuchte eine Schluessel-Migration fuer gespeicherte Plaene (meta.json keyAliases), wurde nicht gemacht.",
       "sources_tried": "kicker.de, spfl.co.uk",
-      "added": "2026-10-09"
-    },
-    {
-      "id": "greece-md7-missing",
-      "league": "super_league_greece",
-      "matchday": 7,
-      "type": "missing",
-      "priority": "medium",
-      "note": "Atromitos-AEK (Spieltag 7) hat auf slgr.gr/kicker.de weiter keinen sauberen Termin (kicker: 15.12. 23:00 UTC, Platzhalter); nicht eingetragen. 2.11.: slgr.gr Spieltag 9, 10, 14, 15, 16 gelesen (Athener Zeit, Datum und Zeit aus dem Seitentext). OFI-Atromitos (8.11.) auf 16:30 UTC und OFI-Kalamata (20.12.) auf 16:30 UTC korrigiert (slgr.gr + kicker.de), Spieltag 16 (9./10.1.2027, 7 Spiele) neu eingetragen. Spieltag 17+ nicht geprueft.",
-      "sources_tried": "slgr.gr, kicker.de, naftemporiki.gr",
       "added": "2026-10-09"
     },
     {
@@ -210,6 +190,36 @@
       "note": "Stand 2.11. (zweiter Durchgang): Super Lig 10-16, Eerste Divisie 13-38, Eliteserien 26-30, Allsvenskan 27-30, OBOS-ligaen 29-30 gegen fotmob bzw. obos-ligaen.no unveraendert korrekt. SVN Runde 15 (nzs.si + fotmob), SVK Runden 15-17 (nikeliga.sk + fotmob), SRB Runde 15 (superliga.rs + fotmob) neu eingetragen. Offen: SRB Runde 14 (31.10.-2.11., gespielt) nicht gespeichert, ab Runde 16 Platzhalter 00:00; SVN Celje-Radomlje (Runde 6, fotmob 2.12. 16:30 UTC) offiziell nicht bestaetigt; SVK ab Runde 18 nicht geprueft; Super Lig ab Runde 17 Platzhalter (18:00 einheitlich). Youth League Runde 2 Rueckspiele (20 Spiele, 3./4.11.) als Matchday 2 gespeichert.",
       "sources_tried": "fotmob.com, match.uefa.com",
       "added": "2026-11-02"
+    },
+    {
+      "id": "la_liga-13-realmadrid-celta",
+      "league": "la_liga",
+      "matchday": 13,
+      "type": "conflict",
+      "priority": "high",
+      "note": "Real Madrid-Celta (Spieltag 13): laliga.com nennt Samstag 21.11.2026 20:00 UTC, kicker.de Sonntag 22.11. 16:00 UTC (wohl alter Platzhalter). Nicht eingetragen, dritte Quelle (Vereinsseite, TV-Plan) fehlt. Die 9 anderen Spiele von Spieltag 13 und Spieltag 14 sind bestaetigt und eingetragen. Spieltag 15 (6.12.): laliga.com zeigt noch keine Uhrzeiten.",
+      "sources_tried": "laliga.com, kicker.de",
+      "added": "2026-11-13"
+    },
+    {
+      "id": "efl-tv-picks-2026-11-13",
+      "league": "multiple",
+      "matchday": null,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "13.11.: efl.com-API nennt neue Fernsehtermine bis 3.3.2027 (Fr 20:00, Sa 12:30, So 12:00, Dienstag/Mittwoch 20:00) und neue Termine fuer verlegte League-One-Nachholspiele (Bromley-Wycombe 24.11., Barnsley-MK Dons und Peterborough-Notts County 15.12., Notts County-Blackpool 12.1., Wimbledon-Stevenage 26.1.). Alle Zeiten wurden an die API angeglichen (Hash pro Datum identisch, 0 Abweichungen). Zweite Quelle (BBC Sport, Vereinsseiten) noch nicht geprueft. Ab 6.3.2027 nur Standardzeiten (Samstag 15:00, Dienstag 19:45), also Platzhalter.",
+      "sources_tried": "efl.com API",
+      "added": "2026-11-13"
+    },
+    {
+      "id": "swiss-22-2026-11-13",
+      "league": "swiss_super_league",
+      "matchday": 22,
+      "type": "single_source",
+      "priority": "medium",
+      "note": "Spieltag 22 (6./7.2.2027) mit Warnflag eingetragen: kicker.de und fotmob.com stimmen ueberein, sfl.ch laedt den Spielplan nicht (leere Seite). Flag entfernen, sobald sfl.ch oder ein Verein die Zeiten zeigt. Ab Spieltag 23 keine Zeiten bei kicker.de und fotmob.com.",
+      "sources_tried": "kicker.de, fotmob.com, sfl.ch",
+      "added": "2026-11-13"
     }
   ]
 }
